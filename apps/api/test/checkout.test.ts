@@ -6,7 +6,7 @@
  * Runs against a real Postgres seeded with the real menu, through the real
  * Fastify stack, so route wiring and Zod validation are exercised too.
  */
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { FastifyInstance } from "fastify";
 import { DELIVERY_FEE, FREE_DELIVERY_ABOVE, LAHORE_AREAS } from "@four/shared";
 import { buildApp } from "../src/app.js";
@@ -77,10 +77,17 @@ function checkout(confirmToken: string, payment: "COD" | "CARD" = "COD") {
 }
 
 beforeAll(async () => {
+  // Orders are refused outside opening hours, so pin the clock to a time the
+  // kitchen is open. Without this the suite passes or fails depending on the
+  // hour it runs - CI caught it at 03:00 Lahore. Only Date is faked; faking
+  // every timer stalls Fastify and Prisma.
+  vi.useFakeTimers({ toFake: ["Date"] });
+  vi.setSystemTime(new Date(Date.UTC(2026, 7, 20, 15, 0))); // 8:00pm Lahore
   app = await buildApp({ testing: true });
 });
 
 afterAll(async () => {
+  vi.useRealTimers();
   await app.close();
 });
 
