@@ -12,5 +12,5 @@ RUN corepack enable && apt-get update && apt-get install -y openssl && rm -rf /v
 WORKDIR /repo
 COPY --from=build /repo ./
 EXPOSE 4000
-# push the schema + seed idempotently, then serve
-CMD ["sh", "-c", "pnpm --filter @four/db exec prisma db push --skip-generate && pnpm --filter @four/db seed && node apps/api/dist/server.js"]
+# apply migrations + seed idempotently, then serve
+CMD ["sh", "-c", "pnpm --filter @four/db exec prisma migrate deploy && pnpm --filter @four/db seed && node apps/api/dist/server.js"]

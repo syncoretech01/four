@@ -15,7 +15,9 @@
     "db:seed": "dotenv -e .env -- pnpm --filter @four/db seed",
     "dev:api": "dotenv -e .env -- pnpm --filter @four/api dev",
     "dev:web": "dotenv -e .env -- pnpm --filter @four/web dev",
-    "bootstrap": "pnpm --filter @four/shared build && pnpm db:generate && pnpm db:push && pnpm db:seed"
+    "bootstrap": "pnpm --filter @four/shared build && pnpm db:generate && pnpm db:deploy && pnpm db:seed",
+    "db:deploy": "dotenv -e .env -- pnpm --filter @four/db migrate:deploy",
+    "test": "dotenv -e .env -- turbo run test"
   },
   "devDependencies": {
     "dotenv-cli": "^11.0.0",

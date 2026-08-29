@@ -13,7 +13,7 @@ Requires **Node >= 22** and pnpm (via `corepack enable`).
 pnpm install
 # Postgres (docker compose up -d postgres, or any local PG 16)
 cp .env.example .env            # set DATABASE_URL etc.
-pnpm bootstrap                  # build shared + prisma generate/push/seed
+pnpm bootstrap                  # build shared + prisma generate/migrate/seed
 pnpm dev:api                    # :4000
 pnpm dev:web                    # :3000
 ```
@@ -26,6 +26,33 @@ wrapped: they need no secrets, so CI runs them without an `.env` file.
 
 Production one-shot: `docker compose up --build` (set `APP_SECRET`,
 `ADMIN_PASSWORD` in `.env` first).
+
+## Database migrations
+
+The schema is versioned in `packages/db/prisma/migrations`. `pnpm db:deploy`
+applies pending migrations; `pnpm db:migrate` creates a new one after editing
+`schema.prisma`. Both dev and the API container run `prisma migrate deploy`,
+so a schema change is reviewed as SQL in a pull request rather than pushed
+straight at a live database.
+
+`pnpm db:push` still exists for throwaway schema experiments. Don't run it
+against a database that migrations also manage - the two drift apart.
+
+## Tests
+
+```bash
+pnpm test                       # or: pnpm --filter @four/api test
+```
+
+The suite covers the paths where a bug costs money - the delivery-fee
+threshold, the cash/card tax split, the HMAC confirm token, and that an order
+is placed at exactly the total that was quoted. It runs against a real
+Postgres through the real Fastify stack.
+
+It needs its own database: the runner takes `TEST_DATABASE_URL`, else
+`DATABASE_URL` with the database name swapped for `four_test`. The name must
+end in `_test` or the suite refuses to start, since it writes and deletes
+rows. Prisma creates the database on first run, then migrates and seeds it.
 
 ## What's inside
 
