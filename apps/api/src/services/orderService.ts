@@ -11,6 +11,7 @@ import {
   DELIVERY_FEE,
   FREE_DELIVERY_ABOVE,
   LAHORE_AREAS,
+  deliveryEtaLabel,
   type CheckoutInput,
   type OrderQuote,
   type OrderView,
@@ -54,6 +55,12 @@ export async function quote(sessionId: string, payment: PaymentMethod): Promise<
     payment,
     confirmToken: cartSignature(sessionId, cart.subtotal, cart.itemCount, payment),
   };
+}
+
+/** Undefined rather than a guess if the area is no longer in the coverage list. */
+function etaForArea(areaId: string): string | undefined {
+  const area = LAHORE_AREAS.find((a) => a.id === areaId);
+  return area ? deliveryEtaLabel(area.distanceKm) : undefined;
 }
 
 function orderNumber(): string {
@@ -153,6 +160,7 @@ export async function getOrder(orderNumberOrId: string): Promise<OrderView | nul
     address: order.address,
     note: order.note ?? undefined,
     payment: order.payment,
+    etaLabel: etaForArea(order.areaId),
     lines: order.lines.map((l) => ({
       name: l.name,
       variantLabel: l.variantLabel ?? undefined,

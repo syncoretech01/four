@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import { BRAND } from "@four/shared";
+import { BRAND, HOURS_LABEL } from "@four/shared";
 
 export function Visit() {
   const reduce = useReducedMotion();
@@ -28,6 +28,7 @@ export function Visit() {
               >
                 {BRAND.phone}
               </a>
+              <span className="text-cream/80">{HOURS_LABEL}</span>
               <a
                 href={BRAND.instagram}
                 target="_blank"

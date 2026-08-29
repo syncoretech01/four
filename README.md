@@ -94,6 +94,11 @@ brand-assets/     Imported brand kit: logo vectors, menu sheet renders, 203 web-
   so voice orders appear in the UI instantly. Requires the key.
 - The bot can only *prepare* an order (HMAC confirm token bound to
   session + cart + payment); the customer always completes checkout.
+- It never offers, invents or negotiates a discount. Prices come from the
+  server on every quote, so it *cannot* change one - but it is also told not
+  to imply otherwise, because a promise it cannot honour still costs a
+  customer. Promotions, when they exist, belong in the menu data as priced
+  items or a coded rule the server applies.
 
 ### Orders, admin, POS
 - `/admin` (4-8 digit `ADMIN_PIN`, entered on a tablet numpad; locks for 15
