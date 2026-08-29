@@ -11,7 +11,9 @@ import {
   DELIVERY_FEE,
   FREE_DELIVERY_ABOVE,
   LAHORE_AREAS,
+  OPENS_AT_MINUTES,
   deliveryEtaLabel,
+  isOpenAt,
   type CheckoutInput,
   type OrderQuote,
   type OrderView,
@@ -67,7 +69,20 @@ function orderNumber(): string {
   return `FOUR-${Math.floor(100000 + Math.random() * 900000)}`;
 }
 
+function openingTimeLabel(): string {
+  const h = Math.floor(OPENS_AT_MINUTES / 60);
+  const suffix = h >= 12 ? "pm" : "am";
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return `${h12}:${String(OPENS_AT_MINUTES % 60).padStart(2, "0")} ${suffix}`;
+}
+
 export async function placeOrder(sessionId: string, input: CheckoutInput): Promise<OrderView> {
+  // the kitchen is shut, so nobody would cook this. Checked here rather than
+  // only in the UI because this is the endpoint that actually commits an order.
+  if (!isOpenAt()) {
+    throw new OrderError(`The kitchen is closed. We reopen at ${openingTimeLabel()} - please order then.`, "CLOSED");
+  }
+
   const area = LAHORE_AREAS.find((a) => a.id === input.areaId);
   if (!area || !area.blocks.includes(input.block)) {
     throw new OrderError("We do not deliver to that area yet", "OUT_OF_ZONE");
