@@ -110,6 +110,20 @@ brand-assets/     Imported brand kit: logo vectors, menu sheet renders, 203 web-
   **docs/POS-INTEGRATION.md**. Orders are never silently dropped - a POS
   failure cancels loudly.
 
+## Demos
+
+Two things are stubbed pending decisions, each with something showable.
+
+**POS payload** - set `POS_PROVIDER=demo`, place an order, then open
+`/admin` -> **POS feed**. It shows the exact JSON the bridge would POST to a
+POS endpoint, which is what a vendor needs to see to scope an integration.
+Capped and in memory; the order itself is durable in Postgres regardless.
+
+**Online payment** - `/demo/payment` walks through card, Easypaisa and
+JazzCash. It is deliberately standalone: it touches no cart, creates no
+order, calls no API, and says so on every screen. Wiring real payments needs
+a merchant account and a provider (Safepay or PayFast).
+
 ## Business rules (confirm with operations)
 - Prices: transcribed from the printed menu sheets (`brand-assets/menu`),
   exclusive of tax as printed.

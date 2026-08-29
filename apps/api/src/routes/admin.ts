@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma, OrderStatus } from "@four/db";
 import { config } from "../config.js";
 import * as orderService from "../services/orderService.js";
+import { demoPosFeed } from "../pos/adapters.js";
 
 function safeEqual(a: string, b: string): boolean {
   const ab = Buffer.from(a);
@@ -103,6 +104,13 @@ export async function adminRoutes(app: FastifyInstance): Promise<void> {
     const { status } = z.object({ status: z.nativeEnum(OrderStatus) }).parse(req.body);
     return { order: await orderService.updateStatus(orderNumber.toUpperCase(), status) };
   });
+
+  /**
+   * What the POS bridge actually sent, newest first. Populated only by the
+   * `demo` provider - it exists to show a POS vendor the exact payload their
+   * endpoint would receive.
+   */
+  app.get("/admin/pos-feed", async () => ({ provider: config.POS_PROVIDER, entries: demoPosFeed() }));
 
   app.patch("/admin/items/:itemId/availability", async (req) => {
     const { itemId } = req.params as { itemId: string };

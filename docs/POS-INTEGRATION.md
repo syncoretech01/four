@@ -30,6 +30,7 @@ told to retry or call - orders are never silently dropped.
 |---|---|---|
 | `console` (default) | Accepts and logs orders; keeps the site fully working before the POS is known | none |
 | `webhook` | POSTs the order JSON to any URL: Zapier/Make/n8n, WhatsApp bot, Google Sheets bridge, or middleware in front of the POS | `POS_WEBHOOK_URL`, optional `POS_WEBHOOK_TOKEN` |
+| `demo` | Accepts every order and keeps the payload, shown at `/admin` -> POS feed. For demonstrating the integration to a vendor before one exists | none |
 | `foodics` | Skeleton for Foodics cloud POS | `FOODICS_API_TOKEN`, `FOODICS_BRANCH_ID` |
 
 ## Status: pending confirmation

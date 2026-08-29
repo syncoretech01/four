@@ -45,7 +45,8 @@ export default function AdminPage() {
   const [error, setError] = useState("");
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [items, setItems] = useState<AdminItem[]>([]);
-  const [tab, setTab] = useState<"orders" | "menu">("orders");
+  const [tab, setTab] = useState<"orders" | "menu" | "pos">("orders");
+  const [posFeed, setPosFeed] = useState<{ provider: string; entries: { receivedAt: string; order: unknown }[] }>({ provider: "", entries: [] });
 
   const refresh = useCallback(async () => {
     try {
@@ -91,6 +92,14 @@ export default function AdminPage() {
       setError(err instanceof ApiError ? err.message : "Login failed");
     }
   };
+
+  const loadPosFeed = useCallback(async () => {
+    try {
+      setPosFeed(await api("/api/admin/pos-feed"));
+    } catch {
+      // the tab is a demonstration aid; a failure here must not break the board
+    }
+  }, []);
 
   const advance = async (orderNumber: string, status: string) => {
     const next = NEXT_STATUS[status];
@@ -168,10 +177,43 @@ export default function AdminPage() {
           >
             Menu availability
           </button>
+          <button
+            onClick={() => {
+              setTab("pos");
+              void loadPosFeed();
+            }}
+            className={`rounded-full px-5 py-2 transition ${tab === "pos" ? "bg-red text-cream" : "text-ink"}`}
+          >
+            POS feed
+          </button>
         </div>
       </header>
 
-      {tab === "orders" ? (
+      {tab === "pos" ? (
+        <div className="mt-8 grid gap-4">
+          <div className="rounded-card bg-cream p-6">
+            <h2 className="font-display text-lg font-semibold text-ink">What the POS receives</h2>
+            <p className="mt-1 text-sm text-ink-soft">
+              The exact payload the bridge sends for each order - the integration a POS vendor
+              would build against. Active provider: <b className="text-ink">{posFeed.provider || "unknown"}</b>.
+              {posFeed.provider !== "demo" && " Set POS_PROVIDER=demo to capture payloads here."}
+            </p>
+          </div>
+          {posFeed.entries.length === 0 && (
+            <p className="rounded-card bg-cream p-8 text-center text-ink-soft">
+              Nothing captured yet. Place an order with POS_PROVIDER=demo and it appears here.
+            </p>
+          )}
+          {posFeed.entries.map((e, i) => (
+            <article key={i} className="rounded-card bg-cream p-6">
+              <p className="text-xs font-semibold uppercase tracking-wide text-ink-soft">{e.receivedAt}</p>
+              <pre className="mt-3 overflow-x-auto rounded-xl bg-ink/5 p-4 text-xs leading-relaxed text-ink">
+                {JSON.stringify(e.order, null, 2)}
+              </pre>
+            </article>
+          ))}
+        </div>
+      ) : tab === "orders" ? (
         <div className="mt-8 grid gap-4">
           {orders.length === 0 && <p className="rounded-card bg-cream p-8 text-center text-ink-soft">No orders yet today.</p>}
           {orders.map((o) => (
