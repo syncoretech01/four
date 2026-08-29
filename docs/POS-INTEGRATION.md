@@ -1,7 +1,7 @@
 # POS Integration Guide
 
-The website places orders through a single bridge (`src/lib/pos/`), so the
-restaurant's POS can be connected without touching the storefront.
+The platform places orders through a single bridge (`apps/api/src/pos/`),
+so the restaurant's POS can be connected without touching the storefront.
 
 ## How it works
 
@@ -9,28 +9,20 @@ restaurant's POS can be connected without touching the storefront.
 Checkout / AI assistant
         |
         v
-POST /api/orders        <- validates the order, reprices it server-side
+POST /api/orders          <- validates + reprices server-side, HMAC confirm token
         |
         v
-PosAdapter.submitOrder  <- the active adapter, chosen by POS_PROVIDER
+Order row (Postgres)      <- source of truth, status timeline, live tracking
+        |
+        v
+PosAdapter.submitOrder    <- active adapter, chosen by POS_PROVIDER
         |
         v
 The restaurant's POS / kitchen
 ```
 
-Every adapter implements one interface (`src/lib/pos/types.ts`):
-
-```ts
-interface PosAdapter {
-  name: string;
-  submitOrder(order: PosOrder): Promise<PosResult>;
-}
-```
-
-`PosOrder` carries everything a ticket needs: order number, customer name +
-phone, area/block/street address, payment method, priced lines, and totals.
-Prices are always recomputed on the server from `src/data/menu.ts`; the
-client can never set a price.
+If the adapter fails, the order is CANCELLED loudly and the customer is
+told to retry or call - orders are never silently dropped.
 
 ## Available adapters
 
@@ -42,28 +34,26 @@ client can never set a price.
 
 ## Next step: identify the live POS
 
-Ask the FOUR operations team which system the tills run. The common ones in
-Pakistani restaurant chains and the integration path for each:
+Ask FOUR's operations team what the tills run. Common paths:
 
-- **Foodics** - REST API (`developers.foodics.com`). Finish the
-  `foodicsAdapter`: map each `itemId` in `src/data/menu.ts` to the Foodics
-  product id, then `POST /orders` with the branch id.
-- **Oscar POS / BlinkCo / Trax** - each exposes an orders API or accepts a
-  webhook; use the `webhook` adapter pointed at their endpoint, or add a
-  10-line adapter file.
-- **Square / Loyverse** - official REST APIs; add an adapter alongside the
-  existing ones.
-- **Offline/legacy POS with no API** - point the `webhook` adapter at a
-  WhatsApp Business bot or a tablet-facing order screen; the kitchen
-  confirms orders manually until the POS is replaced.
+- **Foodics** - REST API (`developers.foodics.com`). Finish the adapter:
+  map each `itemId` from `packages/shared/src/menu-data.ts` to the
+  Foodics product id, then `POST /orders` with the branch id.
+- **Oscar POS / BlinkCo / Trax** - each exposes an orders API or accepts
+  webhooks; point the `webhook` adapter at them or add a small adapter.
+- **Square / Loyverse** - official REST APIs; add an adapter.
+- **No API / legacy POS** - point the `webhook` adapter at a WhatsApp
+  Business bot or a kitchen tablet screen; staff confirm manually.
 
-To add a new adapter: create `src/lib/pos/yourpos.ts` implementing
-`PosAdapter`, register it in `ADAPTERS` in `src/lib/pos/adapters.ts`, set
-`POS_PROVIDER=yourpos`.
+To add an adapter: implement `PosAdapter` in `apps/api/src/pos/`,
+register it in `ADAPTERS`, set `POS_PROVIDER`.
 
-## Reliability notes
+Note the admin console (`/admin`) already gives the kitchen a live order
+board even with the `console` adapter, so the site is operational before
+any POS wiring: staff work the board, statuses stream to customers.
 
-- If the adapter fails, `/api/orders` returns 502 and the customer is told
-  to retry or call; orders are never silently dropped.
-- Add a retry queue (e.g. Upstash QStash or a small Redis worker) before
-  launch if the POS endpoint has downtime windows.
+## Reliability
+
+Add a retry queue (e.g. a small worker or Upstash QStash) before launch
+if the POS endpoint has downtime windows; today a failed submit cancels
+the order and surfaces the error to the customer immediately.

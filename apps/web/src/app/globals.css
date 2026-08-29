@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+/*
+  FOUR brand system - exact palette from the brand book:
+  beige #E9DCC5 ground, red #9D1D20 accent, white, warm ink text.
+  Display/body faces are stand-ins until the licensed Aminute/Aloevera
+  files arrive (see README); swap the @theme font vars then.
+*/
+@theme {
+  --color-beige: #e9dcc5;
+  --color-beige-deep: #ddcdb0;
+  --color-cream: #f6efe1;
+  --color-red: #9d1d20;
+  --color-red-deep: #7c1416;
+  --color-ink: #26201a;
+  --color-ink-soft: #5f574b;
+
+  --font-display: var(--font-fredoka), "Trebuchet MS", sans-serif;
+  --font-body: var(--font-poppins), system-ui, sans-serif;
+
+  --radius-card: 1.25rem;
+
+  --animate-marquee: marquee 30s linear infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+}
+
+html {
+  color-scheme: light;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-beige);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-red);
+  color: var(--color-cream);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* fixed + pointer-events-none: never repaints on scroll */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

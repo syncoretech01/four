@@ -1,0 +1,205 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PaymentMethod {
+  COD
+  CARD
+}
+
+enum OrderStatus {
+  CONFIRMED
+  PREPARING
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+}
+
+enum ChatRole {
+  USER
+  ASSISTANT
+}
+
+/// Guest browser sessions. `id` = sha256 of the cookie token.
+model Session {
+  id         String   @id
+  isAdmin    Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  expiresAt  DateTime
+  lastSeenAt DateTime @default(now())
+
+  cart         Cart?
+  orders       Order[]
+  chatMessages ChatMessage[]
+
+  @@index([expiresAt])
+}
+
+model Category {
+  id         String @id
+  label      String
+  blurb      String
+  boardImage String
+  sortOrder  Int    @default(0)
+
+  items MenuItem[]
+}
+
+model MenuItem {
+  id          String   @id
+  name        String
+  description String
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+  basePrice   Int
+  image       String?
+  available   Boolean  @default(true)
+  tags        String[] @default([])
+  aliases     String[] @default([])
+  sortOrder   Int      @default(0)
+
+  variants       Variant[]
+  modifierGroups ItemModifierGroup[]
+  cartLines      CartLine[]
+
+  @@index([categoryId])
+}
+
+model Variant {
+  id        String   @id // "<itemId>:<slug>"
+  slug      String // "small" | "medium" | "large" | ...
+  label     String
+  price     Int
+  sortOrder Int      @default(0)
+  itemId    String
+  item      MenuItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@index([itemId])
+}
+
+model ModifierGroup {
+  id            String @id
+  label         String
+  maxSelections Int    @default(1)
+
+  options ModifierOption[]
+  items   ItemModifierGroup[]
+}
+
+model ModifierOption {
+  id      String        @id // "<groupId>:<slug>"
+  slug    String
+  label   String
+  /// { "flat": 249 } or { "bySize": { "small": 99, "medium": 149, "large": 249 } }
+  price   Json
+  groupId String
+  group   ModifierGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@index([groupId])
+}
+
+model ItemModifierGroup {
+  itemId  String
+  groupId String
+  item    MenuItem      @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  group   ModifierGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@id([itemId, groupId])
+}
+
+model Cart {
+  id        String   @id @default(cuid())
+  sessionId String   @unique
+  session   Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  updatedAt DateTime @updatedAt
+
+  lines CartLine[]
+}
+
+model CartLine {
+  id        String   @id @default(cuid())
+  cartId    String
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  itemId    String
+  item      MenuItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  variantId String?
+  /// [{ groupId, optionId, qty }]
+  modifiers Json     @default("[]")
+  qty       Int
+
+  @@index([cartId])
+}
+
+model Order {
+  id           String        @id @default(cuid())
+  orderNumber  String        @unique
+  sessionId    String?
+  session      Session?      @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  customerName String
+  phone        String
+  areaId       String
+  areaName     String
+  block        String
+  address      String
+  note         String?
+  payment      PaymentMethod
+  status       OrderStatus   @default(CONFIRMED)
+  subtotal     Int
+  deliveryFee  Int
+  taxRate      Float
+  tax          Int
+  total        Int
+  posReference String?
+  placedAt     DateTime      @default(now())
+
+  lines  OrderLine[]
+  events OrderEvent[]
+
+  @@index([sessionId])
+  @@index([status])
+  @@index([placedAt])
+}
+
+model OrderLine {
+  id           String  @id @default(cuid())
+  orderId      String
+  order        Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  itemId       String
+  name         String
+  variantLabel String?
+  /// ["Fries + Soda", "Cheese Slice x2"]
+  modifiers    Json    @default("[]")
+  qty          Int
+  unitPrice    Int
+  lineTotal    Int
+
+  @@index([orderId])
+}
+
+model OrderEvent {
+  id      String      @id @default(cuid())
+  orderId String
+  order   Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status  OrderStatus
+  at      DateTime    @default(now())
+
+  @@index([orderId])
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  sessionId String
+  session   Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  role      ChatRole
+  content   String
+  toolCalls Json?
+  createdAt DateTime @default(now())
+
+  @@index([sessionId, createdAt])
+}

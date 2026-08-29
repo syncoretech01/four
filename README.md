@@ -1,66 +1,77 @@
-# FOUR - Restaurant Web App
+# FOUR - Restaurant Platform
 
-Online ordering web app for **FOUR** (Fairways, DHA Phase 6, Lahore): gourmet
-smash burgers, desi-fusion pizzas, loaded fries and shakes, delivered across
-Lahore.
+Online ordering platform for **FOUR** (Fairways, DHA Phase 6, Lahore): smash
+burgers, crown crust pizzas, loaded fries and shakes by Pakistan's biggest
+creators. Monorepo: Next.js storefront, Fastify + Socket.IO API, Postgres,
+AI chat + voice ordering, kitchen console, POS bridge.
 
-## Run it
+## Quick start (development)
 
 ```bash
-npm install
-npm run dev      # http://localhost:3000
-npm run build && npm start   # production
+pnpm install
+# Postgres (docker compose up -d postgres, or any local PG 16)
+cp .env.example .env            # set DATABASE_URL etc.
+pnpm --filter @four/shared build
+pnpm db:generate && pnpm db:push && pnpm db:seed
+pnpm dev:api                    # :4000
+pnpm dev:web                    # :3000
 ```
 
-No environment variables are required to run; see `.env.example` for the
-POS bridge and optional LLM settings.
+Production one-shot: `docker compose up --build` (set `APP_SECRET`,
+`ADMIN_PASSWORD` in `.env` first).
 
 ## What's inside
 
-- **Delivery-area popup** - first visit asks for the customer's Lahore area
-  (DHA Phases 1-8, Gulberg 1-3, Model Town, Allama Iqbal Town, Johar Town,
-  and more) with block-level dropdowns (Nargis Block, Raza Block, Ravi
-  Block, ...). Closable with X so visitors can browse freely; re-opens from
-  the nav chip. Data: `src/data/locations.ts`.
-- **Animated hero** - an anime.js timeline assembles a layered smash burger
-  (drop-in, elastic settle, top-bun squash), then it floats and
-  parallax-follows the cursor. Click it to re-smash.
-  `src/components/hero/BurgerBuild.tsx`.
-- **Interactive menu** - real FOUR items and prices (from their public
-  listings; entries marked `verify` in `src/data/menu.ts` need
-  confirmation), category rail with animated pill, item cards opening into
-  full cards with size variants, and a "View the real menu" lightbox that
-  shows the printed menu board per category.
-- **Cart & checkout** - slide-in cart, quantity control, validated checkout
-  (Pakistani mobile format, area/block, address), COD or card-on-delivery,
-  order confirmation with an order number. Free delivery above Rs. 2,500.
-- **AI chatbot + voicebot** - the floating assistant takes natural orders:
-  *"I want a Bangkok Chipotle with large fries and a coke"* parses items,
-  sizes and quantities, adds them to the cart, and walks to checkout.
-  Voice uses the browser's Web Speech API (no key needed) and speaks
-  replies back. Deterministic parser adapted from the bestbuy repo's
-  fallback-bot; an LLM can be layered on server-side later.
-  `src/lib/assistant/`.
-- **POS bridge** - orders POST to `/api/orders`, are re-priced server-side,
-  and hand off to a pluggable POS adapter (`console` default, generic
-  `webhook`, `foodics` skeleton). The restaurant's live POS is not yet
-  confirmed; see **docs/POS-INTEGRATION.md** for the wiring plan.
+```
+apps/web          Next.js 15 storefront + kitchen console (/admin) + live tracking (/track/<order>)
+apps/api          Fastify: sessions, cart, orders, chat (OpenAI + fallback), Socket.IO, POS bridge
+packages/db       Prisma schema + idempotent seed (official menu -> 11 categories, 56 items)
+packages/shared   Official menu data, Lahore areas/blocks, zod schemas, socket contracts, brand constants
+brand-assets/     Imported brand kit: logo vectors, menu sheet renders, 203 web-ready photos, brand book
+```
 
-## Brand assets
+### Storefront
+- **Exact brand**: logo vectors extracted from the brand-kit PDF (never
+  redrawn), official palette (beige `#E9DCC5`, red `#9D1D20`), real food
+  photography mapped to menu items, printed-menu lightbox.
+- **Hero**: the FOUR wordmark draws itself in (per-letter outline + fill)
+  and reacts to the cursor with spring physics; the hand mark floats as a
+  magnetic sticker on the hero photo.
+- **Location popup**: Lahore areas (DHA 1-8, Gulberg, Model Town, Allama
+  Iqbal Town, Johar Town, Bahria...) with block-level dropdowns;
+  dismissible for free browsing.
+- **Ordering**: item modals with sizes, meal deals and add-ons (pizza
+  toppings priced by size), server-priced cart, checkout with PK phone
+  validation, COD/card, delivery fee + tax lines, live order tracking.
 
-The site is built to take the exact brand kit as drop-in files, with
-graceful branded fallbacks until they arrive:
+### AI assistant (chat + voice)
+- Chat streams over the session socket; with `OPENAI_API_KEY` set it runs
+  a GPT tool loop (search menu, add to cart, prepare order, track...);
+  without a key a deterministic parser handles the same commands
+  ("a Bangkok Chipotle with lahori fries and a cola").
+- Voice is a live **OpenAI Realtime** WebRTC call (mic up, voice down);
+  the model's function calls execute server-side against the same cart,
+  so voice orders appear in the UI instantly. Requires the key.
+- The bot can only *prepare* an order (HMAC confirm token bound to
+  session + cart + payment); the customer always completes checkout.
 
-- `public/brand/` - logo + logomark (see its README)
-- `public/menu/items/` - one photo per dish, named by item id
-- `public/menu/boards/` - scans of the real printed menu per category
-- `public/gallery/` - restaurant photography
+### Orders, admin, POS
+- `/admin` (password: `ADMIN_PASSWORD`): live order board (new orders pop
+  in over the socket), one-tap status advance that updates the customer's
+  tracking page in real time, and per-item availability toggles.
+- POS bridge (`apps/api/src/pos/`): `console` (default), `webhook`
+  (Zapier/n8n/WhatsApp-bot/middleware), `foodics` skeleton. See
+  **docs/POS-INTEGRATION.md**. Orders are never silently dropped - a POS
+  failure cancels loudly.
 
-Palette: beige ground `#EFE7D9`, cream surfaces, single red accent
-`#C8102E`, warm ink text. Type: Anton (display) + Archivo (body).
-
-## Stack
-
-Next.js 15 (App Router) · React 19 · Tailwind v4 · Motion · anime.js ·
-Zustand · Zod. State persists in localStorage; no database required for
-the storefront.
+## Business rules (confirm with operations)
+- Prices: transcribed from the printed menu sheets (`brand-assets/menu`),
+  exclusive of tax as printed.
+- Tax: 16% cash / 5% card by default (`TAX_RATE_COD`, `TAX_RATE_CARD`).
+- Delivery: Rs. 149, free above Rs. 2,500 (`packages/shared/src/constants.ts`).
+- Fonts: brand faces (Aminute, Aloevera Display) are commercial; the site
+  ships Fredoka + Poppins as stand-ins - swap the `@theme` font vars in
+  `apps/web/src/app/globals.css` when the licensed files arrive.
+- Item photos: mapped by eye from the brand shoot
+  (`apps/web/public/menu-items/photo-map.json`); replace any file to
+  update a card.
