@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+/*
+  FOUR brand system.
+  Beige ground with a single red accent, warm ink text. The exact logo
+  files from the brand kit live in /public/brand (see its README).
+  Theme is deliberately locked to the beige brand look.
+*/
+@theme {
+  --color-beige: #efe7d9;
+  --color-beige-deep: #e5d8c3;
+  --color-cream: #f8f3ea;
+  --color-red: #c8102e;
+  --color-red-deep: #9e0c24;
+  --color-ink: #26201a;
+  --color-ink-soft: #5c5348;
+
+  --font-display: var(--font-anton), "Arial Narrow", sans-serif;
+  --font-body: var(--font-archivo), system-ui, sans-serif;
+
+  --radius-card: 1.25rem;
+
+  --animate-marquee: marquee 28s linear infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+}
+
+html {
+  color-scheme: light;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-beige);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-red);
+  color: var(--color-cream);
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0.01em;
+}
+
+/* Grain overlay: fixed + pointer-events-none so it never repaints on scroll */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
