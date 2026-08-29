@@ -7,7 +7,11 @@ export const BRAND = {
   white: "#FFFFFF",
   /** Fairways Commercial, Sector M, DHA Phase 6 (Raya), Lahore */
   address: "Fairways Commercial, DHA Phase 6, Lahore",
-  instagram: "https://www.instagram.com/four.pakistan",
+  instagram: "https://www.instagram.com/fourpakistan_/",
+  instagramHandle: "@fourpakistan_",
+  /** Confirmed by operations. Shown wherever an order can fail. */
+  phone: "0325 1231222",
+  phoneHref: "tel:+923251231222",
 } as const;
 
 export const DELIVERY_FEE = 149; // PKR - confirm with operations
@@ -18,7 +22,7 @@ export const FREE_DELIVERY_ABOVE = 2500; // PKR - confirm with operations
  * sales tax differs by payment method; both rates are env-overridable.
  */
 export const DEFAULT_TAX_RATE_COD = 0.16;
-export const DEFAULT_TAX_RATE_CARD = 0.05;
+export const DEFAULT_TAX_RATE_CARD = 0.08;
 
 export const ORDER_STATUS_FLOW = [
   "CONFIRMED",

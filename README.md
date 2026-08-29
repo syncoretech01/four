@@ -25,7 +25,7 @@ repo-root `.env`. `pnpm build` and `pnpm typecheck` are deliberately not
 wrapped: they need no secrets, so CI runs them without an `.env` file.
 
 Production one-shot: `docker compose up --build` (set `APP_SECRET`,
-`ADMIN_PASSWORD` in `.env` first).
+`ADMIN_PIN` in `.env` first).
 
 Deploying for real: **docs/DEPLOY-AWS.md** - one EC2 host running
 `docker-compose.prod.yml`, with Caddy terminating TLS on a single public
@@ -96,7 +96,8 @@ brand-assets/     Imported brand kit: logo vectors, menu sheet renders, 203 web-
   session + cart + payment); the customer always completes checkout.
 
 ### Orders, admin, POS
-- `/admin` (password: `ADMIN_PASSWORD`): live order board (new orders pop
+- `/admin` (4-8 digit `ADMIN_PIN`, entered on a tablet numpad; locks for 15
+  minutes after 5 wrong PINs): live order board (new orders pop
   in over the socket), one-tap status advance that updates the customer's
   tracking page in real time, and per-item availability toggles.
 - POS bridge (`apps/api/src/pos/`): `console` (default), `webhook`

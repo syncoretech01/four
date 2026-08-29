@@ -15,7 +15,7 @@ export default defineConfig({
       NODE_ENV: "test",
       // fixed so the HMAC confirm-token assertions are deterministic
       APP_SECRET: "test-secret-at-least-16-chars-long",
-      ADMIN_PASSWORD: "test-admin-password",
+      ADMIN_PIN: "824193",
       POS_PROVIDER: "console",
     },
   },

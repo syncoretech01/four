@@ -102,11 +102,11 @@ DOMAIN=order.four.pk
 PUBLIC_URL=https://order.four.pk
 POSTGRES_PASSWORD=$(openssl rand -hex 24)
 APP_SECRET=$(openssl rand -hex 24)
-ADMIN_PASSWORD=$(openssl rand -base64 12 | tr -d '/+=' | head -c 16)
+ADMIN_PIN=$(python3 -c 'import secrets; print(f"{secrets.randbelow(10**6):06d}")')
 POS_PROVIDER=console
 EOF
 chmod 600 .env
-grep ADMIN_PASSWORD .env    # the kitchen console password - save it somewhere
+grep ADMIN_PIN .env    # the kitchen console PIN - give it to the staff who need it
 ```
 
 `PUBLIC_URL` must be the `https://` address. The API only marks its session
@@ -175,10 +175,10 @@ acceptable; take it during closed hours.
 
 ## 8. Before real orders
 
-- [ ] `ADMIN_PASSWORD` recorded somewhere the kitchen can find it, and not the generated default
+- [ ] `ADMIN_PIN` set and given to the kitchen. Six digits is generated above; four is allowed but weaker
 - [ ] A backup has been taken **and restored** at least once
 - [ ] `POS_PROVIDER` set to whatever operations confirmed (see `docs/POS-INTEGRATION.md`) — `console` means orders reach the kitchen console only
-- [ ] A phone number published on the site, so a failed order has somewhere to go
+- [ ] Opening hours confirmed, and whether ordering should close outside them
 - [ ] Ports 4000, 3000 and 5432 confirmed closed from outside: `nmap -Pn order.four.pk`
 
 ## Running costs

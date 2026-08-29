@@ -19,6 +19,9 @@ export function Footer() {
           <a href="#visit" className="transition hover:text-red">Visit Us</a>
         </nav>
         <div className="grid gap-2 text-sm text-ink-soft">
+          <a href={BRAND.phoneHref} className="font-semibold text-ink transition hover:text-red">
+            {BRAND.phone}
+          </a>
           <a href={BRAND.instagram} target="_blank" rel="noopener noreferrer" className="transition hover:text-red">
             Instagram
           </a>

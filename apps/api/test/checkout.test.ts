@@ -12,7 +12,7 @@ import { DELIVERY_FEE, FREE_DELIVERY_ABOVE, LAHORE_AREAS } from "@four/shared";
 import { buildApp } from "../src/app.js";
 
 const TAX_RATE_COD = 0.16;
-const TAX_RATE_CARD = 0.05;
+const TAX_RATE_CARD = 0.08;
 
 let app: FastifyInstance;
 
@@ -108,7 +108,7 @@ describe("delivery fee", () => {
 });
 
 describe("tax", () => {
-  it("charges 16% on cash and 5% on card for an identical cart", async () => {
+  it("charges 16% on cash and 8% on card for an identical cart", async () => {
     const c = client();
     const item = await plainItem();
     await c.post("/api/cart/lines", { itemId: item.id, qty: 2 });
@@ -185,7 +185,7 @@ describe("confirm token", () => {
     const item = await plainItem();
     await c.post("/api/cart/lines", { itemId: item.id, qty: 1 });
 
-    // quote as card (5% tax), then try to commit it as cash (16%)
+    // quote as card (8% tax), then try to commit it as cash (16%)
     const { body: cardQuote } = await c.post("/api/orders/quote", { payment: "CARD" });
     const { status, body } = await c.post("/api/orders", checkout(cardQuote.confirmToken as string, "COD"));
 

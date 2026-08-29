@@ -36,13 +36,13 @@ services:
       # Secure, since the API sets that only when WEB_ORIGIN is https
       WEB_ORIGIN: ${PUBLIC_URL:?set PUBLIC_URL in .env, e.g. https://order.four.pk}
       APP_SECRET: ${APP_SECRET:?set APP_SECRET in .env}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?set ADMIN_PASSWORD in .env}
+      ADMIN_PIN: ${ADMIN_PIN:?set ADMIN_PIN in .env (4-8 digits)}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       POS_PROVIDER: ${POS_PROVIDER:-console}
       POS_WEBHOOK_URL: ${POS_WEBHOOK_URL:-}
       POS_WEBHOOK_TOKEN: ${POS_WEBHOOK_TOKEN:-}
       TAX_RATE_COD: ${TAX_RATE_COD:-0.16}
-      TAX_RATE_CARD: ${TAX_RATE_CARD:-0.05}
+      TAX_RATE_CARD: ${TAX_RATE_CARD:-0.08}
       NODE_ENV: production
     expose:
       - "4000"

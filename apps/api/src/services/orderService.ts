@@ -7,6 +7,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { prisma, OrderStatus, type PaymentMethod } from "@four/db";
 import {
+  BRAND,
   DELIVERY_FEE,
   FREE_DELIVERY_ABOVE,
   LAHORE_AREAS,
@@ -121,7 +122,10 @@ export async function placeOrder(sessionId: string, input: CheckoutInput): Promi
       where: { id: order.id },
       data: { status: OrderStatus.CANCELLED, events: { create: { status: OrderStatus.CANCELLED } } },
     });
-    throw new OrderError("We could not reach the kitchen. Please try again or call the restaurant.", "POS_DOWN");
+    throw new OrderError(
+      `We could not reach the kitchen, so nothing has been charged. Please order again, or call us on ${BRAND.phone}.`,
+      "POS_DOWN",
+    );
   }
   if (result.posReference) {
     await prisma.order.update({ where: { id: order.id }, data: { posReference: result.posReference } });

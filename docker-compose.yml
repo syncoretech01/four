@@ -20,7 +20,7 @@ services:
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-four}@postgres:5432/four
       WEB_ORIGIN: ${WEB_ORIGIN:-http://localhost:3000}
       APP_SECRET: ${APP_SECRET:?set APP_SECRET in .env}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?set ADMIN_PASSWORD in .env}
+      ADMIN_PIN: ${ADMIN_PIN:?set ADMIN_PIN in .env (4-8 digits)}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       POS_PROVIDER: ${POS_PROVIDER:-console}
       POS_WEBHOOK_URL: ${POS_WEBHOOK_URL:-}

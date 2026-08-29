@@ -23,12 +23,18 @@ export function Visit() {
             <address className="mt-8 grid gap-2 not-italic text-cream/90">
               <span className="text-lg font-semibold">FOUR - {BRAND.address}</span>
               <a
+                href={BRAND.phoneHref}
+                className="w-fit text-lg font-semibold text-cream underline-offset-4 transition hover:underline"
+              >
+                {BRAND.phone}
+              </a>
+              <a
                 href={BRAND.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-fit font-semibold text-cream underline-offset-4 transition hover:underline"
               >
-                @four.pakistan
+                {BRAND.instagramHandle}
               </a>
             </address>
           </div>
