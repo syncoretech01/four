@@ -83,6 +83,8 @@ export interface OrderView {
   address: string;
   note?: string;
   payment: "COD" | "CARD";
+  /** "35-45 min", from the delivery area's distance. */
+  etaLabel?: string;
   lines: { name: string; variantLabel?: string; modifiers: string[]; qty: number; unitPrice: number; lineTotal: number }[];
   subtotal: number;
   deliveryFee: number;

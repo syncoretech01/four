@@ -32,5 +32,13 @@
   "fresh-lemonade": "v5r09632.jpg",
   "iced-milo": "v5r09636.jpg",
   "peach-fizz": "v5r09625.jpg",
-  "lotus-shake": "v5r09638.jpg"
+  "lotus-shake": "v5r09638.jpg",
+  "passion-fizz": "peach-fizz.jpg (reused)",
+  "mango-fizz": "peach-fizz.jpg (reused)",
+  "lychee-fizz": "peach-fizz.jpg (reused)",
+  "raspberry-lemonade-frozen": "peach-fizz.jpg (reused)",
+  "toffee-shake": "lotus-shake.jpg (reused)",
+  "strawberry-banana-shake": "lotus-shake.jpg (reused)",
+  "matilda-shake": "iced-milo.jpg (reused)",
+  "snickers-shake": "iced-milo.jpg (reused)"
 }

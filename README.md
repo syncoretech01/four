@@ -7,18 +7,58 @@ AI chat + voice ordering, kitchen console, POS bridge.
 
 ## Quick start (development)
 
+Requires **Node >= 22** and pnpm (via `corepack enable`).
+
 ```bash
 pnpm install
 # Postgres (docker compose up -d postgres, or any local PG 16)
 cp .env.example .env            # set DATABASE_URL etc.
-pnpm --filter @four/shared build
-pnpm db:generate && pnpm db:push && pnpm db:seed
+pnpm bootstrap                  # build shared + prisma generate/migrate/seed
 pnpm dev:api                    # :4000
 pnpm dev:web                    # :3000
 ```
 
+`pnpm dev` runs both together. Every script that needs secrets is wrapped
+in `dotenv -e .env --`, because the Prisma CLI and `tsx` run with their
+working directory inside the package and would otherwise never see the
+repo-root `.env`. `pnpm build` and `pnpm typecheck` are deliberately not
+wrapped: they need no secrets, so CI runs them without an `.env` file.
+
 Production one-shot: `docker compose up --build` (set `APP_SECRET`,
-`ADMIN_PASSWORD` in `.env` first).
+`ADMIN_PIN` in `.env` first).
+
+Deploying for real: **docs/DEPLOY-AWS.md** - one EC2 host running
+`docker-compose.prod.yml`, with Caddy terminating TLS on a single public
+origin so there is no CORS or cookie-domain problem. Note the API is
+single-instance by design (Socket.IO has no Redis adapter), which the
+document explains.
+
+## Database migrations
+
+The schema is versioned in `packages/db/prisma/migrations`. `pnpm db:deploy`
+applies pending migrations; `pnpm db:migrate` creates a new one after editing
+`schema.prisma`. Both dev and the API container run `prisma migrate deploy`,
+so a schema change is reviewed as SQL in a pull request rather than pushed
+straight at a live database.
+
+`pnpm db:push` still exists for throwaway schema experiments. Don't run it
+against a database that migrations also manage - the two drift apart.
+
+## Tests
+
+```bash
+pnpm test                       # or: pnpm --filter @four/api test
+```
+
+The suite covers the paths where a bug costs money - the delivery-fee
+threshold, the cash/card tax split, the HMAC confirm token, and that an order
+is placed at exactly the total that was quoted. It runs against a real
+Postgres through the real Fastify stack.
+
+It needs its own database: the runner takes `TEST_DATABASE_URL`, else
+`DATABASE_URL` with the database name swapped for `four_test`. The name must
+end in `_test` or the suite refuses to start, since it writes and deletes
+rows. Prisma creates the database on first run, then migrates and seeds it.
 
 ## What's inside
 
@@ -54,9 +94,15 @@ brand-assets/     Imported brand kit: logo vectors, menu sheet renders, 203 web-
   so voice orders appear in the UI instantly. Requires the key.
 - The bot can only *prepare* an order (HMAC confirm token bound to
   session + cart + payment); the customer always completes checkout.
+- It never offers, invents or negotiates a discount. Prices come from the
+  server on every quote, so it *cannot* change one - but it is also told not
+  to imply otherwise, because a promise it cannot honour still costs a
+  customer. Promotions, when they exist, belong in the menu data as priced
+  items or a coded rule the server applies.
 
 ### Orders, admin, POS
-- `/admin` (password: `ADMIN_PASSWORD`): live order board (new orders pop
+- `/admin` (4-8 digit `ADMIN_PIN`, entered on a tablet numpad; locks for 15
+  minutes after 5 wrong PINs): live order board (new orders pop
   in over the socket), one-tap status advance that updates the customer's
   tracking page in real time, and per-item availability toggles.
 - POS bridge (`apps/api/src/pos/`): `console` (default), `webhook`

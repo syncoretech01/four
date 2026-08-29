@@ -7,9 +7,13 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { prisma, OrderStatus, type PaymentMethod } from "@four/db";
 import {
+  BRAND,
   DELIVERY_FEE,
   FREE_DELIVERY_ABOVE,
   LAHORE_AREAS,
+  OPENS_AT_MINUTES,
+  deliveryEtaLabel,
+  isOpenAt,
   type CheckoutInput,
   type OrderQuote,
   type OrderView,
@@ -55,11 +59,30 @@ export async function quote(sessionId: string, payment: PaymentMethod): Promise<
   };
 }
 
+/** Undefined rather than a guess if the area is no longer in the coverage list. */
+function etaForArea(areaId: string): string | undefined {
+  const area = LAHORE_AREAS.find((a) => a.id === areaId);
+  return area ? deliveryEtaLabel(area.distanceKm) : undefined;
+}
+
 function orderNumber(): string {
   return `FOUR-${Math.floor(100000 + Math.random() * 900000)}`;
 }
 
+function openingTimeLabel(): string {
+  const h = Math.floor(OPENS_AT_MINUTES / 60);
+  const suffix = h >= 12 ? "pm" : "am";
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return `${h12}:${String(OPENS_AT_MINUTES % 60).padStart(2, "0")} ${suffix}`;
+}
+
 export async function placeOrder(sessionId: string, input: CheckoutInput): Promise<OrderView> {
+  // the kitchen is shut, so nobody would cook this. Checked here rather than
+  // only in the UI because this is the endpoint that actually commits an order.
+  if (!isOpenAt()) {
+    throw new OrderError(`The kitchen is closed. We reopen at ${openingTimeLabel()} - please order then.`, "CLOSED");
+  }
+
   const area = LAHORE_AREAS.find((a) => a.id === input.areaId);
   if (!area || !area.blocks.includes(input.block)) {
     throw new OrderError("We do not deliver to that area yet", "OUT_OF_ZONE");
@@ -121,7 +144,10 @@ export async function placeOrder(sessionId: string, input: CheckoutInput): Promi
       where: { id: order.id },
       data: { status: OrderStatus.CANCELLED, events: { create: { status: OrderStatus.CANCELLED } } },
     });
-    throw new OrderError("We could not reach the kitchen. Please try again or call the restaurant.", "POS_DOWN");
+    throw new OrderError(
+      `We could not reach the kitchen, so nothing has been charged. Please order again, or call us on ${BRAND.phone}.`,
+      "POS_DOWN",
+    );
   }
   if (result.posReference) {
     await prisma.order.update({ where: { id: order.id }, data: { posReference: result.posReference } });
@@ -149,6 +175,7 @@ export async function getOrder(orderNumberOrId: string): Promise<OrderView | nul
     address: order.address,
     note: order.note ?? undefined,
     payment: order.payment,
+    etaLabel: etaForArea(order.areaId),
     lines: order.lines.map((l) => ({
       name: l.name,
       variantLabel: l.variantLabel ?? undefined,

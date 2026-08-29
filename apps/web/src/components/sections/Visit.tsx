@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import { BRAND } from "@four/shared";
+import { BRAND, HOURS_LABEL } from "@four/shared";
 
 export function Visit() {
   const reduce = useReducedMotion();
@@ -23,12 +23,19 @@ export function Visit() {
             <address className="mt-8 grid gap-2 not-italic text-cream/90">
               <span className="text-lg font-semibold">FOUR - {BRAND.address}</span>
               <a
+                href={BRAND.phoneHref}
+                className="w-fit text-lg font-semibold text-cream underline-offset-4 transition hover:underline"
+              >
+                {BRAND.phone}
+              </a>
+              <span className="text-cream/80">{HOURS_LABEL}</span>
+              <a
                 href={BRAND.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-fit font-semibold text-cream underline-offset-4 transition hover:underline"
               >
-                @four.pakistan
+                {BRAND.instagramHandle}
               </a>
             </address>
           </div>

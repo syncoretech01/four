@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Kitchen/manager console: password login, live order board (new orders
+ * Kitchen/manager console: PIN login, live order board (new orders
  * pop in over the socket), one-tap status advance, and per-item
  * availability toggles that sold-out the storefront instantly.
  */
@@ -41,7 +41,7 @@ const NEXT_STATUS: Record<string, OrderStatusName | undefined> = {
 
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
-  const [password, setPassword] = useState("");
+  const [pin, setPin] = useState("");
   const [error, setError] = useState("");
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [items, setItems] = useState<AdminItem[]>([]);
@@ -83,7 +83,7 @@ export default function AdminPage() {
     e.preventDefault();
     setError("");
     try {
-      await api("/api/admin/login", { method: "POST", body: JSON.stringify({ password }) });
+      await api("/api/admin/login", { method: "POST", body: JSON.stringify({ pin }) });
       // socket auth carries isAdmin from the session row; reconnect to refresh it
       getSocket().disconnect().connect();
       await refresh();
@@ -121,16 +121,24 @@ export default function AdminPage() {
           </span>
           <h1 className="font-display mt-4 text-2xl font-semibold text-ink">Kitchen console</h1>
           <label className="mt-6 grid gap-2">
-            <span className="text-xs font-semibold uppercase tracking-wide text-ink">Password</span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-ink">PIN</span>
             <input
+              // inputMode numeric brings up the tablet numpad rather than a keyboard
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="h-12 rounded-xl border border-ink/15 bg-cream px-4 text-ink outline-none focus:border-red focus:ring-2 focus:ring-red/30"
+              inputMode="numeric"
+              autoComplete="off"
+              pattern="[0-9]*"
+              maxLength={8}
+              value={pin}
+              onChange={(e) => setPin(e.target.value.replace(/\D/g, ""))}
+              className="h-14 rounded-xl border border-ink/15 bg-cream px-4 text-center text-2xl tracking-[0.5em] text-ink outline-none focus:border-red focus:ring-2 focus:ring-red/30"
             />
           </label>
           {error && <p className="mt-3 text-sm font-medium text-red">{error}</p>}
-          <button className="mt-5 w-full rounded-full bg-red py-3.5 font-semibold text-cream transition hover:bg-red-deep">
+          <button
+            disabled={pin.length < 4}
+            className="mt-5 w-full rounded-full bg-red py-3.5 font-semibold text-cream transition hover:bg-red-deep disabled:cursor-not-allowed disabled:opacity-40"
+          >
             Sign in
           </button>
         </form>

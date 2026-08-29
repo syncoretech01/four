@@ -2,19 +2,25 @@
   "name": "four-restaurant",
   "private": true,
   "packageManager": "pnpm@10.33.0",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
-    "dev": "turbo run dev",
+    "dev": "dotenv -e .env -- turbo run dev",
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
-    "db:generate": "pnpm --filter @four/db generate",
-    "db:migrate": "pnpm --filter @four/db migrate:dev",
-    "db:push": "pnpm --filter @four/db push",
-    "db:seed": "pnpm --filter @four/db seed",
-    "dev:api": "pnpm --filter @four/api dev",
-    "dev:web": "pnpm --filter @four/web dev"
+    "db:generate": "dotenv -e .env -- pnpm --filter @four/db generate",
+    "db:migrate": "dotenv -e .env -- pnpm --filter @four/db migrate:dev",
+    "db:push": "dotenv -e .env -- pnpm --filter @four/db push",
+    "db:seed": "dotenv -e .env -- pnpm --filter @four/db seed",
+    "dev:api": "dotenv -e .env -- pnpm --filter @four/api dev",
+    "dev:web": "dotenv -e .env -- pnpm --filter @four/web dev",
+    "bootstrap": "pnpm --filter @four/shared build && pnpm db:generate && pnpm db:deploy && pnpm db:seed",
+    "db:deploy": "dotenv -e .env -- pnpm --filter @four/db migrate:deploy",
+    "test": "dotenv -e .env -- turbo run test"
   },
   "devDependencies": {
+    "dotenv-cli": "^11.0.0",
     "turbo": "^2.5.0",
     "typescript": "^5.8.0"
   }
