@@ -7,15 +7,22 @@ AI chat + voice ordering, kitchen console, POS bridge.
 
 ## Quick start (development)
 
+Requires **Node >= 22** and pnpm (via `corepack enable`).
+
 ```bash
 pnpm install
 # Postgres (docker compose up -d postgres, or any local PG 16)
 cp .env.example .env            # set DATABASE_URL etc.
-pnpm --filter @four/shared build
-pnpm db:generate && pnpm db:push && pnpm db:seed
+pnpm bootstrap                  # build shared + prisma generate/push/seed
 pnpm dev:api                    # :4000
 pnpm dev:web                    # :3000
 ```
+
+`pnpm dev` runs both together. Every script that needs secrets is wrapped
+in `dotenv -e .env --`, because the Prisma CLI and `tsx` run with their
+working directory inside the package and would otherwise never see the
+repo-root `.env`. `pnpm build` and `pnpm typecheck` are deliberately not
+wrapped: they need no secrets, so CI runs them without an `.env` file.
 
 Production one-shot: `docker compose up --build` (set `APP_SECRET`,
 `ADMIN_PASSWORD` in `.env` first).
