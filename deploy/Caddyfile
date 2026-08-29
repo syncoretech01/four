@@ -1,0 +1,32 @@
+# One public origin for the whole platform. The storefront, the API and the
+# Socket.IO upgrade all answer on the same hostname, so the browser makes no
+# cross-origin request and the session cookie needs no SameSite=None.
+#
+# Caddy obtains and renews the TLS certificate automatically, provided DOMAIN
+# resolves to this instance and ports 80 and 443 are reachable from the
+# internet (Let's Encrypt validates over both).
+
+{$DOMAIN} {
+	encode zstd gzip
+
+	# Socket.IO: live order tracking and the kitchen board. Caddy passes the
+	# WebSocket upgrade through without extra config.
+	handle /socket.io/* {
+		reverse_proxy api:4000
+	}
+
+	handle /api/* {
+		reverse_proxy api:4000
+	}
+
+	handle {
+		reverse_proxy web:3000
+	}
+
+	log {
+		output file /var/log/caddy/access.log {
+			roll_size 10mb
+			roll_keep 5
+		}
+	}
+}

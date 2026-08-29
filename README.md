@@ -27,6 +27,12 @@ wrapped: they need no secrets, so CI runs them without an `.env` file.
 Production one-shot: `docker compose up --build` (set `APP_SECRET`,
 `ADMIN_PASSWORD` in `.env` first).
 
+Deploying for real: **docs/DEPLOY-AWS.md** - one EC2 host running
+`docker-compose.prod.yml`, with Caddy terminating TLS on a single public
+origin so there is no CORS or cookie-domain problem. Note the API is
+single-instance by design (Socket.IO has no Redis adapter), which the
+document explains.
+
 ## Database migrations
 
 The schema is versioned in `packages/db/prisma/migrations`. `pnpm db:deploy`

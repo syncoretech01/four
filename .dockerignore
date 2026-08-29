@@ -1,0 +1,28 @@
+# Build context hygiene. Without this the daemon receives ~1.1GB per build,
+# host node_modules (with darwin-arm64 binaries) land in the image, and .env
+# secrets are shipped inside it.
+node_modules
+**/node_modules
+.next
+**/.next
+dist
+**/dist
+.turbo
+**/.turbo
+*.tsbuildinfo
+
+.env
+.env.*
+!.env.example
+
+.git
+.github
+.DS_Store
+**/.DS_Store
+
+# the source brand kit (~64MB); the web-ready copies live in apps/web/public
+brand-assets
+
+# test-only, never needed in a runtime image
+apps/api/test
+apps/api/vitest.config.ts
