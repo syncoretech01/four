@@ -26,7 +26,7 @@ const envSchema = z.object({
   OPENAI_REALTIME_MODEL: z.string().default("gpt-realtime"),
   OPENAI_REALTIME_VOICE: z.string().default("marin"),
 
-  POS_PROVIDER: z.enum(["console", "webhook", "foodics"]).default("console"),
+  POS_PROVIDER: z.enum(["console", "demo", "webhook", "foodics"]).default("console"),
   POS_WEBHOOK_URL: z.string().optional(),
   POS_WEBHOOK_TOKEN: z.string().optional(),
   FOODICS_API_TOKEN: z.string().optional(),
