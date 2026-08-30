@@ -1,16 +1,19 @@
 "use client";
 
 /**
- * Live order tracking: joins the order's socket room, so status changes
- * from the admin board light up the timeline in real time.
+ * Live order tracking: joins the order's socket room, so status changes from
+ * the admin board and the rider's GPS light up the page in real time. Bold
+ * status hero, a timeline with a pulsing live node, and the branded map.
  */
 import { use, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import { motion, useReducedMotion } from "motion/react";
-import { ORDER_STATUS_FLOW, ORDER_STATUS_LABELS, formatPKR, type OrderView, type OrderStatusName } from "@four/shared";
+import { motion } from "motion/react";
+import { useReduceMotion } from "@/lib/useAnim";
+import { ORDER_STATUS_FLOW, ORDER_STATUS_LABELS, formatPKR, BRAND, type OrderView } from "@four/shared";
 import { api } from "@/lib/api";
 import { getSocket } from "@/lib/socket";
 import { Nav } from "@/components/Nav";
+import { HAND_MARK } from "@/components/hero/logoPaths";
 
 const TrackMap = dynamic(() => import("@/components/map/TrackMap").then((m) => m.TrackMap), { ssr: false });
 import { Footer } from "@/components/sections/Footer";
@@ -21,7 +24,7 @@ export default function TrackPage({ params }: { params: Promise<{ orderNumber: s
   const { orderNumber } = use(params);
   const [order, setOrder] = useState<OrderView | null>(null);
   const [notFound, setNotFound] = useState(false);
-  const reduce = useReducedMotion();
+  const reduce = useReduceMotion();
 
   useEffect(() => {
     const num = orderNumber.toUpperCase();
@@ -49,6 +52,22 @@ export default function TrackPage({ params }: { params: Promise<{ orderNumber: s
   const currentIndex = order ? ORDER_STATUS_FLOW.indexOf(order.status as (typeof ORDER_STATUS_FLOW)[number]) : -1;
   const cancelled = order?.status === "CANCELLED";
   const awaitingPayment = order?.status === "PENDING_PAYMENT";
+  const delivered = order?.status === "DELIVERED";
+  const outForDelivery = order?.status === "OUT_FOR_DELIVERY";
+
+  const headline = cancelled
+    ? "Order cancelled"
+    : awaitingPayment
+      ? "Awaiting payment"
+      : delivered
+        ? "Delivered - enjoy!"
+        : outForDelivery
+          ? order?.riderName
+            ? `${order.riderName} is on the way`
+            : "Your rider is on the way"
+          : order?.status === "PREPARING"
+            ? "In the kitchen"
+            : "Order confirmed";
 
   return (
     <>
@@ -56,40 +75,56 @@ export default function TrackPage({ params }: { params: Promise<{ orderNumber: s
       <main className="mx-auto min-h-[calc(100dvh-4rem)] max-w-3xl px-4 pb-24 pt-28 sm:px-6">
         {notFound ? (
           <div className="rounded-card bg-cream p-10 text-center">
-            <h1 className="font-display text-3xl font-semibold text-ink">Order not found</h1>
+            <h1 className="font-display text-3xl font-bold text-ink">Order not found</h1>
             <p className="mt-3 text-ink-soft">Check the order number, or ask the assistant to track your latest order.</p>
           </div>
         ) : !order ? (
-          <div className="h-72 animate-pulse rounded-card bg-beige-deep/60" />
+          <div className="grid gap-6">
+            <div className="h-52 animate-pulse rounded-card bg-beige-deep/60" />
+            <div className="h-72 animate-pulse rounded-card bg-beige-deep/60" />
+          </div>
         ) : (
           <div className="grid gap-6">
-            <div className="rounded-card bg-cream p-8">
-              <div className="flex flex-wrap items-center justify-between gap-3">
+            {/* status hero: the one thing the customer opened the page for */}
+            <motion.div
+              initial={reduce ? false : { opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              className={`relative overflow-hidden rounded-card p-8 ${
+                cancelled ? "bg-ink text-cream" : delivered ? "bg-ink text-cream" : "bg-red text-cream"
+              }`}
+            >
+              <div className="relative z-10 flex flex-wrap items-start justify-between gap-4">
                 <div>
-                  <p className="text-sm font-medium text-ink-soft">Order</p>
-                  <h1 className="font-display text-3xl font-semibold text-ink">{order.orderNumber}</h1>
-                  {order.etaLabel && !cancelled && order.status !== "DELIVERED" && (
-                    <p className="mt-1 text-sm font-semibold text-red">Usually {order.etaLabel} to {order.areaName}</p>
+                  <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.16em] text-cream/70">
+                    {outForDelivery && (
+                      <span className="relative flex h-2.5 w-2.5">
+                        <span className="absolute inline-flex h-full w-full rounded-full bg-cream opacity-60 motion-safe:animate-ping" />
+                        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-cream" />
+                      </span>
+                    )}
+                    {order.orderNumber}
+                  </div>
+                  <h1 className="mt-2 font-display text-4xl font-bold leading-tight tracking-tight sm:text-5xl">{headline}</h1>
+                  {!cancelled && !delivered && !awaitingPayment && order.etaLabel && (
+                    <p className="mt-2 text-lg font-semibold text-cream/85">Usually {order.etaLabel} to {order.areaName}</p>
                   )}
                 </div>
-                <span
-                  className={`rounded-full px-4 py-2 text-sm font-bold ${
-                    cancelled ? "bg-ink/10 text-ink-soft" : "bg-red text-cream"
-                  }`}
-                >
-                  {ORDER_STATUS_LABELS[order.status as OrderStatusName] ?? order.status}
-                </span>
+                {/* hand mark watermark */}
+                <svg viewBox="180 100 700 900" aria-hidden className="h-16 w-16 shrink-0 opacity-90">
+                  <g transform={HAND_MARK.transform}>
+                    <path d={HAND_MARK.d} fill="currentColor" />
+                  </g>
+                </svg>
               </div>
 
               {awaitingPayment && (
-                <div className="mt-6 rounded-xl bg-red/10 p-4">
-                  <p className="text-sm font-semibold text-red">
-                    Your order is reserved but the kitchen starts once payment goes through.
-                  </p>
+                <div className="relative z-10 mt-6">
+                  <p className="text-cream/85">Your order is reserved. The kitchen starts once payment goes through.</p>
                   {order.paymentUrl && (
                     <a
                       href={order.paymentUrl}
-                      className="mt-3 inline-block rounded-full bg-red px-6 py-3 text-sm font-semibold text-cream transition hover:bg-red-deep"
+                      className="mt-4 inline-block rounded-full bg-cream px-7 py-3.5 text-sm font-bold text-red shadow-lg shadow-ink/20 transition hover:bg-white active:scale-[0.98]"
                     >
                       Complete payment · {formatPKR(order.total)}
                     </a>
@@ -97,39 +132,51 @@ export default function TrackPage({ params }: { params: Promise<{ orderNumber: s
                 </div>
               )}
 
-              {!cancelled && !awaitingPayment && (
-                <ol className="mt-8 grid gap-0">
+              {cancelled && (
+                <p className="relative z-10 mt-4 text-cream/80">
+                  Nothing has been charged. Please order again, or call us on {BRAND.phone}.
+                </p>
+              )}
+            </motion.div>
+
+            {/* timeline */}
+            {!cancelled && !awaitingPayment && (
+              <div className="rounded-card bg-cream p-8">
+                <ol className="grid gap-0">
                   {ORDER_STATUS_FLOW.map((status, i) => {
                     const done = i <= currentIndex;
+                    const active = i === currentIndex && !delivered;
                     const at = order.events.find((e) => e.status === status)?.at;
                     return (
                       <li key={status} className="relative flex gap-4 pb-8 last:pb-0">
                         {i < ORDER_STATUS_FLOW.length - 1 && (
                           <span
-                            className={`absolute left-[13px] top-7 h-[calc(100%-1.25rem)] w-0.5 ${
-                              i < currentIndex ? "bg-red" : "bg-ink/15"
+                            className={`absolute left-[15px] top-8 h-[calc(100%-1.5rem)] w-1 rounded-full ${
+                              i < currentIndex ? "bg-red" : "bg-ink/10"
                             }`}
                             aria-hidden
                           />
                         )}
-                        <motion.span
-                          initial={reduce ? false : { scale: 0.6, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          transition={{ delay: i * 0.08 }}
-                          className={`relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 ${
-                            done ? "border-red bg-red text-cream" : "border-ink/20 bg-cream text-transparent"
-                          }`}
-                        >
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden>
-                            <path d="M4 12.5l5 5L20 7" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                        </motion.span>
-                        <div>
-                          <p className={`font-semibold ${done ? "text-ink" : "text-ink-soft"}`}>
+                        <span className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center">
+                          {active && (
+                            <span className="absolute inline-flex h-8 w-8 rounded-full bg-red/30 motion-safe:animate-ping" aria-hidden />
+                          )}
+                          <span
+                            className={`relative flex h-8 w-8 items-center justify-center rounded-full border-2 ${
+                              done ? "border-red bg-red text-cream" : "border-ink/15 bg-cream text-transparent"
+                            }`}
+                          >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+                              <path d="M4 12.5l5 5L20 7" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          </span>
+                        </span>
+                        <div className="pt-1">
+                          <p className={`font-display text-lg font-bold ${done ? "text-ink" : "text-ink-soft"}`}>
                             {ORDER_STATUS_LABELS[status]}
                           </p>
                           {at && (
-                            <p className="text-xs text-ink-soft">
+                            <p className="text-sm text-ink-soft">
                               {new Date(at).toLocaleTimeString("en-PK", { hour: "2-digit", minute: "2-digit" })}
                             </p>
                           )}
@@ -138,47 +185,49 @@ export default function TrackPage({ params }: { params: Promise<{ orderNumber: s
                     );
                   })}
                 </ol>
-              )}
-            </div>
+              </div>
+            )}
 
-            {order.destLat != null && order.destLng != null && !cancelled && !awaitingPayment && (
+            {/* live map */}
+            {order.destLat != null && order.destLng != null && !cancelled && !awaitingPayment && !delivered && (
               <div className="overflow-hidden rounded-card bg-cream p-3">
                 <TrackMap
                   orderNumber={order.orderNumber}
                   branchId={order.branchId}
                   dest={{ lat: order.destLat, lng: order.destLng }}
                 />
-                <p className="px-3 pb-1 pt-3 text-sm text-ink-soft">
-                  {order.status === "OUT_FOR_DELIVERY"
+                <p className="px-3 pb-1 pt-3 font-medium text-ink-soft">
+                  {outForDelivery
                     ? order.riderName
                       ? `${order.riderName} is riding to you - watch the red dot move.`
                       : "Your rider is on the way - the red dot moves live."
-                    : `Cooking at ${order.branchName ?? "FOUR"}; the map goes live when your rider leaves.`}
+                    : `Cooking at ${order.branchName ?? "FOUR"}. The map goes live when your rider leaves.`}
                 </p>
               </div>
             )}
 
+            {/* summary */}
             <div className="rounded-card bg-cream p-8">
-              <h2 className="font-display text-xl font-semibold text-ink">Order summary</h2>
-              <ul className="mt-4 grid gap-3">
+              <h2 className="font-display text-2xl font-bold tracking-tight text-ink">Order summary</h2>
+              <ul className="mt-5 grid gap-3">
                 {order.lines.map((l, i) => (
-                  <li key={i} className="flex items-start justify-between gap-4 text-sm">
+                  <li key={i} className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="font-semibold text-ink">
+                      <p className="font-bold text-ink">
                         {l.qty}x {l.name}
                         {l.variantLabel ? ` (${l.variantLabel})` : ""}
                       </p>
                       {l.modifiers.length > 0 && <p className="text-xs text-ink-soft">{l.modifiers.join(", ")}</p>}
                     </div>
-                    <span className="font-medium text-ink">{formatPKR(l.lineTotal)}</span>
+                    <span className="font-semibold text-ink">{formatPKR(l.lineTotal)}</span>
                   </li>
                 ))}
               </ul>
-              <dl className="mt-5 grid gap-1 border-t border-ink/10 pt-4 text-sm">
+              <dl className="mt-5 grid gap-1.5 border-t border-ink/10 pt-4 text-sm">
                 <div className="flex justify-between text-ink-soft"><dt>Subtotal</dt><dd>{formatPKR(order.subtotal)}</dd></div>
                 <div className="flex justify-between text-ink-soft"><dt>Delivery</dt><dd>{order.deliveryFee === 0 ? "Free" : formatPKR(order.deliveryFee)}</dd></div>
                 <div className="flex justify-between text-ink-soft"><dt>Tax</dt><dd>{formatPKR(order.tax)}</dd></div>
-                <div className="flex justify-between text-base font-bold text-ink"><dt>Total ({order.payment === "COD" ? "cash" : "card"})</dt><dd>{formatPKR(order.total)}</dd></div>
+                <div className="flex justify-between text-lg font-bold text-ink"><dt>Total ({order.payment === "COD" ? "cash" : "card"})</dt><dd>{formatPKR(order.total)}</dd></div>
               </dl>
               <p className="mt-4 text-sm text-ink-soft">
                 Delivering to {order.address}, {order.block}, {order.areaName}. We&apos;ll call {order.phone} if anything comes up.
