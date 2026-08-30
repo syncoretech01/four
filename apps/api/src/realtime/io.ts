@@ -12,6 +12,7 @@ import { config } from "../config.js";
 import { resolveSession, SESSION_COOKIE } from "../plugins/session.js";
 import { handleChatMessage } from "../chat/chatService.js";
 import { ingestRiderPosition } from "../services/riderService.js";
+import { sessionCanViewOrder } from "../services/orderService.js";
 
 type IO = Server<ClientToServerEvents, ServerToClientEvents>;
 
@@ -47,9 +48,16 @@ export function initIO(server: HttpServer): IO {
     void socket.join(`session:${sessionId}`);
 
     socket.on("order:watch", ({ orderNumber }) => {
-      if (typeof orderNumber === "string" && /^FOUR-\d{6}$/.test(orderNumber)) {
-        void socket.join(`order:${orderNumber}`);
-      }
+      // the order room streams live rider GPS + status, so only the order's
+      // owner (or staff/assigned rider) may join it - not anyone who guesses
+      // an order number
+      if (typeof orderNumber !== "string" || !/^FOUR-\d{6}$/.test(orderNumber)) return;
+      void sessionCanViewOrder(
+        { sessionId, isAdmin: socket.data.isAdmin as boolean, riderId: (socket.data.riderId as string | null) ?? null },
+        orderNumber,
+      ).then((ok) => {
+        if (ok) void socket.join(`order:${orderNumber}`);
+      });
     });
 
     socket.on("admin:watch", () => {

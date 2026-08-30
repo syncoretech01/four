@@ -29,7 +29,13 @@ export async function orderRoutes(app: FastifyInstance): Promise<void> {
 
   app.get("/orders/:orderNumber", async (req, reply) => {
     const { orderNumber } = req.params as { orderNumber: string };
-    const order = await orderService.getOrder(orderNumber.toUpperCase());
+    const num = orderNumber.toUpperCase();
+    // order numbers are short and enumerable, so a bare lookup would leak
+    // every customer's name/phone/address; only the owner (or staff) may read one
+    if (!(await orderService.sessionCanViewOrder(req.session, num))) {
+      return reply.code(404).send({ error: { code: "NOT_FOUND", message: "Order not found" } });
+    }
+    const order = await orderService.getOrder(num);
     if (!order) return reply.code(404).send({ error: { code: "NOT_FOUND", message: "Order not found" } });
     return { order };
   });

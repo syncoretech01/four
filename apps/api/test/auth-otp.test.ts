@@ -6,9 +6,13 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { FastifyInstance } from "fastify";
 import { LAHORE_AREAS } from "@four/shared";
+import { prisma } from "@four/db";
 import { buildApp } from "../src/app.js";
 
 let app: FastifyInstance;
+// the test DB is seeded, not dropped, between runs; a leftover login code for
+// these phones would (correctly) trip the resend cooldown, so clear them first
+const TEST_PHONES = ["03211112233", "03214445566"];
 
 function client() {
   let cookie: string | undefined;
@@ -31,6 +35,7 @@ const area = LAHORE_AREAS[0];
 const PHONE = "03211112233";
 
 beforeAll(async () => {
+  await prisma.loginCode.deleteMany({ where: { phone: { in: TEST_PHONES } } });
   vi.useFakeTimers({ toFake: ["Date"] });
   vi.setSystemTime(new Date(Date.UTC(2026, 7, 20, 15, 0)));
   app = await buildApp({ testing: true });

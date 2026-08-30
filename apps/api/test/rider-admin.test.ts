@@ -4,10 +4,14 @@
  */
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { FastifyInstance } from "fastify";
+import { prisma } from "@four/db";
 import { buildApp } from "../src/app.js";
 import { config } from "../src/config.js";
 
 let app: FastifyInstance;
+// the test DB is seeded, not dropped, between runs, so clear rows this test
+// creates to stay hermetic (a leftover rider would be a duplicate-phone 400)
+const TEST_PHONES = ["03111234567", "03119990000"];
 
 function client() {
   let cookie: string | undefined;
@@ -38,6 +42,7 @@ async function adminClient() {
 }
 
 beforeAll(async () => {
+  await prisma.rider.deleteMany({ where: { phone: { in: TEST_PHONES } } });
   vi.useFakeTimers({ toFake: ["Date"] });
   vi.setSystemTime(new Date(Date.UTC(2026, 7, 20, 15, 0)));
   app = await buildApp({ testing: true });

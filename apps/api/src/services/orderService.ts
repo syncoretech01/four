@@ -285,6 +285,32 @@ export async function getOrder(orderNumberOrId: string): Promise<OrderView | nul
   };
 }
 
+/**
+ * A viewer may see an order only if this browser session placed it, or the
+ * signed-in customer owns it, or the viewer is staff (admin) or the assigned
+ * rider. Order numbers are short and enumerable, so without this check any
+ * visitor could harvest customers' names, phones and home addresses by
+ * walking order numbers.
+ */
+export async function sessionCanViewOrder(
+  session: { sessionId: string; isAdmin: boolean; riderId: string | null },
+  orderNumber: string,
+): Promise<boolean> {
+  if (session.isAdmin) return true;
+  const order = await prisma.order.findUnique({
+    where: { orderNumber },
+    select: { sessionId: true, customerId: true, riderId: true },
+  });
+  if (!order) return false;
+  if (order.sessionId && order.sessionId === session.sessionId) return true;
+  if (session.riderId && order.riderId === session.riderId) return true;
+  if (order.customerId) {
+    const me = await prisma.session.findUnique({ where: { id: session.sessionId }, select: { customerId: true } });
+    if (me?.customerId && me.customerId === order.customerId) return true;
+  }
+  return false;
+}
+
 export async function ordersForSession(sessionId: string): Promise<OrderView[]> {
   const session = await prisma.session.findUnique({ where: { id: sessionId }, select: { customerId: true } });
   const orders = await prisma.order.findMany({

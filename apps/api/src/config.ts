@@ -72,6 +72,13 @@ if (isProd && config.ADMIN_PIN === DEV_ADMIN_PIN) {
   throw new Error("ADMIN_PIN is still the development default - set a real PIN before running in production");
 }
 
+// APP_SECRET signs the order-confirm tokens, demo-pay tokens, OTP hashes and
+// cart signatures; the default is public in the repo, so shipping it lets
+// anyone forge those. Refuse to boot in production with the default.
+if (isProd && config.APP_SECRET === "dev-secret-change-me-please") {
+  throw new Error("APP_SECRET is still the development default - set a real 32+ char secret before running in production");
+}
+
 if (isProd && config.FORCE_OPEN) {
   throw new Error("FORCE_OPEN must not be set in production - it bypasses opening hours");
 }
