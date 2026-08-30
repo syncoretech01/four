@@ -9,7 +9,8 @@
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { useReduceMotion } from "@/lib/useAnim";
 import type { OrderQuote } from "@four/shared";
 import { api } from "@/lib/api";
 import { getSocket } from "@/lib/socket";
@@ -44,7 +45,7 @@ export function ChatDock() {
   const [input, setInput] = useState("");
   const [voiceEnabled, setVoiceEnabled] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const reduce = useReducedMotion();
+  const reduce = useReduceMotion();
   const openCheckout = useStore((s) => s.openCheckout);
   const setCartOpen = useStore((s) => s.setCartOpen);
   /** True when the last user message came in by microphone: replies are then spoken back. */

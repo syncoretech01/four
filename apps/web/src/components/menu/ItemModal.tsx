@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { useReduceMotion } from "@/lib/useAnim";
 import { formatPKR } from "@four/shared";
 import { api, ApiError } from "@/lib/api";
 import { useStore } from "@/lib/store";
@@ -42,7 +43,7 @@ export function ItemModal({ item, onClose }: { item: MenuItemView | null; onClos
   const [picked, setPicked] = useState<Record<string, number>>({}); // "groupId:optionSlug" -> qty
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const reduce = useReducedMotion();
+  const reduce = useReduceMotion();
 
   useEffect(() => {
     if (item) {

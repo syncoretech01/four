@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { useReduceMotion } from "@/lib/useAnim";
 import { SmartImage } from "../SmartImage";
 
 /** Lightbox showing the real printed menu sheet for the active category. */
@@ -14,7 +15,7 @@ export function BoardLightbox({
   category: { label: string; boardImage: string };
   onClose: () => void;
 }) {
-  const reduce = useReducedMotion();
+  const reduce = useReduceMotion();
 
   useEffect(() => {
     if (!open) return;

@@ -1,16 +1,19 @@
 "use client";
 
 /**
- * Signature hero: the exact FOUR wordmark assembles itself - each letter's
- * outline draws in (pathLength), fills flood in, then the whole mark
- * becomes cursor-reactive: springs tilt it in 3D and each letter parallaxes
- * by its own depth, so the logo feels alive under the pointer. The hand
- * doodle floats beside the hero food shot as a sticker with its own
- * magnetic response. All artwork is the untouched brand vector.
+ * Signature hero, loud edition: the exact FOUR wordmark still assembles
+ * itself (each letter outline draws in, then floods with fill) and stays
+ * cursor-reactive in 3D. Around it, brand energy: a warm colour-blocked
+ * ground, the hero food shot on a red blob with a floating hand sticker and
+ * a spinning promise seal, a live "open now" pill, and a springy entrance.
+ * All wordmark/hand artwork is the untouched brand vector.
  */
 import { useEffect, useState } from "react";
-import { motion, useMotionValue, useSpring, useTransform, useReducedMotion } from "motion/react";
+import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
+import { useReduceMotion } from "@/lib/useAnim";
+import { isOpenAt } from "@four/shared";
 import { LETTER_F, LETTER_O, LETTER_U, LETTER_R, HAND_MARK } from "./logoPaths";
+import { RotatingSeal } from "./RotatingSeal";
 
 const LETTERS = [
   { path: LETTER_F, depth: 0.5 },
@@ -20,8 +23,9 @@ const LETTERS = [
 ];
 
 export function LogoHero() {
-  const reduce = useReducedMotion();
+  const reduce = useReduceMotion();
   const [drawn, setDrawn] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
@@ -31,11 +35,12 @@ export function LogoHero() {
   const tiltY = useTransform(sx, (v) => v * 0.45);
 
   useEffect(() => {
+    setOpen(isOpenAt());
     if (reduce) {
       setDrawn(true);
       return;
     }
-    const t = setTimeout(() => setDrawn(true), 1700);
+    const t = setTimeout(() => setDrawn(true), 1600);
     return () => clearTimeout(t);
   }, [reduce]);
 
@@ -47,17 +52,41 @@ export function LogoHero() {
 
   return (
     <section id="top" className="relative overflow-hidden pt-16">
+      {/* colour-blocked ground: soft brand-red bloom, never a flat beige void */}
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div className="absolute -right-40 top-10 h-[38rem] w-[38rem] rounded-full bg-red/10 blur-3xl" />
+        <div className="absolute -left-24 bottom-0 h-80 w-80 rounded-full bg-red/5 blur-2xl" />
+      </div>
+
       <div
-        onPointerMove={onPointerMove}
+        onPointerMove={reduce ? undefined : onPointerMove}
         onPointerLeave={() => {
           mx.set(0);
           my.set(0);
         }}
-        className="mx-auto grid min-h-[calc(100dvh-4rem)] max-w-7xl grid-cols-1 items-center gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1.15fr_1fr]"
+        className="relative mx-auto grid min-h-[calc(100dvh-4rem)] max-w-7xl grid-cols-1 items-center gap-8 px-4 pb-28 pt-6 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:gap-10 lg:pb-10"
       >
         <div className="order-2 lg:order-1">
-          <motion.div style={reduce ? undefined : { rotateX: tiltX, rotateY: tiltY, transformPerspective: 900 }}>
-            <svg viewBox="95 340 890 340" className="w-full max-w-xl" role="img" aria-label="FOUR">
+          <motion.div
+            initial={reduce ? false : { opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-ink/10 bg-cream/70 px-4 py-2 text-xs font-bold uppercase tracking-[0.14em] text-ink backdrop-blur"
+          >
+            <span className="relative flex h-2.5 w-2.5">
+              {open && (
+                <span className="absolute inline-flex h-full w-full rounded-full bg-red opacity-60 motion-safe:animate-ping" />
+              )}
+              <span className={`relative inline-flex h-2.5 w-2.5 rounded-full ${open ? "bg-red" : "bg-ink/30"}`} />
+            </span>
+            {open ? "Open now · delivering till 3am" : "Opens 1pm · order ahead"}
+          </motion.div>
+
+          <motion.div
+            style={reduce ? undefined : { rotateX: tiltX, rotateY: tiltY, transformPerspective: 900 }}
+            className="max-w-[34rem] lg:max-w-none"
+          >
+            <svg viewBox="95 340 890 340" className="w-full max-w-[26rem] sm:max-w-lg lg:max-w-xl" role="img" aria-label="FOUR">
               {LETTERS.map(({ path, depth }, i) => (
                 <HeroLetter key={i} path={path} depth={depth} index={i} sx={sx} sy={sy} drawn={drawn} reduce={!!reduce} />
               ))}
@@ -67,8 +96,8 @@ export function LogoHero() {
           <motion.p
             initial={reduce ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-6 max-w-[38ch] text-lg leading-relaxed text-ink-soft"
+            transition={{ delay: 1.1, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-6 max-w-[34ch] text-lg font-medium leading-relaxed text-ink-soft sm:text-xl"
           >
             Smash burgers, crown crust pizzas and loaded fries by Pakistan&apos;s biggest creators.
           </motion.p>
@@ -76,21 +105,15 @@ export function LogoHero() {
           <motion.div
             initial={reduce ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.45, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-8 flex flex-wrap items-center gap-4"
+            transition={{ delay: 1.3, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-8 flex flex-wrap items-center gap-3"
           >
-            <a
-              href="#menu"
-              className="rounded-full bg-red px-8 py-4 text-base font-semibold text-cream shadow-lg shadow-red/25 transition hover:bg-red-deep active:scale-[0.98]"
-            >
+            <MagneticCta href="#menu" primary reduce={!!reduce}>
               Order online
-            </a>
-            <a
-              href="#menu"
-              className="rounded-full border-2 border-ink/25 px-8 py-4 text-base font-semibold text-ink transition hover:border-ink active:scale-[0.98]"
-            >
+            </MagneticCta>
+            <MagneticCta href="#menu" reduce={!!reduce}>
               See the menu
-            </a>
+            </MagneticCta>
           </motion.div>
         </div>
 
@@ -99,6 +122,52 @@ export function LogoHero() {
         </div>
       </div>
     </section>
+  );
+}
+
+/** CTA that leans toward the cursor - motion values only, never React state. */
+function MagneticCta({
+  href,
+  children,
+  primary = false,
+  reduce,
+}: {
+  href: string;
+  children: React.ReactNode;
+  primary?: boolean;
+  reduce: boolean;
+}) {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const sx = useSpring(x, { stiffness: 300, damping: 18 });
+  const sy = useSpring(y, { stiffness: 300, damping: 18 });
+
+  return (
+    <motion.a
+      href={href}
+      style={reduce ? undefined : { x: sx, y: sy }}
+      onPointerMove={
+        reduce
+          ? undefined
+          : (e) => {
+              const r = e.currentTarget.getBoundingClientRect();
+              x.set(((e.clientX - r.left) / r.width - 0.5) * 14);
+              y.set(((e.clientY - r.top) / r.height - 0.5) * 10);
+            }
+      }
+      onPointerLeave={() => {
+        x.set(0);
+        y.set(0);
+      }}
+      whileTap={{ scale: 0.96 }}
+      className={
+        primary
+          ? "rounded-full bg-red px-8 py-4 text-base font-bold text-cream shadow-lg shadow-red/25 transition-colors hover:bg-red-deep"
+          : "rounded-full border-2 border-ink/25 px-8 py-4 text-base font-bold text-ink transition-colors hover:border-ink"
+      }
+    >
+      {children}
+    </motion.a>
   );
 }
 
@@ -125,7 +194,6 @@ function HeroLetter({
   return (
     <motion.g style={reduce ? undefined : { x, y }}>
       <g transform={path.transform}>
-        {/* outline draws in first... */}
         {!reduce && (
           <motion.path
             d={path.d}
@@ -135,12 +203,11 @@ function HeroLetter({
             initial={{ pathLength: 0, opacity: 1 }}
             animate={{ pathLength: 1, opacity: drawn ? 0 : 1 }}
             transition={{
-              pathLength: { delay: index * 0.22, duration: 1.1, ease: "easeInOut" },
+              pathLength: { delay: index * 0.2, duration: 1, ease: "easeInOut" },
               opacity: { duration: 0.4 },
             }}
           />
         )}
-        {/* ...then the fill floods in */}
         <motion.path
           d={path.d}
           fill="#9d1d20"
@@ -153,7 +220,7 @@ function HeroLetter({
   );
 }
 
-/** Hero food photo with the hand mark as a cursor-magnetic sticker. */
+/** Hero food photo on a red blob, with the magnetic hand sticker + spinning seal. */
 function HeroCard({
   sx,
   sy,
@@ -167,23 +234,36 @@ function HeroCard({
   const py = useTransform(sy, (v: number) => v * -0.8);
   const hx = useTransform(sx, (v: number) => v * 1.8);
   const hy = useTransform(sy, (v: number) => v * 1.4);
-  const rot = useTransform(sx, (v: number) => -8 + v * 0.5);
+  const rot = useTransform(sx, (v: number) => -6 + v * 0.5);
 
   return (
     <motion.div
-      className="relative mx-auto max-w-md lg:max-w-none"
+      className="relative mx-auto max-w-sm sm:max-w-md lg:max-w-none"
       initial={reduce ? false : { opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
     >
-      <motion.div style={reduce ? undefined : { x: px, y: py }} className="overflow-hidden rounded-[2rem] shadow-2xl shadow-ink/20">
+      {/* red blob behind the food - full brand colour, not a flat card */}
+      <div
+        aria-hidden
+        className="absolute inset-3 -rotate-6 rounded-[42%_58%_54%_46%/47%_44%_56%_53%] bg-red"
+      />
+      <motion.div
+        style={reduce ? undefined : { x: px, y: py }}
+        className="relative overflow-hidden rounded-[2rem] border-4 border-cream shadow-2xl shadow-ink/25"
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/gallery/gallery-3.jpg" alt="A FOUR smash burger, fresh off the pass" className="aspect-[4/5] w-full object-cover sm:aspect-square" />
+        <img
+          src="/gallery/gallery-3.jpg"
+          alt="A FOUR smash burger, fresh off the pass"
+          className="aspect-square w-full object-cover"
+        />
       </motion.div>
+
       <motion.svg
         viewBox="180 100 700 900"
         aria-hidden
-        className="absolute -bottom-10 -left-10 h-36 w-36 drop-shadow-[0_10px_18px_rgba(38,32,26,0.3)] sm:h-44 sm:w-44"
+        className="absolute -bottom-8 -left-8 h-32 w-32 drop-shadow-[0_10px_18px_rgba(38,32,26,0.3)] sm:h-40 sm:w-40"
         style={reduce ? undefined : { x: hx, y: hy, rotate: rot }}
         animate={reduce ? undefined : { y: [0, -8, 0] }}
         transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
@@ -192,6 +272,10 @@ function HeroCard({
           <path d={HAND_MARK.d} fill="#f6efe1" />
         </g>
       </motion.svg>
+
+      <div className="absolute -right-4 -top-6 h-24 w-24 rounded-full bg-cream/90 p-2 shadow-xl shadow-ink/20 sm:-right-8 sm:h-28 sm:w-28">
+        <RotatingSeal />
+      </div>
     </motion.div>
   );
 }

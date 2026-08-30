@@ -1,10 +1,11 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
+import { useReduceMotion } from "@/lib/useAnim";
 import { BRAND, HOURS_LABEL } from "@four/shared";
 
 export function Visit() {
-  const reduce = useReducedMotion();
+  const reduce = useReduceMotion();
   return (
     <section id="visit" className="mx-auto max-w-7xl scroll-mt-20 px-4 py-24 sm:px-6">
       <motion.div

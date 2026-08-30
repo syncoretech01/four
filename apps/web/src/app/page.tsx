@@ -3,6 +3,7 @@ import { LogoHero } from "@/components/hero/LogoHero";
 import { Marquee } from "@/components/sections/Marquee";
 import { MenuSection } from "@/components/menu/MenuSection";
 import { Story } from "@/components/sections/Story";
+import { HypeBand } from "@/components/sections/HypeBand";
 import { Visit } from "@/components/sections/Visit";
 import { Footer } from "@/components/sections/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
@@ -21,7 +22,7 @@ const restaurantJsonLd = {
     addressCountry: "PK",
   },
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-  sameAs: ["https://www.instagram.com/four.pakistan"],
+  sameAs: ["https://www.instagram.com/fourpakistan_/"],
   priceRange: "Rs. 179 - Rs. 1,998",
 };
 
@@ -35,6 +36,7 @@ export default function Home() {
         <Marquee />
         <MenuSection />
         <Story />
+        <HypeBand />
         <Visit />
       </main>
       <Footer />

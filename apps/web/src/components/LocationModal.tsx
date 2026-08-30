@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { useReduceMotion } from "@/lib/useAnim";
 import { LAHORE_AREAS } from "@four/shared";
 import { useStore } from "@/lib/store";
 import { BrandLogo } from "./BrandLogo";
@@ -16,7 +17,7 @@ export function LocationModal({ open, onClose }: { open: boolean; onClose: () =>
   const current = useStore((s) => s.location);
   const [areaId, setAreaId] = useState(current?.areaId ?? "");
   const [block, setBlock] = useState(current?.block ?? "");
-  const reduce = useReducedMotion();
+  const reduce = useReduceMotion();
 
   const area = useMemo(() => LAHORE_AREAS.find((a) => a.id === areaId), [areaId]);
 

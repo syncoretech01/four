@@ -1,6 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { useReduceMotion } from "@/lib/useAnim";
 import { formatPKR, FREE_DELIVERY_ABOVE } from "@four/shared";
 import { api } from "@/lib/api";
 import { useStore } from "@/lib/store";
@@ -13,7 +14,7 @@ export function CartDrawer() {
   const checkoutOpen = useStore((s) => s.checkoutOpen);
   const openCheckout = useStore((s) => s.openCheckout);
   const closeCheckout = useStore((s) => s.closeCheckout);
-  const reduce = useReducedMotion();
+  const reduce = useReduceMotion();
 
   const close = () => setOpen(false);
 

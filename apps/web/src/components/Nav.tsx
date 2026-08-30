@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useScroll, useMotionValueEvent } from "motion/react";
 import { useStore, wireCart } from "@/lib/store";
 import { BrandLogo } from "./BrandLogo";
 import { LocationModal } from "./LocationModal";
@@ -10,13 +11,24 @@ export function Nav() {
   const cart = useStore((s) => s.cart);
   const setCartOpen = useStore((s) => s.setCartOpen);
   const [locOpen, setLocOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const { scrollY } = useScroll();
+  useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 24));
 
   useEffect(() => wireCart(), []);
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-40 border-b border-ink/10 bg-beige/85 backdrop-blur-md">
-        <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
+      <header
+        className={`fixed inset-x-0 top-0 z-40 transition-all duration-300 ${
+          scrolled ? "border-b border-ink/10 bg-beige/90 backdrop-blur-md" : "border-b border-transparent bg-beige/40 backdrop-blur-sm"
+        }`}
+      >
+        <nav
+          className={`mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 transition-all duration-300 sm:px-6 ${
+            scrolled ? "h-14" : "h-16"
+          }`}
+        >
           <a href="#top" aria-label="FOUR home" className="shrink-0 text-red">
             <BrandLogo className="h-7" />
           </a>
