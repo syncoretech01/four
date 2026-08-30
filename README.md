@@ -124,8 +124,26 @@ brand-assets/     Imported brand kit: logo vectors, menu sheet renders, 203 web-
 - POS bridge (`apps/api/src/pos/`): `cornpos` (**the confirmed till
   system** - ready, needs credentials from Corn POS support), `console`
   (default until then), `webhook` (Zapier/n8n/WhatsApp-bot/middleware),
-  `foodics` skeleton. See **docs/POS-INTEGRATION.md**. Orders are never
-  silently dropped - a POS failure cancels loudly.
+  `foodics` skeleton. See **docs/POS-INTEGRATION.md**. A retry queue
+  (`pos/queue.ts`) re-drives transient failures with backoff; orders are
+  never silently dropped - a hopeless submit still cancels loudly.
+- Rider management: `/admin` -> **Riders** onboards riders, resets PINs,
+  moves them between branches, and deactivates them (which ends their
+  app session immediately).
+- Customer messaging (`apps/api/src/notify/`): order confirmations,
+  rider-on-the-way and delivered/cancelled updates plus sign-in codes go
+  out through `NOTIFY_PROVIDER` - `console` (default), `webhook`, or
+  `whatsapp` (Meta WhatsApp Business API; needs `WHATSAPP_TOKEN` +
+  `WHATSAPP_PHONE_ID`).
+- Cross-device order history: `/orders` signs a customer in with a
+  one-time code sent to their phone number (single-use, 5-minute expiry,
+  hashed at rest).
+- Online payments (`apps/api/src/payments/`): `PAYMENT_PROVIDER=none`
+  (default) keeps card orders as card-machine-at-the-door; `demo` runs
+  the full held-order -> gateway -> confirmed rail with a built-in
+  gateway page at `/pay/<order>`; `safepay`/`payfast` skeletons await
+  FOUR's merchant account. The kitchen and POS only ever see paid card
+  orders.
 
 ## Demos
 
@@ -136,10 +154,13 @@ Two things are stubbed pending decisions, each with something showable.
 POS endpoint - hand it to Corn POS support to scope the integration.
 Capped and in memory; the order itself is durable in Postgres regardless.
 
-**Online payment** - `/demo/payment` walks through card, Easypaisa and
-JazzCash. It is deliberately standalone: it touches no cart, creates no
-order, calls no API, and says so on every screen. Wiring real payments needs
-a merchant account and a provider (Safepay or PayFast).
+**Online payment** - set `PAYMENT_PROVIDER=demo` and place a card order:
+it is held as *Awaiting payment*, the built-in gateway page at
+`/pay/<order>` collects (no real money), and paying releases it to the
+kitchen - the entire rail a live Safepay/PayFast checkout will ride.
+`/demo/payment` additionally walks through card, Easypaisa and JazzCash
+UI flows without touching any order. Going live needs FOUR's merchant
+account with a gateway.
 
 ## Business rules (confirm with operations)
 - Prices: transcribed from the printed menu sheets (`brand-assets/menu`),

@@ -74,9 +74,10 @@ export const ORDER_STATUS_FLOW = [
   "DELIVERED",
 ] as const;
 
-export type OrderStatusName = (typeof ORDER_STATUS_FLOW)[number] | "CANCELLED";
+export type OrderStatusName = (typeof ORDER_STATUS_FLOW)[number] | "CANCELLED" | "PENDING_PAYMENT";
 
 export const ORDER_STATUS_LABELS: Record<OrderStatusName, string> = {
+  PENDING_PAYMENT: "Awaiting payment",
   CONFIRMED: "Order confirmed",
   PREPARING: "In the kitchen",
   OUT_FOR_DELIVERY: "Rider on the way",

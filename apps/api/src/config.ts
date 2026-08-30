@@ -37,6 +37,26 @@ const envSchema = z.object({
   FOODICS_API_TOKEN: z.string().optional(),
   FOODICS_BRANCH_ID: z.string().optional(),
 
+  /**
+   * Online card payments. "none" (default) keeps today's behavior: CARD means
+   * the rider brings a card machine. "demo" exercises the full
+   * pending-payment -> gateway -> webhook -> confirmed rail with a built-in
+   * demo gateway page. "safepay"/"payfast" are the real Pakistani gateways,
+   * pending FOUR's merchant account.
+   */
+  PAYMENT_PROVIDER: z.enum(["none", "demo", "safepay", "payfast"]).default("none"),
+  SAFEPAY_API_KEY: z.string().optional(),
+  SAFEPAY_SECRET: z.string().optional(),
+  PAYFAST_MERCHANT_ID: z.string().optional(),
+  PAYFAST_SECURED_KEY: z.string().optional(),
+
+  /** Customer messaging: order updates + sign-in codes. */
+  NOTIFY_PROVIDER: z.enum(["console", "webhook", "whatsapp"]).default("console"),
+  NOTIFY_WEBHOOK_URL: z.string().optional(),
+  NOTIFY_WEBHOOK_TOKEN: z.string().optional(),
+  WHATSAPP_TOKEN: z.string().optional(),
+  WHATSAPP_PHONE_ID: z.string().optional(),
+
   /** Dev/staging convenience: ignore opening hours. Refused in production. */
   FORCE_OPEN: z.coerce.boolean().default(false),
 

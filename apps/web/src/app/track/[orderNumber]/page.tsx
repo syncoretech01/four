@@ -48,6 +48,7 @@ export default function TrackPage({ params }: { params: Promise<{ orderNumber: s
 
   const currentIndex = order ? ORDER_STATUS_FLOW.indexOf(order.status as (typeof ORDER_STATUS_FLOW)[number]) : -1;
   const cancelled = order?.status === "CANCELLED";
+  const awaitingPayment = order?.status === "PENDING_PAYMENT";
 
   return (
     <>
@@ -80,7 +81,23 @@ export default function TrackPage({ params }: { params: Promise<{ orderNumber: s
                 </span>
               </div>
 
-              {!cancelled && (
+              {awaitingPayment && (
+                <div className="mt-6 rounded-xl bg-red/10 p-4">
+                  <p className="text-sm font-semibold text-red">
+                    Your order is reserved but the kitchen starts once payment goes through.
+                  </p>
+                  {order.paymentUrl && (
+                    <a
+                      href={order.paymentUrl}
+                      className="mt-3 inline-block rounded-full bg-red px-6 py-3 text-sm font-semibold text-cream transition hover:bg-red-deep"
+                    >
+                      Complete payment · {formatPKR(order.total)}
+                    </a>
+                  )}
+                </div>
+              )}
+
+              {!cancelled && !awaitingPayment && (
                 <ol className="mt-8 grid gap-0">
                   {ORDER_STATUS_FLOW.map((status, i) => {
                     const done = i <= currentIndex;
@@ -124,7 +141,7 @@ export default function TrackPage({ params }: { params: Promise<{ orderNumber: s
               )}
             </div>
 
-            {order.destLat != null && order.destLng != null && !cancelled && (
+            {order.destLat != null && order.destLng != null && !cancelled && !awaitingPayment && (
               <div className="overflow-hidden rounded-card bg-cream p-3">
                 <TrackMap
                   orderNumber={order.orderNumber}

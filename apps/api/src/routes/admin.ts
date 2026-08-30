@@ -89,6 +89,7 @@ export async function adminRoutes(app: FastifyInstance): Promise<void> {
         name: r.name,
         phone: r.phone,
         status: r.status,
+        active: r.active,
         branchId: r.branchId,
         branch: r.branch.shortName,
         lastLat: r.lastLat,
@@ -96,6 +97,33 @@ export async function adminRoutes(app: FastifyInstance): Promise<void> {
         lastSeenAt: r.lastSeenAt?.toISOString() ?? null,
       })),
     };
+  });
+
+  app.post("/admin/riders", async (req) => {
+    const input = z
+      .object({
+        name: z.string().trim().min(2).max(60),
+        phone: z.string().min(7).max(20),
+        pin: z.string().min(4).max(8),
+        branchId: z.string().min(1),
+      })
+      .parse(req.body);
+    const r = await riderService.createRider(input);
+    return { rider: { id: r.id, name: r.name, phone: r.phone, branchId: r.branchId, branch: r.branch.shortName, active: r.active, status: r.status } };
+  });
+
+  app.patch("/admin/riders/:riderId", async (req) => {
+    const { riderId } = req.params as { riderId: string };
+    const patch = z
+      .object({
+        name: z.string().trim().min(2).max(60).optional(),
+        branchId: z.string().min(1).optional(),
+        pin: z.string().min(4).max(8).optional(),
+        active: z.boolean().optional(),
+      })
+      .parse(req.body);
+    const r = await riderService.updateRider(riderId, patch);
+    return { rider: { id: r.id, name: r.name, phone: r.phone, branchId: r.branchId, branch: r.branch.shortName, active: r.active, status: r.status } };
   });
 
   app.patch("/admin/orders/:orderNumber/rider", async (req) => {

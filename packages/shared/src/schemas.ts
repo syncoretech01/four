@@ -88,6 +88,8 @@ export interface OrderView {
   address: string;
   note?: string;
   payment: "COD" | "CARD";
+  /** Where to finish paying, when the order is still held at the gateway. */
+  paymentUrl?: string;
   /** "35-45 min", from the delivery area's distance. */
   etaLabel?: string;
   lines: { name: string; variantLabel?: string; modifiers: string[]; qty: number; unitPrice: number; lineTotal: number }[];

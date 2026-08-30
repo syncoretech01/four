@@ -14,11 +14,20 @@ enum PaymentMethod {
 }
 
 enum OrderStatus {
+  PENDING_PAYMENT
   CONFIRMED
   PREPARING
   OUT_FOR_DELIVERY
   DELIVERED
   CANCELLED
+}
+
+/// Where the order stands with the POS bridge. PENDING orders are being
+/// retried in the background; FAILED ones were cancelled loudly.
+enum PosStatus {
+  PENDING
+  SENT
+  FAILED
 }
 
 enum ChatRole {
@@ -165,6 +174,11 @@ model Order {
   tax          Int
   total        Int
   posReference String?
+  posStatus    PosStatus     @default(PENDING)
+  posAttempts  Int           @default(0)
+  posLastError String?
+  paymentRef   String?
+  paidAt       DateTime?
   placedAt     DateTime      @default(now())
   branchId     String?
   branch       Branch?       @relation(fields: [branchId], references: [id], onDelete: SetNull)
@@ -249,12 +263,25 @@ model Customer {
   sessions Session[]
 }
 
+/// One-time sign-in codes for cross-device order history. The code itself is
+/// never stored - only an HMAC of it - and each row is single-use.
+model LoginCode {
+  id        String   @id @default(cuid())
+  phone     String   @unique
+  codeHash  String
+  expiresAt DateTime
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
 model Rider {
   id         String      @id @default(cuid())
   name       String
   phone      String      @unique
   /// Login PIN (demo-grade; swap for OTP before public launch)
   pin        String
+  /// Deactivated riders keep their history but cannot sign in.
+  active     Boolean     @default(true)
   branchId   String
   branch     Branch      @relation(fields: [branchId], references: [id])
   status     RiderStatus @default(OFFLINE)

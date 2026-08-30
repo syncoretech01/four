@@ -16,6 +16,8 @@ import { orderRoutes } from "./routes/orders.js";
 import { chatRoutes } from "./routes/chat.js";
 import { adminRoutes } from "./routes/admin.js";
 import { riderRoutes } from "./routes/rider.js";
+import { authRoutes } from "./routes/auth.js";
+import { paymentRoutes } from "./routes/payments.js";
 
 export interface BuildOptions {
   /** Tests disable the logger and the rate limiter. */
@@ -63,6 +65,8 @@ export async function buildApp({ testing = false }: BuildOptions = {}): Promise<
   await app.register(chatRoutes, { prefix: "/api" });
   await app.register(adminRoutes, { prefix: "/api" });
   await app.register(riderRoutes, { prefix: "/api" });
+  await app.register(authRoutes, { prefix: "/api" });
+  await app.register(paymentRoutes, { prefix: "/api" });
 
   await app.ready();
   return app;

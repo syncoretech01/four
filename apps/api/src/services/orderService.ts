@@ -11,7 +11,6 @@ import {
   BRAND,
   DELIVERY_FEE,
   FREE_DELIVERY_ABOVE,
-  BRANCHES,
   LAHORE_AREAS,
   areaCoords,
   branchForArea,
@@ -24,8 +23,14 @@ import {
 } from "@four/shared";
 import { config } from "../config.js";
 import { emitToSession, emitToOrder, emitToAdmin } from "../realtime/io.js";
-import { activePosAdapter } from "../pos/adapters.js";
+import { submitToPos, onPosGiveUp } from "../pos/queue.js";
+import { activePaymentProvider, demoPaymentToken } from "../payments/providers.js";
+import { notifyOrderStatus } from "../notify/notifyService.js";
 import * as cartService from "./cartService.js";
+
+// the POS queue cancels through the one status pipeline so customers get
+// the socket update and the phone message like any other cancellation
+onPosGiveUp((orderNumber) => updateStatus(orderNumber, OrderStatus.CANCELLED));
 
 class OrderError extends Error {
   constructor(
@@ -136,6 +141,10 @@ export async function placeOrder(sessionId: string, input: CheckoutInput): Promi
   });
   await prisma.session.update({ where: { id: sessionId }, data: { customerId: customer.id } }).catch(() => {});
 
+  // an online-payment card order is held back from the kitchen until paid
+  const provider = activePaymentProvider();
+  const collectOnline = input.payment === "CARD" && provider.name !== "none";
+
   const order = await prisma.order.create({
     data: {
       orderNumber: num,
@@ -152,12 +161,13 @@ export async function placeOrder(sessionId: string, input: CheckoutInput): Promi
       address: input.address,
       note: input.note,
       payment: input.payment,
+      status: collectOnline ? OrderStatus.PENDING_PAYMENT : OrderStatus.CONFIRMED,
       subtotal: cart.subtotal,
       deliveryFee,
       taxRate: rate,
       tax,
       total,
-      events: { create: { status: OrderStatus.CONFIRMED } },
+      events: { create: { status: collectOnline ? OrderStatus.PENDING_PAYMENT : OrderStatus.CONFIRMED } },
       lines: {
         create: cart.lines.map((l) => ({
           itemId: l.itemId,
@@ -170,29 +180,65 @@ export async function placeOrder(sessionId: string, input: CheckoutInput): Promi
         })),
       },
     },
-    include: { lines: true, events: true },
   });
 
-  // hand off to the POS; a failure cancels the order loudly rather than losing it
-  const adapter = activePosAdapter();
-  const result = await adapter.submitOrder(toPosOrder(order));
-  if (!result.ok) {
-    await prisma.order.update({
-      where: { id: order.id },
-      data: { status: OrderStatus.CANCELLED, events: { create: { status: OrderStatus.CANCELLED } } },
-    });
+  if (collectOnline) {
+    const init = await provider.createPayment({ orderNumber: num, total, customerName: input.name, phone });
+    if (!init.ok || !init.redirectUrl) {
+      await prisma.order.update({
+        where: { id: order.id },
+        data: { status: OrderStatus.CANCELLED, events: { create: { status: OrderStatus.CANCELLED } } },
+      });
+      throw new OrderError(
+        `Card payment is unavailable right now - please pay cash on delivery, or call us on ${BRAND.phone}.`,
+        "PAYMENT_DOWN",
+      );
+    }
+    await prisma.order.update({ where: { id: order.id }, data: { paymentRef: init.paymentRef ?? null } });
+    await cartService.clearCart(sessionId);
+    // the kitchen is told once payment confirms, not now
+    return getOrder(order.orderNumber) as Promise<OrderView>;
+  }
+
+  // hand off to the POS; misconfiguration cancels loudly right away, a
+  // transient failure retries in the background (see pos/queue.ts)
+  const outcome = await submitToPos(order.id);
+  if (outcome.permanent) {
     throw new OrderError(
       `We could not reach the kitchen, so nothing has been charged. Please order again, or call us on ${BRAND.phone}.`,
       "POS_DOWN",
     );
   }
-  if (result.posReference) {
-    await prisma.order.update({ where: { id: order.id }, data: { posReference: result.posReference } });
-  }
 
   await cartService.clearCart(sessionId);
   emitToAdmin("admin:order:new", { orderNumber: order.orderNumber });
+  notifyOrderStatus({ orderNumber: num, phone, total }, "CONFIRMED");
   return getOrder(order.orderNumber) as Promise<OrderView>;
+}
+
+/**
+ * Flips a PENDING_PAYMENT order to CONFIRMED and releases it to the kitchen.
+ * Called by the payment confirm route (demo gateway or a real webhook).
+ */
+export async function confirmPayment(orderNumberArg: string): Promise<OrderView> {
+  const order = await prisma.order.findUnique({ where: { orderNumber: orderNumberArg } });
+  if (!order) throw new OrderError("Order not found", "NOT_FOUND");
+  if (order.status !== OrderStatus.PENDING_PAYMENT) {
+    // webhooks retry; confirming twice must not double-fire the kitchen
+    return getOrder(orderNumberArg) as Promise<OrderView>;
+  }
+  await prisma.order.update({ where: { id: order.id }, data: { paidAt: new Date() } });
+  const view = await updateStatus(orderNumberArg, OrderStatus.CONFIRMED);
+  emitToAdmin("admin:order:new", { orderNumber: orderNumberArg });
+  void submitToPos(order.id);
+  return view;
+}
+
+/** True when the demo-gateway token authorizes paying this order. */
+export function validDemoPayToken(orderNumber: string, token: string): boolean {
+  const expected = Buffer.from(demoPaymentToken(orderNumber));
+  const got = Buffer.from(token);
+  return expected.length === got.length && timingSafeEqual(expected, got);
 }
 
 export async function getOrder(orderNumberOrId: string): Promise<OrderView | null> {
@@ -217,6 +263,11 @@ export async function getOrder(orderNumberOrId: string): Promise<OrderView | nul
     address: order.address,
     note: order.note ?? undefined,
     payment: order.payment,
+    // where to finish paying, for orders still held at the gateway
+    paymentUrl:
+      order.status === OrderStatus.PENDING_PAYMENT && config.PAYMENT_PROVIDER === "demo"
+        ? `${config.WEB_ORIGIN}/pay/${order.orderNumber}?t=${demoPaymentToken(order.orderNumber)}`
+        : undefined,
     etaLabel: etaForArea(order.areaId),
     lines: order.lines.map((l) => ({
       name: l.name,
@@ -266,6 +317,7 @@ export async function updateStatus(orderNumber: string, status: OrderStatus): Pr
   emitToOrder(orderNumber, "order:status", { orderNumber, status, at });
   if (order.sessionId) emitToSession(order.sessionId, "order:status", { orderNumber, status, at });
   emitToAdmin("admin:order:updated", { orderNumber, status });
+  notifyOrderStatus({ orderNumber, phone: order.phone, total: order.total }, status);
   return getOrder(orderNumber) as Promise<OrderView>;
 }
 
@@ -293,50 +345,3 @@ export async function assignRider(orderNumberArg: string, riderId: string | null
   return getOrder(orderNumberArg) as Promise<OrderView>;
 }
 
-function toPosOrder(order: {
-  orderNumber: string;
-  placedAt: Date;
-  branchId: string | null;
-  customerName: string;
-  phone: string;
-  areaId: string;
-  areaName: string;
-  block: string;
-  address: string;
-  note: string | null;
-  payment: string;
-  subtotal: number;
-  deliveryFee: number;
-  tax: number;
-  total: number;
-  lines: { itemId: string; name: string; variantLabel: string | null; modifiers: unknown; qty: number; unitPrice: number }[];
-}) {
-  const branch = BRANCHES.find((b) => b.id === order.branchId);
-  return {
-    orderNumber: order.orderNumber,
-    placedAt: order.placedAt.toISOString(),
-    branch: branch ? { id: branch.id, name: branch.name } : undefined,
-    customer: { name: order.customerName, phone: order.phone },
-    delivery: {
-      areaId: order.areaId,
-      areaName: order.areaName,
-      block: order.block,
-      address: order.address,
-      note: order.note ?? undefined,
-    },
-    payment: order.payment as "COD" | "CARD",
-    lines: order.lines.map((l) => ({
-      itemId: l.itemId,
-      name: l.name,
-      variant: l.variantLabel ?? undefined,
-      modifiers: (l.modifiers as string[]) ?? [],
-      qty: l.qty,
-      unitPrice: l.unitPrice,
-    })),
-    subtotal: order.subtotal,
-    deliveryFee: order.deliveryFee,
-    tax: order.tax,
-    total: order.total,
-    source: "web" as const,
-  };
-}

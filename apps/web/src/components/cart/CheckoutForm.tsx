@@ -78,7 +78,12 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
       });
       setLocation({ areaId, areaName: area!.name, block });
       onDone();
-      router.push(`/track/${order.orderNumber}`);
+      // an online-payment order is held at the gateway until paid
+      if (order.paymentUrl) {
+        window.location.assign(order.paymentUrl);
+      } else {
+        router.push(`/track/${order.orderNumber}`);
+      }
     } catch (e) {
       setStage("form");
       if (e instanceof ApiError && e.code === "STALE_QUOTE") {

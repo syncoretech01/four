@@ -39,7 +39,9 @@ interface AdminBranch {
 interface AdminRider {
   id: string;
   name: string;
+  phone: string;
   status: string;
+  active: boolean;
   branchId: string;
   branch: string;
 }
@@ -57,6 +59,157 @@ const NEXT_STATUS: Record<string, OrderStatusName | undefined> = {
   OUT_FOR_DELIVERY: "DELIVERED",
 };
 
+/** Rider management: onboard, move between branches, reset PIN, deactivate. */
+function RidersTab({
+  riders,
+  branches,
+  onChanged,
+}: {
+  riders: AdminRider[];
+  branches: AdminBranch[];
+  onChanged: () => void;
+}) {
+  const [form, setForm] = useState({ name: "", phone: "", pin: "", branchId: "" });
+  const [message, setMessage] = useState("");
+  const [pinEdit, setPinEdit] = useState<{ id: string; pin: string } | null>(null);
+
+  const create = async () => {
+    setMessage("");
+    try {
+      await api("/api/admin/riders", { method: "POST", body: JSON.stringify(form) });
+      setForm({ name: "", phone: "", pin: "", branchId: "" });
+      onChanged();
+    } catch (e) {
+      setMessage(e instanceof ApiError ? e.message : "Could not add the rider.");
+    }
+  };
+
+  const patch = async (id: string, body: Record<string, unknown>) => {
+    setMessage("");
+    try {
+      await api(`/api/admin/riders/${id}`, { method: "PATCH", body: JSON.stringify(body) });
+      onChanged();
+    } catch (e) {
+      setMessage(e instanceof ApiError ? e.message : "Could not update the rider.");
+    }
+  };
+
+  const inputCls =
+    "h-11 rounded-xl border border-ink/15 bg-cream px-3.5 text-sm text-ink outline-none transition focus:border-red focus:ring-2 focus:ring-red/30";
+
+  return (
+    <div className="mt-8 grid gap-4">
+      <div className="rounded-card bg-cream p-6">
+        <h2 className="font-display text-lg font-semibold text-ink">Add a rider</h2>
+        <div className="mt-4 grid gap-3 sm:grid-cols-5">
+          <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Name" className={inputCls} />
+          <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="0300 0000000" inputMode="tel" className={inputCls} />
+          <input value={form.pin} onChange={(e) => setForm({ ...form, pin: e.target.value.replace(/\D/g, "").slice(0, 8) })} placeholder="PIN (4-8 digits)" inputMode="numeric" className={inputCls} />
+          <select value={form.branchId} onChange={(e) => setForm({ ...form, branchId: e.target.value })} className={inputCls}>
+            <option value="" disabled>
+              Branch
+            </option>
+            {branches.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.shortName}
+              </option>
+            ))}
+          </select>
+          <button
+            onClick={create}
+            disabled={form.name.trim().length < 2 || form.phone.replace(/\D/g, "").length < 11 || form.pin.length < 4 || !form.branchId}
+            className="rounded-full bg-red px-5 py-2 text-sm font-semibold text-cream transition hover:bg-red-deep disabled:opacity-50"
+          >
+            Add rider
+          </button>
+        </div>
+      </div>
+
+      {message && (
+        <p role="alert" className="rounded-xl bg-red/10 px-4 py-3 text-sm font-medium text-red">
+          {message}
+        </p>
+      )}
+
+      {riders.map((r) => (
+        <article key={r.id} className={`rounded-card bg-cream p-5 ${r.active ? "" : "opacity-60"}`}>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <span
+                className={`h-2.5 w-2.5 rounded-full ${r.active && r.status === "ONLINE" ? "bg-green-600" : "bg-ink/25"}`}
+                title={r.status}
+                aria-hidden
+              />
+              <div>
+                <p className="font-semibold text-ink">
+                  {r.name}
+                  {!r.active && <span className="ml-2 rounded-full bg-ink/10 px-2 py-0.5 text-[11px] font-bold text-ink-soft">DEACTIVATED</span>}
+                </p>
+                <p className="text-xs text-ink-soft">{r.phone}</p>
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <select
+                value={r.branchId}
+                onChange={(e) => patch(r.id, { branchId: e.target.value })}
+                className="h-9 rounded-full border border-ink/15 bg-cream px-3 text-xs font-semibold text-ink outline-none focus:border-red"
+              >
+                {branches.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.shortName}
+                  </option>
+                ))}
+              </select>
+              {pinEdit?.id === r.id ? (
+                <span className="flex items-center gap-2">
+                  <input
+                    value={pinEdit.pin}
+                    onChange={(e) => setPinEdit({ id: r.id, pin: e.target.value.replace(/\D/g, "").slice(0, 8) })}
+                    placeholder="New PIN"
+                    inputMode="numeric"
+                    autoFocus
+                    className="h-9 w-28 rounded-full border border-ink/15 bg-cream px-3 text-center text-xs font-semibold text-ink outline-none focus:border-red"
+                  />
+                  <button
+                    onClick={async () => {
+                      await patch(r.id, { pin: pinEdit.pin });
+                      setPinEdit(null);
+                    }}
+                    disabled={pinEdit.pin.length < 4}
+                    className="rounded-full bg-red px-4 py-2 text-xs font-semibold text-cream transition hover:bg-red-deep disabled:opacity-50"
+                  >
+                    Save
+                  </button>
+                  <button onClick={() => setPinEdit(null)} className="text-xs font-medium text-ink-soft hover:text-ink">
+                    Cancel
+                  </button>
+                </span>
+              ) : (
+                <button
+                  onClick={() => setPinEdit({ id: r.id, pin: "" })}
+                  className="rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold text-ink-soft transition hover:border-red hover:text-red"
+                >
+                  Reset PIN
+                </button>
+              )}
+              <button
+                onClick={() => patch(r.id, { active: !r.active })}
+                className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
+                  r.active
+                    ? "border border-ink/20 text-ink-soft hover:border-red hover:text-red"
+                    : "bg-red text-cream hover:bg-red-deep"
+                }`}
+              >
+                {r.active ? "Deactivate" : "Reactivate"}
+              </button>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  );
+}
+
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [pin, setPin] = useState("");
@@ -66,7 +219,7 @@ export default function AdminPage() {
   const [branches, setBranches] = useState<AdminBranch[]>([]);
   const [riders, setRiders] = useState<AdminRider[]>([]);
   const [branchFilter, setBranchFilter] = useState<string>("");
-  const [tab, setTab] = useState<"orders" | "menu" | "pos">("orders");
+  const [tab, setTab] = useState<"orders" | "menu" | "riders" | "pos">("orders");
   const branchFilterRef = { current: branchFilter };
   const [posFeed, setPosFeed] = useState<{ provider: string; entries: { receivedAt: string; order: unknown }[] }>({ provider: "", entries: [] });
 
@@ -213,6 +366,12 @@ export default function AdminPage() {
             Menu availability
           </button>
           <button
+            onClick={() => setTab("riders")}
+            className={`rounded-full px-5 py-2 transition ${tab === "riders" ? "bg-red text-cream" : "text-ink"}`}
+          >
+            Riders
+          </button>
+          <button
             onClick={() => {
               setTab("pos");
               void loadPosFeed();
@@ -320,7 +479,7 @@ export default function AdminPage() {
                     >
                       <option value="">Assign rider...</option>
                       {riders
-                        .filter((r) => !o.branchId || r.branchId === o.branchId)
+                        .filter((r) => r.active && (!o.branchId || r.branchId === o.branchId))
                         .map((r) => (
                           <option key={r.id} value={r.id}>
                             {r.name} ({r.status === "ONLINE" ? "online" : "offline"})
@@ -352,6 +511,8 @@ export default function AdminPage() {
             </article>
           ))}
         </div>
+      ) : tab === "riders" ? (
+        <RidersTab riders={riders} branches={branches} onChanged={() => refresh(branchFilter || undefined)} />
       ) : (
         <div className="mt-8 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((item) => (
