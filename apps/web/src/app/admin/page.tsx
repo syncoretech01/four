@@ -100,7 +100,7 @@ function RidersTab({
   return (
     <div className="mt-8 grid gap-4">
       <div className="rounded-card bg-cream p-6">
-        <h2 className="font-display text-lg font-semibold text-ink">Add a rider</h2>
+        <h2 className="font-display text-lg font-bold text-ink">Add a rider</h2>
         <div className="mt-4 grid gap-3 sm:grid-cols-5">
           <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Name" className={inputCls} />
           <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="0300 0000000" inputMode="tel" className={inputCls} />
@@ -316,7 +316,8 @@ export default function AdminPage() {
           <span className="text-red">
             <BrandLogo className="h-8" />
           </span>
-          <h1 className="font-display mt-4 text-2xl font-semibold text-ink">Kitchen console</h1>
+          <h1 className="font-display mt-4 text-3xl font-bold tracking-tight text-ink">Kitchen console</h1>
+          <p className="mt-1 text-sm text-ink-soft">Enter your PIN to open the order board.</p>
           <label className="mt-6 grid gap-2">
             <span className="text-xs font-semibold uppercase tracking-wide text-ink">PIN</span>
             <input
@@ -334,7 +335,7 @@ export default function AdminPage() {
           {error && <p className="mt-3 text-sm font-medium text-red">{error}</p>}
           <button
             disabled={pin.length < 4}
-            className="mt-5 w-full rounded-full bg-red py-3.5 font-semibold text-cream transition hover:bg-red-deep disabled:cursor-not-allowed disabled:opacity-40"
+            className="mt-5 w-full rounded-full bg-red py-3.5 font-bold text-cream shadow-lg shadow-red/25 transition hover:bg-red-deep active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none"
           >
             Sign in
           </button>
@@ -350,7 +351,7 @@ export default function AdminPage() {
           <span className="text-red">
             <BrandLogo className="h-8" />
           </span>
-          <h1 className="font-display text-2xl font-semibold text-ink">Kitchen console</h1>
+          <h1 className="font-display text-2xl font-bold tracking-tight text-ink">Kitchen console</h1>
         </div>
         <div className="flex gap-2 rounded-full bg-beige-deep p-1 text-sm font-semibold">
           <button
@@ -386,7 +387,7 @@ export default function AdminPage() {
       {tab === "pos" ? (
         <div className="mt-8 grid gap-4">
           <div className="rounded-card bg-cream p-6">
-            <h2 className="font-display text-lg font-semibold text-ink">What the POS receives</h2>
+            <h2 className="font-display text-lg font-bold text-ink">What the POS receives</h2>
             <p className="mt-1 text-sm text-ink-soft">
               The exact payload the bridge sends for each order - the integration a POS vendor
               would build against. Active provider: <b className="text-ink">{posFeed.provider || "unknown"}</b>.
@@ -436,7 +437,7 @@ export default function AdminPage() {
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-3">
-                    <h2 className="font-display text-xl font-semibold text-ink">{o.orderNumber}</h2>
+                    <h2 className="font-display text-xl font-bold text-ink">{o.orderNumber}</h2>
                     <span
                       className={`rounded-full px-3 py-1 text-xs font-bold ${
                         o.status === "DELIVERED"
@@ -500,7 +501,7 @@ export default function AdminPage() {
                       </button>
                       <button
                         onClick={() => advance(o.orderNumber, o.status)}
-                        className="rounded-full bg-red px-5 py-2 text-sm font-semibold text-cream transition hover:bg-red-deep"
+                        className="rounded-full bg-red px-5 py-2 text-sm font-bold text-cream shadow-md shadow-red/20 transition hover:bg-red-deep active:scale-[0.98]"
                       >
                         Mark {ORDER_STATUS_LABELS[NEXT_STATUS[o.status]!]}
                       </button>

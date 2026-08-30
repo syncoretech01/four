@@ -119,7 +119,8 @@ export default function RiderPage() {
           <span className="text-red">
             <BrandLogo className="h-8" />
           </span>
-          <h1 className="font-display mt-4 text-2xl font-semibold text-ink">Rider app</h1>
+          <h1 className="font-display mt-4 text-3xl font-bold tracking-tight text-ink">Rider app</h1>
+          <p className="mt-1 text-sm text-ink-soft">Sign in to see your deliveries and go live.</p>
           <label className="mt-6 grid gap-2">
             <span className="text-xs font-semibold uppercase tracking-wide text-ink">Phone</span>
             <input
@@ -141,7 +142,7 @@ export default function RiderPage() {
             />
           </label>
           {error && <p className="mt-3 text-sm font-medium text-red">{error}</p>}
-          <button className="mt-5 w-full rounded-full bg-red py-3.5 font-semibold text-cream transition hover:bg-red-deep">
+          <button className="mt-5 w-full rounded-full bg-red py-3.5 font-bold text-cream shadow-lg shadow-red/25 transition hover:bg-red-deep active:scale-[0.98]">
             Sign in
           </button>
         </form>
@@ -157,7 +158,7 @@ export default function RiderPage() {
             <BrandLogo className="h-6" />
           </span>
           <div>
-            <p className="font-display text-lg font-semibold leading-tight text-ink">{me.rider.name}</p>
+            <p className="font-display text-lg font-bold leading-tight text-ink">{me.rider.name}</p>
             <p className="text-xs text-ink-soft">{me.rider.branch} branch</p>
           </div>
         </div>
@@ -168,13 +169,21 @@ export default function RiderPage() {
 
       <button
         onClick={streaming ? stopStreaming : startStreaming}
-        className={`mt-6 w-full rounded-card p-5 text-left transition ${
-          streaming ? "bg-red text-cream" : "bg-cream text-ink"
+        className={`mt-6 w-full rounded-card p-5 text-left shadow-lg transition active:scale-[0.99] ${
+          streaming ? "bg-red text-cream shadow-red/25" : "bg-cream text-ink shadow-ink/5"
         }`}
       >
         <div className="flex items-center justify-between">
           <div>
-            <p className="font-display text-lg font-semibold">{streaming ? "You're live" : "Go live"}</p>
+            <p className="font-display flex items-center gap-2 text-xl font-bold">
+              {streaming && (
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-cream opacity-60 motion-safe:animate-ping" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-cream" />
+                </span>
+              )}
+              {streaming ? "You're live" : "Go live"}
+            </p>
             <p className={`text-sm ${streaming ? "text-cream/80" : "text-ink-soft"}`}>
               {streaming
                 ? `Streaming GPS${lastFix ? ` - last fix ${lastFix}` : ""}. Tap to stop.`
@@ -196,51 +205,91 @@ export default function RiderPage() {
 
       {error && <p className="mt-3 text-sm font-medium text-red">{error}</p>}
 
-      <h2 className="font-display mt-8 text-xl font-semibold text-ink">Your deliveries</h2>
+      <div className="mt-8 flex items-baseline justify-between">
+        <h2 className="font-display text-2xl font-bold tracking-tight text-ink">Your deliveries</h2>
+        {me.orders.length > 0 && (
+          <span className="rounded-full bg-red px-3 py-1 text-xs font-bold text-cream">{me.orders.length} active</span>
+        )}
+      </div>
       <div className="mt-3 grid gap-3">
         {me.orders.length === 0 && (
-          <p className="rounded-card bg-cream p-6 text-center text-sm text-ink-soft">
+          <p className="rounded-card bg-cream p-8 text-center text-sm font-medium text-ink-soft">
             Nothing assigned right now. New deliveries appear here.
           </p>
         )}
-        {me.orders.map((o) => (
-          <article key={o.orderNumber} className="rounded-card bg-cream p-5">
-            <div className="flex items-center justify-between">
-              <h3 className="font-display text-lg font-semibold text-ink">{o.orderNumber}</h3>
-              <span className="rounded-full bg-red px-3 py-1 text-xs font-bold text-cream">
-                {o.status === "OUT_FOR_DELIVERY" ? "On the way" : "In the kitchen"}
-              </span>
-            </div>
-            <p className="mt-2 text-sm font-medium text-ink">
-              {o.customerName} · <a href={`tel:${o.phone}`} className="text-red underline-offset-2 hover:underline">{o.phone}</a>
-            </p>
-            <p className="text-sm text-ink-soft">
-              {o.address}, {o.block}, {o.areaName}
-              {o.note ? ` · "${o.note}"` : ""}
-            </p>
-            <ul className="mt-2 text-sm text-ink-soft">
-              {o.lines.map((l, i) => (
-                <li key={i}>
-                  {l.qty}x {l.name}
-                  {l.variantLabel ? ` (${l.variantLabel})` : ""}
-                </li>
-              ))}
-            </ul>
-            <div className="mt-3 flex items-center justify-between">
-              <span className="font-bold text-ink">
-                {formatPKR(o.total)} <span className="text-xs font-medium text-ink-soft">{o.payment === "COD" ? "collect cash" : "card"}</span>
-              </span>
-              {o.status === "OUT_FOR_DELIVERY" && (
+        {me.orders.map((o) => {
+          const out = o.status === "OUT_FOR_DELIVERY";
+          const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${o.address}, ${o.block}, ${o.areaName}, Lahore`)}`;
+          return (
+            <article key={o.orderNumber} className="overflow-hidden rounded-card bg-cream shadow-sm shadow-ink/5">
+              <div className="p-5">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-display text-xl font-bold text-ink">{o.orderNumber}</h3>
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-bold ${out ? "bg-red text-cream" : "bg-beige-deep text-ink"}`}
+                  >
+                    {out ? "On the way" : "In the kitchen"}
+                  </span>
+                </div>
+                <p className="mt-3 font-bold text-ink">{o.customerName}</p>
+                <p className="text-sm text-ink-soft">
+                  {o.address}, {o.block}, {o.areaName}
+                  {o.note ? ` · "${o.note}"` : ""}
+                </p>
+                <ul className="mt-2 text-sm text-ink-soft">
+                  {o.lines.map((l, i) => (
+                    <li key={i}>
+                      {l.qty}x {l.name}
+                      {l.variantLabel ? ` (${l.variantLabel})` : ""}
+                    </li>
+                  ))}
+                </ul>
+
+                {/* what the rider must not get wrong: how much cash to collect */}
+                <div
+                  className={`mt-4 rounded-xl px-4 py-3 text-center font-bold ${
+                    o.payment === "COD" ? "bg-red/10 text-red" : "bg-beige-deep text-ink"
+                  }`}
+                >
+                  {o.payment === "COD" ? `Collect ${formatPKR(o.total)} cash` : `${formatPKR(o.total)} · paid by card`}
+                </div>
+
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  <a
+                    href={`tel:${o.phone}`}
+                    className="flex items-center justify-center gap-2 rounded-full border-2 border-ink/15 py-3 text-sm font-bold text-ink transition hover:border-ink active:scale-[0.98]"
+                  >
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
+                      <path d="M4 4h4l2 5-3 2a12 12 0 0 0 6 6l2-3 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 2 6a2 2 0 0 1 2-2Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+                    </svg>
+                    Call
+                  </a>
+                  <a
+                    href={mapsHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 rounded-full border-2 border-ink/15 py-3 text-sm font-bold text-ink transition hover:border-ink active:scale-[0.98]"
+                  >
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
+                      <path d="M12 21s-7-6.1-7-11a7 7 0 1 1 14 0c0 4.9-7 11-7 11Z" stroke="currentColor" strokeWidth="2" />
+                      <circle cx="12" cy="10" r="2.5" fill="currentColor" />
+                    </svg>
+                    Navigate
+                  </a>
+                </div>
+              </div>
+
+              {out && (
                 <button
                   onClick={() => delivered(o.orderNumber)}
-                  className="rounded-full bg-red px-5 py-2.5 text-sm font-semibold text-cream transition hover:bg-red-deep active:scale-[0.98]"
+                  className="w-full bg-red py-4 text-base font-bold text-cream transition hover:bg-red-deep active:scale-[0.99]"
                 >
                   Mark delivered
                 </button>
               )}
-            </div>
-          </article>
-        ))}
+            </article>
+          );
+        })}
       </div>
     </main>
   );
