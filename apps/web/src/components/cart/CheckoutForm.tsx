@@ -231,7 +231,7 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
         <button
           onClick={place}
           disabled={stage === "placing" || !quote || !open}
-          className="mt-1 w-full rounded-full bg-red py-4 text-base font-semibold text-cream transition hover:bg-red-deep active:scale-[0.98] disabled:opacity-50"
+          className="mt-1 w-full rounded-full bg-red py-4 text-base font-bold text-cream shadow-lg shadow-red/25 transition hover:bg-red-deep active:scale-[0.98] disabled:opacity-50 disabled:shadow-none"
         >
           {!open
             ? "Kitchen closed"

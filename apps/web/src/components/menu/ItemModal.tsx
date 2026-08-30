@@ -148,6 +148,11 @@ export function ItemModal({ item, onClose }: { item: MenuItemView | null; onClos
                 fallbackLabel={item.name}
                 className="h-full w-full object-cover"
               />
+              {item.tags.includes("bestseller") && (
+                <span className="absolute left-5 top-5 rounded-full bg-red px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-cream shadow-md shadow-ink/20">
+                  Bestseller
+                </span>
+              )}
               <button
                 onClick={onClose}
                 aria-label="Close"
@@ -161,10 +166,10 @@ export function ItemModal({ item, onClose }: { item: MenuItemView | null; onClos
 
             <div className="p-7">
               <div className="flex items-start justify-between gap-4">
-                <h3 className="font-display text-3xl font-semibold text-ink">{item.name}</h3>
+                <h3 className="font-display text-3xl font-bold tracking-tight text-ink">{item.name}</h3>
                 <span className="shrink-0 text-xl font-bold text-red">{formatPKR(unitPrice)}</span>
               </div>
-              <p className="mt-2 text-ink-soft">{item.description}</p>
+              <p className="mt-2 leading-relaxed text-ink-soft">{item.description}</p>
 
               {item.variants.length > 0 && (
                 <div className="mt-6">
@@ -242,7 +247,7 @@ export function ItemModal({ item, onClose }: { item: MenuItemView | null; onClos
                 <button
                   onClick={add}
                   disabled={busy}
-                  className="h-12 flex-1 rounded-full bg-red text-base font-semibold text-cream transition hover:bg-red-deep active:scale-[0.98] disabled:opacity-60"
+                  className="h-12 flex-1 rounded-full bg-red text-base font-bold text-cream shadow-lg shadow-red/25 transition hover:bg-red-deep active:scale-[0.98] disabled:opacity-60"
                 >
                   {busy ? "Adding..." : `Add ${qty > 1 ? `${qty} ` : ""}to cart · ${formatPKR(unitPrice * qty)}`}
                 </button>
