@@ -32,6 +32,31 @@ const webhookAdapter: PosAdapter = {
   },
 };
 
+
+/**
+ * Demo: accepts every order and keeps the exact payload that a real POS would
+ * have received, so the integration can be shown to a POS vendor before any
+ * integration exists - "this is the JSON we would POST to you".
+ *
+ * In memory and capped, because it is a demonstration aid, not a record. The
+ * order itself is already durable in Postgres.
+ */
+const DEMO_FEED_LIMIT = 25;
+const demoFeed: { receivedAt: string; order: PosOrder }[] = [];
+
+export function demoPosFeed(): { receivedAt: string; order: PosOrder }[] {
+  return [...demoFeed];
+}
+
+export const demoAdapter: PosAdapter = {
+  name: "demo",
+  async submitOrder(order: PosOrder): Promise<PosResult> {
+    demoFeed.unshift({ receivedAt: new Date().toISOString(), order });
+    demoFeed.length = Math.min(demoFeed.length, DEMO_FEED_LIMIT);
+    return { ok: true, posReference: `DEMO-${order.orderNumber}` };
+  },
+};
+
 /**
  * Foodics skeleton (https://developers.foodics.com): needs the account's
  * product-id mapping before it can be completed - see docs/POS-INTEGRATION.md.
@@ -48,6 +73,7 @@ const foodicsAdapter: PosAdapter = {
 
 const ADAPTERS: Record<string, PosAdapter> = {
   console: consoleAdapter,
+  demo: demoAdapter,
   webhook: webhookAdapter,
   foodics: foodicsAdapter,
 };

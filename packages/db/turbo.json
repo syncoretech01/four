@@ -1,0 +1,17 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "cache": false
+    },
+    "typecheck": {
+      // `^build` is only the DEPENDENCIES' builds, so without the bare "build"
+      // this package's typecheck races its own `prisma generate` and can run
+      // before the client exists: "Module '@prisma/client' has no exported
+      // member 'PrismaClient'". Other packages get the client via ^build.
+      "dependsOn": ["^build", "build"]
+    }
+  }
+}

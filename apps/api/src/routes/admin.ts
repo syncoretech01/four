@@ -5,6 +5,7 @@ import { prisma, OrderStatus } from "@four/db";
 import { config } from "../config.js";
 import * as orderService from "../services/orderService.js";
 import * as riderService from "../services/riderService.js";
+import { demoPosFeed } from "../pos/adapters.js";
 
 function safeEqual(a: string, b: string): boolean {
   const ab = Buffer.from(a);
@@ -12,15 +13,50 @@ function safeEqual(a: string, b: string): boolean {
   return ab.length === bb.length && timingSafeEqual(ab, bb);
 }
 
+/**
+ * The console credential is a 4-8 digit PIN so kitchen staff can enter it on a
+ * tablet numpad. Four digits is 10,000 combinations, which a per-IP rate limit
+ * alone does not protect - an attacker rotating IPs would walk the whole space.
+ * So failures are also counted globally against the single shared PIN, and the
+ * login is locked for everyone once they pile up.
+ *
+ * In-memory, which suits the single-node deployment. A restart clears it; that
+ * is acceptable because an attacker cannot force one.
+ */
+const LOCKOUT_AFTER = 5;
+const LOCKOUT_MS = 15 * 60 * 1000;
+let failedAttempts = 0;
+let lockedUntil = 0;
+
 export async function adminRoutes(app: FastifyInstance): Promise<void> {
   app.post(
     "/admin/login",
     { config: { rateLimit: { max: 10, timeWindow: "1 minute" } } },
     async (req, reply) => {
-      const { password } = z.object({ password: z.string().min(1).max(200) }).parse(req.body);
-      if (!safeEqual(password, config.ADMIN_PASSWORD)) {
-        return reply.code(401).send({ error: { code: "BAD_PASSWORD", message: "Wrong password" } });
+      const { pin } = z.object({ pin: z.string().min(1).max(16) }).parse(req.body);
+
+      const now = Date.now();
+      if (now < lockedUntil) {
+        const minutes = Math.ceil((lockedUntil - now) / 60_000);
+        return reply.code(429).send({
+          error: {
+            code: "LOCKED_OUT",
+            message: `Too many wrong PINs. Try again in ${minutes} minute${minutes === 1 ? "" : "s"}.`,
+          },
+        });
       }
+
+      if (!safeEqual(pin, config.ADMIN_PIN)) {
+        failedAttempts += 1;
+        if (failedAttempts >= LOCKOUT_AFTER) {
+          lockedUntil = now + LOCKOUT_MS;
+          failedAttempts = 0;
+          req.log.warn("admin login locked out after repeated wrong PINs");
+        }
+        return reply.code(401).send({ error: { code: "BAD_PIN", message: "Wrong PIN" } });
+      }
+
+      failedAttempts = 0;
       await prisma.session.update({ where: { id: req.session.sessionId }, data: { isAdmin: true } });
       return { ok: true };
     },
@@ -103,6 +139,13 @@ export async function adminRoutes(app: FastifyInstance): Promise<void> {
     const { status } = z.object({ status: z.nativeEnum(OrderStatus) }).parse(req.body);
     return { order: await orderService.updateStatus(orderNumber.toUpperCase(), status) };
   });
+
+  /**
+   * What the POS bridge actually sent, newest first. Populated only by the
+   * `demo` provider - it exists to show a POS vendor the exact payload their
+   * endpoint would receive.
+   */
+  app.get("/admin/pos-feed", async () => ({ provider: config.POS_PROVIDER, entries: demoPosFeed() }));
 
   app.patch("/admin/items/:itemId/availability", async (req) => {
     const { itemId } = req.params as { itemId: string };

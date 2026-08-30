@@ -30,7 +30,18 @@ told to retry or call - orders are never silently dropped.
 |---|---|---|
 | `console` (default) | Accepts and logs orders; keeps the site fully working before the POS is known | none |
 | `webhook` | POSTs the order JSON to any URL: Zapier/Make/n8n, WhatsApp bot, Google Sheets bridge, or middleware in front of the POS | `POS_WEBHOOK_URL`, optional `POS_WEBHOOK_TOKEN` |
+| `demo` | Accepts every order and keeps the payload, shown at `/admin` -> POS feed. For demonstrating the integration to a vendor before one exists | none |
 | `foodics` | Skeleton for Foodics cloud POS | `FOODICS_API_TOKEN`, `FOODICS_BRANCH_ID` |
+
+## Status: pending confirmation
+
+Operations named **BlinkCo** as the likely till system but asked to hold while
+they confirm it. `POS_PROVIDER` therefore stays `console`: orders are stored,
+appear on the kitchen console, and are worked from there.
+
+No BlinkCo adapter exists yet, and one should not be guessed - it needs their
+integration documentation or a support contact. When the provider is confirmed,
+either point the `webhook` adapter at it or add an adapter as described below.
 
 ## Next step: identify the live POS
 

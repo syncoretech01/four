@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LAHORE_AREAS, formatPKR, type OrderQuote, type OrderView } from "@four/shared";
+import { HOURS_LABEL, LAHORE_AREAS, formatPKR, isOpenAt, type OrderQuote, type OrderView } from "@four/shared";
 import { api, ApiError } from "@/lib/api";
 import { useStore } from "@/lib/store";
 
@@ -28,6 +28,15 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
   const [payment, setPayment] = useState<"COD" | "CARD">(storedQuote?.payment ?? "COD");
   const [quote, setQuote] = useState<OrderQuote | null>(storedQuote);
   const [stage, setStage] = useState<Stage>("form");
+  // the server refuses orders outside opening hours; mirror that here so the
+  // customer is told before filling the form in, not after submitting it
+  const [open, setOpen] = useState(true);
+  useEffect(() => {
+    const tick = () => setOpen(isOpenAt());
+    tick();
+    const id = setInterval(tick, 60_000);
+    return () => clearInterval(id);
+  }, []);
   const [errorMsg, setErrorMsg] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
@@ -216,11 +225,22 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
 
         <button
           onClick={place}
-          disabled={stage === "placing" || !quote}
+          disabled={stage === "placing" || !quote || !open}
           className="mt-1 w-full rounded-full bg-red py-4 text-base font-semibold text-cream transition hover:bg-red-deep active:scale-[0.98] disabled:opacity-50"
         >
-          {stage === "placing" ? "Placing your order..." : quote ? `Place order · ${formatPKR(quote.total)}` : "Cart is empty"}
+          {!open
+            ? "Kitchen closed"
+            : stage === "placing"
+              ? "Placing your order..."
+              : quote
+                ? `Place order · ${formatPKR(quote.total)}`
+                : "Cart is empty"}
         </button>
+        {!open && (
+          <p className="mt-3 text-center text-sm font-medium text-ink-soft">
+            We are closed right now. {HOURS_LABEL} - your cart will still be here.
+          </p>
+        )}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Kitchen/manager console: password login, live order board (new orders
+ * Kitchen/manager console: PIN login, live order board (new orders
  * pop in over the socket), one-tap status advance, and per-item
  * availability toggles that sold-out the storefront instantly.
  */
@@ -59,15 +59,16 @@ const NEXT_STATUS: Record<string, OrderStatusName | undefined> = {
 
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
-  const [password, setPassword] = useState("");
+  const [pin, setPin] = useState("");
   const [error, setError] = useState("");
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [items, setItems] = useState<AdminItem[]>([]);
   const [branches, setBranches] = useState<AdminBranch[]>([]);
   const [riders, setRiders] = useState<AdminRider[]>([]);
   const [branchFilter, setBranchFilter] = useState<string>("");
-  const [tab, setTab] = useState<"orders" | "menu">("orders");
+  const [tab, setTab] = useState<"orders" | "menu" | "pos">("orders");
   const branchFilterRef = { current: branchFilter };
+  const [posFeed, setPosFeed] = useState<{ provider: string; entries: { receivedAt: string; order: unknown }[] }>({ provider: "", entries: [] });
 
   const refresh = useCallback(async (branchId?: string) => {
     try {
@@ -110,7 +111,7 @@ export default function AdminPage() {
     e.preventDefault();
     setError("");
     try {
-      await api("/api/admin/login", { method: "POST", body: JSON.stringify({ password }) });
+      await api("/api/admin/login", { method: "POST", body: JSON.stringify({ pin }) });
       // socket auth carries isAdmin from the session row; reconnect to refresh it
       getSocket().disconnect().connect();
       await refresh();
@@ -118,6 +119,14 @@ export default function AdminPage() {
       setError(err instanceof ApiError ? err.message : "Login failed");
     }
   };
+
+  const loadPosFeed = useCallback(async () => {
+    try {
+      setPosFeed(await api("/api/admin/pos-feed"));
+    } catch {
+      // the tab is a demonstration aid; a failure here must not break the board
+    }
+  }, []);
 
   const advance = async (orderNumber: string, status: string) => {
     const next = NEXT_STATUS[status];
@@ -156,16 +165,24 @@ export default function AdminPage() {
           </span>
           <h1 className="font-display mt-4 text-2xl font-semibold text-ink">Kitchen console</h1>
           <label className="mt-6 grid gap-2">
-            <span className="text-xs font-semibold uppercase tracking-wide text-ink">Password</span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-ink">PIN</span>
             <input
+              // inputMode numeric brings up the tablet numpad rather than a keyboard
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="h-12 rounded-xl border border-ink/15 bg-cream px-4 text-ink outline-none focus:border-red focus:ring-2 focus:ring-red/30"
+              inputMode="numeric"
+              autoComplete="off"
+              pattern="[0-9]*"
+              maxLength={8}
+              value={pin}
+              onChange={(e) => setPin(e.target.value.replace(/\D/g, ""))}
+              className="h-14 rounded-xl border border-ink/15 bg-cream px-4 text-center text-2xl tracking-[0.5em] text-ink outline-none focus:border-red focus:ring-2 focus:ring-red/30"
             />
           </label>
           {error && <p className="mt-3 text-sm font-medium text-red">{error}</p>}
-          <button className="mt-5 w-full rounded-full bg-red py-3.5 font-semibold text-cream transition hover:bg-red-deep">
+          <button
+            disabled={pin.length < 4}
+            className="mt-5 w-full rounded-full bg-red py-3.5 font-semibold text-cream transition hover:bg-red-deep disabled:cursor-not-allowed disabled:opacity-40"
+          >
             Sign in
           </button>
         </form>
@@ -195,10 +212,43 @@ export default function AdminPage() {
           >
             Menu availability
           </button>
+          <button
+            onClick={() => {
+              setTab("pos");
+              void loadPosFeed();
+            }}
+            className={`rounded-full px-5 py-2 transition ${tab === "pos" ? "bg-red text-cream" : "text-ink"}`}
+          >
+            POS feed
+          </button>
         </div>
       </header>
 
-      {tab === "orders" ? (
+      {tab === "pos" ? (
+        <div className="mt-8 grid gap-4">
+          <div className="rounded-card bg-cream p-6">
+            <h2 className="font-display text-lg font-semibold text-ink">What the POS receives</h2>
+            <p className="mt-1 text-sm text-ink-soft">
+              The exact payload the bridge sends for each order - the integration a POS vendor
+              would build against. Active provider: <b className="text-ink">{posFeed.provider || "unknown"}</b>.
+              {posFeed.provider !== "demo" && " Set POS_PROVIDER=demo to capture payloads here."}
+            </p>
+          </div>
+          {posFeed.entries.length === 0 && (
+            <p className="rounded-card bg-cream p-8 text-center text-ink-soft">
+              Nothing captured yet. Place an order with POS_PROVIDER=demo and it appears here.
+            </p>
+          )}
+          {posFeed.entries.map((e, i) => (
+            <article key={i} className="rounded-card bg-cream p-6">
+              <p className="text-xs font-semibold uppercase tracking-wide text-ink-soft">{e.receivedAt}</p>
+              <pre className="mt-3 overflow-x-auto rounded-xl bg-ink/5 p-4 text-xs leading-relaxed text-ink">
+                {JSON.stringify(e.order, null, 2)}
+              </pre>
+            </article>
+          ))}
+        </div>
+      ) : tab === "orders" ? (
         <div className="mt-8 grid gap-4">
           <div className="flex flex-wrap gap-2">
             <button

@@ -1,0 +1,90 @@
+# Production stack for a single EC2 host. Self-contained rather than an
+# overlay on docker-compose.yml, because Compose merges `ports` by appending -
+# an overlay could not take the development port publishing back off, which
+# would leave the API and storefront reachable without TLS.
+#
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# Only Caddy publishes ports. postgres, api and web talk over the internal
+# network and are not reachable from outside the instance.
+
+name: four
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: four
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/four
+      # same origin as the storefront: also what makes the session cookie
+      # Secure, since the API sets that only when WEB_ORIGIN is https
+      WEB_ORIGIN: ${PUBLIC_URL:?set PUBLIC_URL in .env, e.g. https://order.four.pk}
+      APP_SECRET: ${APP_SECRET:?set APP_SECRET in .env}
+      ADMIN_PIN: ${ADMIN_PIN:?set ADMIN_PIN in .env (4-8 digits)}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      POS_PROVIDER: ${POS_PROVIDER:-console}
+      POS_WEBHOOK_URL: ${POS_WEBHOOK_URL:-}
+      POS_WEBHOOK_TOKEN: ${POS_WEBHOOK_TOKEN:-}
+      TAX_RATE_COD: ${TAX_RATE_COD:-0.16}
+      TAX_RATE_CARD: ${TAX_RATE_CARD:-0.08}
+      NODE_ENV: production
+    expose:
+      - "4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        # baked in at build time: Next inlines NEXT_PUBLIC_* into the bundle,
+        # so changing the domain means rebuilding this image
+        NEXT_PUBLIC_API_URL: ${PUBLIC_URL:?set PUBLIC_URL in .env}
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+    expose:
+      - "3000"
+    depends_on:
+      - api
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      DOMAIN: ${DOMAIN:?set DOMAIN in .env, e.g. order.four.pk}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+      - caddy_logs:/var/log/caddy
+    depends_on:
+      - web
+      - api
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:
+  caddy_logs:

@@ -67,6 +67,9 @@ export default function TrackPage({ params }: { params: Promise<{ orderNumber: s
                 <div>
                   <p className="text-sm font-medium text-ink-soft">Order</p>
                   <h1 className="font-display text-3xl font-semibold text-ink">{order.orderNumber}</h1>
+                  {order.etaLabel && !cancelled && order.status !== "DELIVERED" && (
+                    <p className="mt-1 text-sm font-semibold text-red">Usually {order.etaLabel} to {order.areaName}</p>
+                  )}
                 </div>
                 <span
                   className={`rounded-full px-4 py-2 text-sm font-bold ${
