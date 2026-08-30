@@ -121,18 +121,19 @@ brand-assets/     Imported brand kit: logo vectors, menu sheet renders, 203 web-
   minutes after 5 wrong PINs): live order board (new orders pop
   in over the socket), one-tap status advance that updates the customer's
   tracking page in real time, and per-item availability toggles.
-- POS bridge (`apps/api/src/pos/`): `console` (default), `webhook`
-  (Zapier/n8n/WhatsApp-bot/middleware), `foodics` skeleton. See
-  **docs/POS-INTEGRATION.md**. Orders are never silently dropped - a POS
-  failure cancels loudly.
+- POS bridge (`apps/api/src/pos/`): `cornpos` (**the confirmed till
+  system** - ready, needs credentials from Corn POS support), `console`
+  (default until then), `webhook` (Zapier/n8n/WhatsApp-bot/middleware),
+  `foodics` skeleton. See **docs/POS-INTEGRATION.md**. Orders are never
+  silently dropped - a POS failure cancels loudly.
 
 ## Demos
 
 Two things are stubbed pending decisions, each with something showable.
 
 **POS payload** - set `POS_PROVIDER=demo`, place an order, then open
-`/admin` -> **POS feed**. It shows the exact JSON the bridge would POST to a
-POS endpoint, which is what a vendor needs to see to scope an integration.
+`/admin` -> **POS feed**. It shows the exact JSON the bridge POSTs to a
+POS endpoint - hand it to Corn POS support to scope the integration.
 Capped and in memory; the order itself is durable in Postgres regardless.
 
 **Online payment** - `/demo/payment` walks through card, Easypaisa and

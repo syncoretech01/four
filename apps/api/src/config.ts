@@ -26,9 +26,14 @@ const envSchema = z.object({
   OPENAI_REALTIME_MODEL: z.string().default("gpt-realtime"),
   OPENAI_REALTIME_VOICE: z.string().default("marin"),
 
-  POS_PROVIDER: z.enum(["console", "demo", "webhook", "foodics"]).default("console"),
+  POS_PROVIDER: z.enum(["console", "demo", "webhook", "cornpos", "foodics"]).default("console"),
   POS_WEBHOOK_URL: z.string().optional(),
   POS_WEBHOOK_TOKEN: z.string().optional(),
+  /** Corn POS order-intake endpoint + key, issued by their integration team. */
+  CORNPOS_API_URL: z.string().url().optional(),
+  CORNPOS_API_KEY: z.string().optional(),
+  /** Our branch id -> Corn POS outlet id, e.g. "fairways-dha6:1,allama-iqbal-town:2,lake-city:3". */
+  CORNPOS_BRANCH_MAP: z.string().optional(),
   FOODICS_API_TOKEN: z.string().optional(),
   FOODICS_BRANCH_ID: z.string().optional(),
 

@@ -28,36 +28,63 @@ told to retry or call - orders are never silently dropped.
 
 | `POS_PROVIDER` | What it does | Env vars |
 |---|---|---|
-| `console` (default) | Accepts and logs orders; keeps the site fully working before the POS is known | none |
+| `console` (default) | Accepts and logs orders; keeps the site fully working before the POS credentials arrive | none |
+| `cornpos` | **The confirmed till system.** POSTs each order to Corn POS's intake with the outlet id of the branch that cooks it | `CORNPOS_API_URL`, `CORNPOS_API_KEY`, `CORNPOS_BRANCH_MAP` |
 | `webhook` | POSTs the order JSON to any URL: Zapier/Make/n8n, WhatsApp bot, Google Sheets bridge, or middleware in front of the POS | `POS_WEBHOOK_URL`, optional `POS_WEBHOOK_TOKEN` |
-| `demo` | Accepts every order and keeps the payload, shown at `/admin` -> POS feed. For demonstrating the integration to a vendor before one exists | none |
-| `foodics` | Skeleton for Foodics cloud POS | `FOODICS_API_TOKEN`, `FOODICS_BRANCH_ID` |
+| `demo` | Accepts every order and keeps the payload, shown at `/admin` -> POS feed. For demonstrating the integration to the vendor | none |
+| `foodics` | Skeleton for Foodics cloud POS (kept as a fallback) | `FOODICS_API_TOKEN`, `FOODICS_BRANCH_ID` |
 
-## Status: pending confirmation
+## Status: Corn POS confirmed
 
-Operations named **BlinkCo** as the likely till system but asked to hold while
-they confirm it. `POS_PROVIDER` therefore stays `console`: orders are stored,
-appear on the kitchen console, and are worked from there.
+Operations confirmed the till system is **Corn POS**
+(<https://www.cornpos.com>), a Lahore cloud POS with kitchen displays,
+online-order intake and its own rider app. They publish no public developer
+documentation - integrations are arranged by their team:
 
-No BlinkCo adapter exists yet, and one should not be guessed - it needs their
-integration documentation or a support contact. When the provider is confirmed,
-either point the `webhook` adapter at it or add an adapter as described below.
+- **info@cornpos.com** / **+92 42 35972044**
 
-## Next step: identify the live POS
+The `cornpos` adapter (`apps/api/src/pos/adapters.ts`) is ready and is pure
+configuration once their team hands over the account details. Until then
+`POS_PROVIDER` stays `console`: orders are stored, appear on the kitchen
+console at `/admin`, and are worked from there - nothing is blocked.
 
-Ask FOUR's operations team what the tills run. Common paths:
+## Going live: what to ask Corn POS support
 
-- **Foodics** - REST API (`developers.foodics.com`). Finish the adapter:
-  map each `itemId` from `packages/shared/src/menu-data.ts` to the
-  Foodics product id, then `POST /orders` with the branch id.
-- **Oscar POS / BlinkCo / Trax** - each exposes an orders API or accepts
-  webhooks; point the `webhook` adapter at them or add a small adapter.
-- **Square / Loyverse** - official REST APIs; add an adapter.
-- **No API / legacy POS** - point the `webhook` adapter at a WhatsApp
-  Business bot or a kitchen tablet screen; staff confirm manually.
+Give them a sample payload first - place a test order with
+`POS_PROVIDER=demo` and copy the JSON from `/admin` -> POS feed. That is
+exactly what the adapter sends, plus an `outletId` field. Then confirm:
 
-To add an adapter: implement `PosAdapter` in `apps/api/src/pos/`,
-register it in `ADAPTERS`, set `POS_PROVIDER`.
+1. **Order-intake endpoint URL** for FOUR's account -> `CORNPOS_API_URL`.
+2. **API key** and which header they read it from -> `CORNPOS_API_KEY`.
+   The adapter sends the key as both `x-api-key` and `Authorization:
+   Bearer`, which covers the common conventions; if they use a different
+   header, it is a one-line change in the adapter.
+3. **Outlet ids** for the three branches -> `CORNPOS_BRANCH_MAP`, e.g.
+   `fairways-dha6:101,allama-iqbal-town:102,lake-city:103`, so each order
+   lands on the right branch's till/KDS.
+4. **Payload mapping** - whether they ingest our JSON as-is or need field
+   renames (menu item codes, payment codes). Renames belong in the
+   adapter, not the storefront.
+5. **Response shape** - the adapter keeps any `reference`/`orderId`/`id`
+   they return against the order as `posReference`.
+
+Then set in `.env`:
+
+```
+POS_PROVIDER=cornpos
+CORNPOS_API_URL=...
+CORNPOS_API_KEY=...
+CORNPOS_BRANCH_MAP=fairways-dha6:...,allama-iqbal-town:...,lake-city:...
+```
+
+One thing to decide with them: Corn POS also sells its own online-ordering
+and rider tracking. FOUR's storefront already does both (checkout, live
+GPS tracking at `/track`, rider app at `/rider`), so the clean split is:
+this platform is the customer-facing layer, Corn POS is the till/kitchen
+layer, and orders flow one way through this adapter.
+
+To add a different adapter later: implement `PosAdapter` in
+`apps/api/src/pos/`, register it in `ADAPTERS`, set `POS_PROVIDER`.
 
 Note the admin console (`/admin`) already gives the kitchen a live order
 board even with the `console` adapter, so the site is operational before

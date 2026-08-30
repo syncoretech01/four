@@ -58,6 +58,59 @@ export const demoAdapter: PosAdapter = {
 };
 
 /**
+ * Corn POS (https://www.cornpos.com) - FOUR's confirmed till system.
+ *
+ * Corn POS is a Lahore cloud POS (KDS, online-order intake, rider app) with
+ * no public developer docs; integrations are arranged by their team
+ * (info@cornpos.com, +92 42 35972044). This adapter is therefore built to
+ * the shape those intakes take - an HTTPS endpoint plus an issued key -
+ * with every account-specific detail an env var, so going live once they
+ * hand over credentials is configuration, not code:
+ *
+ *   POS_PROVIDER=cornpos
+ *   CORNPOS_API_URL=<order-intake endpoint from Corn POS support>
+ *   CORNPOS_API_KEY=<key they issue>
+ *   CORNPOS_BRANCH_MAP=fairways-dha6:1,allama-iqbal-town:2,lake-city:3
+ *
+ * The branch map translates our branch ids into Corn POS outlet ids so each
+ * order lands on the till/KDS of the branch that cooks it. The key is sent
+ * both ways vendors commonly expect it (x-api-key and a bearer token);
+ * see docs/POS-INTEGRATION.md for what to confirm with their support.
+ */
+export function parseBranchMap(raw: string | undefined): Record<string, string> {
+  const map: Record<string, string> = {};
+  for (const pair of (raw ?? "").split(",")) {
+    const [ours, theirs] = pair.split(":").map((s) => s.trim());
+    if (ours && theirs) map[ours] = theirs;
+  }
+  return map;
+}
+
+export const cornposAdapter: PosAdapter = {
+  name: "cornpos",
+  async submitOrder(order: PosOrder): Promise<PosResult> {
+    if (!config.CORNPOS_API_URL || !config.CORNPOS_API_KEY) {
+      return { ok: false, error: "CORNPOS_API_URL / CORNPOS_API_KEY not configured - request them from Corn POS support" };
+    }
+    const outletId = parseBranchMap(config.CORNPOS_BRANCH_MAP)[order.branch?.id ?? ""];
+    const res = await fetch(config.CORNPOS_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": config.CORNPOS_API_KEY,
+        Authorization: `Bearer ${config.CORNPOS_API_KEY}`,
+      },
+      body: JSON.stringify({ ...order, outletId }),
+    });
+    if (!res.ok) return { ok: false, error: `Corn POS responded ${res.status}` };
+    // whatever reference their intake returns, keep it next to the order
+    const body = (await res.json().catch(() => ({}))) as Record<string, unknown>;
+    const ref = [body.reference, body.orderId, body.order_id, body.id].find((v) => typeof v === "string" || typeof v === "number");
+    return { ok: true, posReference: ref !== undefined ? String(ref) : order.orderNumber };
+  },
+};
+
+/**
  * Foodics skeleton (https://developers.foodics.com): needs the account's
  * product-id mapping before it can be completed - see docs/POS-INTEGRATION.md.
  */
@@ -75,6 +128,7 @@ const ADAPTERS: Record<string, PosAdapter> = {
   console: consoleAdapter,
   demo: demoAdapter,
   webhook: webhookAdapter,
+  cornpos: cornposAdapter,
   foodics: foodicsAdapter,
 };
 

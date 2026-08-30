@@ -11,6 +11,7 @@ import {
   BRAND,
   DELIVERY_FEE,
   FREE_DELIVERY_ABOVE,
+  BRANCHES,
   LAHORE_AREAS,
   areaCoords,
   branchForArea,
@@ -295,6 +296,7 @@ export async function assignRider(orderNumberArg: string, riderId: string | null
 function toPosOrder(order: {
   orderNumber: string;
   placedAt: Date;
+  branchId: string | null;
   customerName: string;
   phone: string;
   areaId: string;
@@ -309,9 +311,11 @@ function toPosOrder(order: {
   total: number;
   lines: { itemId: string; name: string; variantLabel: string | null; modifiers: unknown; qty: number; unitPrice: number }[];
 }) {
+  const branch = BRANCHES.find((b) => b.id === order.branchId);
   return {
     orderNumber: order.orderNumber,
     placedAt: order.placedAt.toISOString(),
+    branch: branch ? { id: branch.id, name: branch.name } : undefined,
     customer: { name: order.customerName, phone: order.phone },
     delivery: {
       areaId: order.areaId,

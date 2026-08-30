@@ -1,8 +1,8 @@
 /**
- * POS bridge contract. The restaurant's live POS is not confirmed yet, so
- * every provider implements this one interface and the active one is
- * chosen with POS_PROVIDER. Wiring the real POS later means one adapter
- * file and two env vars. See docs/POS-INTEGRATION.md.
+ * POS bridge contract. Every provider implements this one interface and the
+ * active one is chosen with POS_PROVIDER. The confirmed till system is
+ * Corn POS (see the cornpos adapter); the rest remain as fallbacks and
+ * demo aids. See docs/POS-INTEGRATION.md.
  */
 
 export interface PosOrderLine {
@@ -17,6 +17,8 @@ export interface PosOrderLine {
 export interface PosOrder {
   orderNumber: string;
   placedAt: string;
+  /** Which FOUR branch cooks this order; the POS routes it to that outlet's till/KDS. */
+  branch?: { id: string; name: string };
   customer: { name: string; phone: string };
   delivery: { areaId: string; areaName: string; block: string; address: string; note?: string };
   payment: "COD" | "CARD";
