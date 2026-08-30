@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma, OrderStatus } from "@four/db";
 import { config } from "../config.js";
 import * as orderService from "../services/orderService.js";
+import * as riderService from "../services/riderService.js";
 
 function safeEqual(a: string, b: string): boolean {
   const ab = Buffer.from(a);
@@ -38,8 +39,38 @@ export async function adminRoutes(app: FastifyInstance): Promise<void> {
     }
   });
 
-  app.get("/admin/orders", async () => {
-    const orders = await orderService.listOrders(80);
+  app.get("/admin/branches", async () => {
+    const branches = await prisma.branch.findMany({ orderBy: { name: "asc" } });
+    return { branches: branches.map((b) => ({ id: b.id, name: b.name, shortName: b.shortName })) };
+  });
+
+  app.get("/admin/riders", async (req) => {
+    const { branchId } = req.query as { branchId?: string };
+    const riders = await riderService.listRiders(branchId || undefined);
+    return {
+      riders: riders.map((r) => ({
+        id: r.id,
+        name: r.name,
+        phone: r.phone,
+        status: r.status,
+        branchId: r.branchId,
+        branch: r.branch.shortName,
+        lastLat: r.lastLat,
+        lastLng: r.lastLng,
+        lastSeenAt: r.lastSeenAt?.toISOString() ?? null,
+      })),
+    };
+  });
+
+  app.patch("/admin/orders/:orderNumber/rider", async (req) => {
+    const { orderNumber } = req.params as { orderNumber: string };
+    const { riderId } = z.object({ riderId: z.string().nullable() }).parse(req.body);
+    return { order: await orderService.assignRider(orderNumber.toUpperCase(), riderId) };
+  });
+
+  app.get("/admin/orders", async (req) => {
+    const { branchId } = req.query as { branchId?: string };
+    const orders = await orderService.listOrders(80, branchId || undefined);
     return {
       orders: orders.map((o) => ({
         orderNumber: o.orderNumber,
@@ -53,6 +84,10 @@ export async function adminRoutes(app: FastifyInstance): Promise<void> {
         note: o.note,
         payment: o.payment,
         total: o.total,
+        branchId: o.branchId,
+        branch: o.branch?.shortName ?? null,
+        riderId: o.riderId,
+        riderName: o.rider?.name ?? null,
         lines: o.lines.map((l) => ({
           name: l.name,
           variantLabel: l.variantLabel,

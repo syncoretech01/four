@@ -55,6 +55,22 @@ brand-assets/     Imported brand kit: logo vectors, menu sheet renders, 203 web-
 - The bot can only *prepare* an order (HMAC confirm token bound to
   session + cart + payment); the customer always completes checkout.
 
+### Multi-branch, riders, accounts
+- **Branches**: Fairways (DHA 6), Allama Iqbal Town, Lake City - orders
+  route automatically to the branch covering the delivery area
+  (`packages/shared/src/branches.ts`); the kitchen console filters per
+  branch and riders belong to one.
+- **Rider app** (`/rider`, mobile-first): phone + PIN login (demo riders
+  seeded, PIN 1234 - replace before launch), a live delivery queue, a
+  "Go live" GPS toggle that streams the phone's position over the
+  socket, and doorstep "Mark delivered". Customer tracking pages render
+  a FOUR-branded MapLibre map (keyless OpenFreeMap tiles) with the
+  branch, the destination, and the rider's dot moving in real time.
+  Geolocation requires https in production.
+- **Customer accounts**: created implicitly at guest checkout (phone =
+  identity) and linked to the browser session; "My Orders" (`/orders`)
+  shows the full history and links into live tracking.
+
 ### Orders, admin, POS
 - `/admin` (password: `ADMIN_PASSWORD`): live order board (new orders pop
   in over the socket), one-tap status advance that updates the customer's

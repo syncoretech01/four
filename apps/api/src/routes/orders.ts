@@ -18,6 +18,10 @@ export async function orderRoutes(app: FastifyInstance): Promise<void> {
     },
   );
 
+  app.get("/orders/mine", async (req) => {
+    return { orders: await orderService.ordersForSession(req.session.sessionId) };
+  });
+
   app.get("/orders/latest", async (req) => {
     const order = await orderService.latestOrderForSession(req.session.sessionId);
     return { order };

@@ -5,11 +5,14 @@
  * from the admin board light up the timeline in real time.
  */
 import { use, useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { motion, useReducedMotion } from "motion/react";
 import { ORDER_STATUS_FLOW, ORDER_STATUS_LABELS, formatPKR, type OrderView, type OrderStatusName } from "@four/shared";
 import { api } from "@/lib/api";
 import { getSocket } from "@/lib/socket";
 import { Nav } from "@/components/Nav";
+
+const TrackMap = dynamic(() => import("@/components/map/TrackMap").then((m) => m.TrackMap), { ssr: false });
 import { Footer } from "@/components/sections/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { ChatDock } from "@/components/chat/ChatDock";
@@ -33,8 +36,13 @@ export default function TrackPage({ params }: { params: Promise<{ orderNumber: s
       setOrder((o) => (o ? { ...o, status, events: [...o.events, { status, at }] } : o));
     };
     socket.on("order:status", onStatus);
+    const onRider = ({ orderNumber: n, riderName }: { orderNumber: string; riderName: string }) => {
+      if (n === num) setOrder((o) => (o ? { ...o, riderName } : o));
+    };
+    socket.on("rider:assigned", onRider);
     return () => {
       socket.off("order:status", onStatus);
+      socket.off("rider:assigned", onRider);
     };
   }, [orderNumber]);
 
@@ -112,6 +120,23 @@ export default function TrackPage({ params }: { params: Promise<{ orderNumber: s
                 </ol>
               )}
             </div>
+
+            {order.destLat != null && order.destLng != null && !cancelled && (
+              <div className="overflow-hidden rounded-card bg-cream p-3">
+                <TrackMap
+                  orderNumber={order.orderNumber}
+                  branchId={order.branchId}
+                  dest={{ lat: order.destLat, lng: order.destLng }}
+                />
+                <p className="px-3 pb-1 pt-3 text-sm text-ink-soft">
+                  {order.status === "OUT_FOR_DELIVERY"
+                    ? order.riderName
+                      ? `${order.riderName} is riding to you - watch the red dot move.`
+                      : "Your rider is on the way - the red dot moves live."
+                    : `Cooking at ${order.branchName ?? "FOUR"}; the map goes live when your rider leaves.`}
+                </p>
+              </div>
+            )}
 
             <div className="rounded-card bg-cream p-8">
               <h2 className="font-display text-xl font-semibold text-ink">Order summary</h2>

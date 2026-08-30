@@ -23,7 +23,25 @@ interface AdminOrder {
   note: string | null;
   payment: "COD" | "CARD";
   total: number;
+  branchId: string | null;
+  branch: string | null;
+  riderId: string | null;
+  riderName: string | null;
   lines: { name: string; variantLabel: string | null; modifiers: string[]; qty: number }[];
+}
+
+interface AdminBranch {
+  id: string;
+  name: string;
+  shortName: string;
+}
+
+interface AdminRider {
+  id: string;
+  name: string;
+  status: string;
+  branchId: string;
+  branch: string;
 }
 
 interface AdminItem {
@@ -45,15 +63,24 @@ export default function AdminPage() {
   const [error, setError] = useState("");
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [items, setItems] = useState<AdminItem[]>([]);
+  const [branches, setBranches] = useState<AdminBranch[]>([]);
+  const [riders, setRiders] = useState<AdminRider[]>([]);
+  const [branchFilter, setBranchFilter] = useState<string>("");
   const [tab, setTab] = useState<"orders" | "menu">("orders");
+  const branchFilterRef = { current: branchFilter };
 
-  const refresh = useCallback(async () => {
+  const refresh = useCallback(async (branchId?: string) => {
     try {
-      const [o, m] = await Promise.all([
-        api<{ orders: AdminOrder[] }>("/api/admin/orders"),
+      const q = branchId ? `?branchId=${branchId}` : "";
+      const [o, m, b, r] = await Promise.all([
+        api<{ orders: AdminOrder[] }>(`/api/admin/orders${q}`),
         api<{ categories: { id: string; items: { id: string; name: string; available: boolean; categoryId: string }[] }[] }>("/api/menu"),
+        api<{ branches: AdminBranch[] }>("/api/admin/branches"),
+        api<{ riders: AdminRider[] }>("/api/admin/riders"),
       ]);
       setOrders(o.orders);
+      setBranches(b.branches);
+      setRiders(r.riders);
       setItems(m.categories.flatMap((c) => c.items.map((i) => ({ id: i.id, name: i.name, available: i.available, categoryId: c.id }))));
       setAuthed(true);
       const socket = getSocket();
@@ -64,13 +91,13 @@ export default function AdminPage() {
   }, []);
 
   useEffect(() => {
-    void refresh();
-  }, [refresh]);
+    void refresh(branchFilter || undefined);
+  }, [refresh, branchFilter]);
 
   useEffect(() => {
     if (!authed) return;
     const socket = getSocket();
-    const reload = () => void refresh();
+    const reload = () => void refresh(branchFilterRef.current || undefined);
     socket.on("admin:order:new", reload);
     socket.on("admin:order:updated", reload);
     return () => {
@@ -96,12 +123,20 @@ export default function AdminPage() {
     const next = NEXT_STATUS[status];
     if (!next) return;
     await api(`/api/admin/orders/${orderNumber}/status`, { method: "PATCH", body: JSON.stringify({ status: next }) });
-    await refresh();
+    await refresh(branchFilter || undefined);
   };
 
   const cancel = async (orderNumber: string) => {
     await api(`/api/admin/orders/${orderNumber}/status`, { method: "PATCH", body: JSON.stringify({ status: "CANCELLED" }) });
-    await refresh();
+    await refresh(branchFilter || undefined);
+  };
+
+  const setRider = async (orderNumber: string, riderId: string) => {
+    await api(`/api/admin/orders/${orderNumber}/rider`, {
+      method: "PATCH",
+      body: JSON.stringify({ riderId: riderId || null }),
+    });
+    await refresh(branchFilter || undefined);
   };
 
   const toggleItem = async (item: AdminItem) => {
@@ -165,6 +200,27 @@ export default function AdminPage() {
 
       {tab === "orders" ? (
         <div className="mt-8 grid gap-4">
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setBranchFilter("")}
+              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                branchFilter === "" ? "bg-ink text-cream" : "bg-cream text-ink hover:bg-beige-deep"
+              }`}
+            >
+              All branches
+            </button>
+            {branches.map((b) => (
+              <button
+                key={b.id}
+                onClick={() => setBranchFilter(b.id)}
+                className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                  branchFilter === b.id ? "bg-ink text-cream" : "bg-cream text-ink hover:bg-beige-deep"
+                }`}
+              >
+                {b.shortName}
+              </button>
+            ))}
+          </div>
           {orders.length === 0 && <p className="rounded-card bg-cream p-8 text-center text-ink-soft">No orders yet today.</p>}
           {orders.map((o) => (
             <article key={o.orderNumber} className="rounded-card bg-cream p-6">
@@ -188,6 +244,7 @@ export default function AdminPage() {
                     </span>
                   </div>
                   <p className="mt-1 text-sm text-ink-soft">
+                    {o.branch && <span className="mr-2 rounded-full bg-beige-deep px-2 py-0.5 text-[11px] font-bold text-ink">{o.branch}</span>}
                     {o.customerName} · {o.phone} · {o.block}, {o.areaName} · {o.address}
                     {o.note ? ` · "${o.note}"` : ""}
                   </p>
@@ -205,6 +262,25 @@ export default function AdminPage() {
                   <span className="text-lg font-bold text-ink">
                     {formatPKR(o.total)} <span className="text-xs font-medium text-ink-soft">{o.payment}</span>
                   </span>
+                  {NEXT_STATUS[o.status] && (
+                    <select
+                      value={o.riderId ?? ""}
+                      onChange={(e) => setRider(o.orderNumber, e.target.value)}
+                      className="h-9 rounded-full border border-ink/15 bg-cream px-3 text-xs font-semibold text-ink outline-none focus:border-red"
+                    >
+                      <option value="">Assign rider...</option>
+                      {riders
+                        .filter((r) => !o.branchId || r.branchId === o.branchId)
+                        .map((r) => (
+                          <option key={r.id} value={r.id}>
+                            {r.name} ({r.status === "ONLINE" ? "online" : "offline"})
+                          </option>
+                        ))}
+                    </select>
+                  )}
+                  {o.riderName && !NEXT_STATUS[o.status] && (
+                    <span className="text-xs text-ink-soft">Rider: {o.riderName}</span>
+                  )}
                   {NEXT_STATUS[o.status] && (
                     <div className="flex gap-2">
                       <button

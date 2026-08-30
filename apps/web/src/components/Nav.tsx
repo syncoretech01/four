@@ -22,9 +22,10 @@ export function Nav() {
           </a>
 
           <div className="hidden items-center gap-7 text-sm font-medium text-ink md:flex">
-            <a href="#menu" className="transition hover:text-red">Menu</a>
-            <a href="#story" className="transition hover:text-red">Our Story</a>
-            <a href="#visit" className="transition hover:text-red">Visit Us</a>
+            <a href="/#menu" className="transition hover:text-red">Menu</a>
+            <a href="/#story" className="transition hover:text-red">Our Story</a>
+            <a href="/#visit" className="transition hover:text-red">Visit Us</a>
+            <a href="/orders" className="transition hover:text-red">My Orders</a>
           </div>
 
           <div className="flex items-center gap-2">

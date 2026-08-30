@@ -5,11 +5,14 @@
  * tampered cart can never be committed (bestbuy's confirm rail).
  */
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { createHash } from "node:crypto";
 import { prisma, OrderStatus, type PaymentMethod } from "@four/db";
 import {
   DELIVERY_FEE,
   FREE_DELIVERY_ABOVE,
   LAHORE_AREAS,
+  areaCoords,
+  branchForArea,
   type CheckoutInput,
   type OrderQuote,
   type OrderView,
@@ -55,6 +58,21 @@ export async function quote(sessionId: string, payment: PaymentMethod): Promise<
   };
 }
 
+function normalizePhone(phone: string): string {
+  const digits = phone.replace(/[^\d+]/g, "");
+  return digits.startsWith("+92") ? `0${digits.slice(3)}` : digits;
+}
+
+/** ~±120m deterministic jitter so same-area pins don't stack. */
+function jitteredAreaCoords(areaId: string, seed: string): { lat: number; lng: number } {
+  const base = areaCoords(areaId);
+  const h = createHash("sha1").update(seed).digest();
+  return {
+    lat: base.lat + ((h[0]! / 255) * 2 - 1) * 0.0011,
+    lng: base.lng + ((h[1]! / 255) * 2 - 1) * 0.0011,
+  };
+}
+
 function orderNumber(): string {
   return `FOUR-${Math.floor(100000 + Math.random() * 900000)}`;
 }
@@ -80,12 +98,30 @@ export async function placeOrder(sessionId: string, input: CheckoutInput): Promi
   const tax = Math.round(cart.subtotal * rate);
   const total = cart.subtotal + deliveryFee + tax;
 
+  // route to the branch covering the area; pin the destination for the rider map
+  const branch = branchForArea(area.id);
+  const num = orderNumber();
+  const dest = jitteredAreaCoords(area.id, num);
+
+  // guest checkout implicitly creates/updates the customer account (phone = identity)
+  const phone = normalizePhone(input.phone);
+  const customer = await prisma.customer.upsert({
+    where: { phone },
+    create: { phone, name: input.name },
+    update: { name: input.name },
+  });
+  await prisma.session.update({ where: { id: sessionId }, data: { customerId: customer.id } }).catch(() => {});
+
   const order = await prisma.order.create({
     data: {
-      orderNumber: orderNumber(),
+      orderNumber: num,
       sessionId,
+      branchId: branch.id,
+      customerId: customer.id,
+      destLat: dest.lat,
+      destLng: dest.lng,
       customerName: input.name,
-      phone: input.phone,
+      phone,
       areaId: area.id,
       areaName: area.name,
       block: input.block,
@@ -135,13 +171,18 @@ export async function placeOrder(sessionId: string, input: CheckoutInput): Promi
 export async function getOrder(orderNumberOrId: string): Promise<OrderView | null> {
   const order = await prisma.order.findFirst({
     where: { OR: [{ orderNumber: orderNumberOrId }, { id: orderNumberOrId }] },
-    include: { lines: true, events: { orderBy: { at: "asc" } } },
+    include: { lines: true, events: { orderBy: { at: "asc" } }, branch: true, rider: true },
   });
   if (!order) return null;
   return {
     orderNumber: order.orderNumber,
     status: order.status,
     placedAt: order.placedAt.toISOString(),
+    branchId: order.branchId ?? undefined,
+    branchName: order.branch?.shortName ?? undefined,
+    riderName: order.rider?.name ?? undefined,
+    destLat: order.destLat ?? undefined,
+    destLng: order.destLng ?? undefined,
     customerName: order.customerName,
     phone: order.phone,
     areaName: order.areaName,
@@ -163,6 +204,18 @@ export async function getOrder(orderNumberOrId: string): Promise<OrderView | nul
     total: order.total,
     events: order.events.map((e) => ({ status: e.status, at: e.at.toISOString() })),
   };
+}
+
+export async function ordersForSession(sessionId: string): Promise<OrderView[]> {
+  const session = await prisma.session.findUnique({ where: { id: sessionId }, select: { customerId: true } });
+  const orders = await prisma.order.findMany({
+    where: session?.customerId ? { OR: [{ customerId: session.customerId }, { sessionId }] } : { sessionId },
+    orderBy: { placedAt: "desc" },
+    take: 25,
+    select: { orderNumber: true },
+  });
+  const views = await Promise.all(orders.map((o) => getOrder(o.orderNumber)));
+  return views.filter((v): v is OrderView => v !== null);
 }
 
 export async function latestOrderForSession(sessionId: string): Promise<OrderView | null> {
@@ -188,12 +241,28 @@ export async function updateStatus(orderNumber: string, status: OrderStatus): Pr
   return getOrder(orderNumber) as Promise<OrderView>;
 }
 
-export async function listOrders(limit = 50) {
+export async function listOrders(limit = 50, branchId?: string) {
   return prisma.order.findMany({
+    where: branchId ? { branchId } : undefined,
     orderBy: { placedAt: "desc" },
     take: limit,
-    include: { lines: true },
+    include: { lines: true, rider: true, branch: true },
   });
+}
+
+export async function assignRider(orderNumberArg: string, riderId: string | null): Promise<OrderView> {
+  const order = await prisma.order.findUnique({ where: { orderNumber: orderNumberArg } });
+  if (!order) throw new OrderError("Order not found", "NOT_FOUND");
+  const updated = await prisma.order.update({
+    where: { id: order.id },
+    data: { riderId },
+    include: { rider: true },
+  });
+  if (updated.rider) {
+    emitToOrder(orderNumberArg, "rider:assigned", { orderNumber: orderNumberArg, riderName: updated.rider.name });
+  }
+  emitToAdmin("admin:order:updated", { orderNumber: orderNumberArg, status: updated.status });
+  return getOrder(orderNumberArg) as Promise<OrderView>;
 }
 
 function toPosOrder(order: {

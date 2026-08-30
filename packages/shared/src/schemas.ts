@@ -76,6 +76,11 @@ export interface OrderView {
   orderNumber: string;
   status: string;
   placedAt: string;
+  branchId?: string;
+  branchName?: string;
+  riderName?: string;
+  destLat?: number;
+  destLng?: number;
   customerName: string;
   phone: string;
   areaName: string;

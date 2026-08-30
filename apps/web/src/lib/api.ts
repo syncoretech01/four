@@ -33,7 +33,12 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   await ensureSession();
   const res = await fetch(`${API_URL}${path}`, {
     credentials: "include",
-    headers: { "Content-Type": "application/json", ...(init?.headers ?? {}) },
+    // only claim JSON when a body is actually sent - Fastify rejects
+    // empty bodies that carry a JSON content-type
+    headers: {
+      ...(init?.body ? { "Content-Type": "application/json" } : {}),
+      ...(init?.headers ?? {}),
+    },
     ...init,
   });
   const body = (await res.json().catch(() => ({}))) as T & { error?: { code: string; message: string } };

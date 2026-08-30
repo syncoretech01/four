@@ -11,6 +11,7 @@ import { cartRoutes } from "./routes/cart.js";
 import { orderRoutes } from "./routes/orders.js";
 import { chatRoutes } from "./routes/chat.js";
 import { adminRoutes } from "./routes/admin.js";
+import { riderRoutes } from "./routes/rider.js";
 
 async function main(): Promise<void> {
   const app = Fastify({
@@ -51,6 +52,7 @@ async function main(): Promise<void> {
   await app.register(orderRoutes, { prefix: "/api" });
   await app.register(chatRoutes, { prefix: "/api" });
   await app.register(adminRoutes, { prefix: "/api" });
+  await app.register(riderRoutes, { prefix: "/api" });
 
   await app.ready();
   initIO(app.server);

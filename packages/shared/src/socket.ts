@@ -15,12 +15,23 @@ export interface ServerToClientEvents {
     navigateTo: string | null;
     confirmAction: unknown | null;
   }) => void;
+  "rider:position": (payload: {
+    riderId: string;
+    orderNumbers: string[];
+    lat: number;
+    lng: number;
+    heading: number | null;
+    ts: number;
+  }) => void;
+  "rider:assigned": (payload: { orderNumber: string; riderName: string }) => void;
 }
 
 export interface ClientToServerEvents {
   "chat:send": (payload: { message: string }, ack?: (ok: boolean) => void) => void;
   "order:watch": (payload: { orderNumber: string }) => void;
   "admin:watch": () => void;
+  /** Rider app GPS stream; accepted only from a logged-in rider session. */
+  "rider:position": (payload: { lat: number; lng: number; heading?: number | null }) => void;
 }
 
 export const SOCKET_PATH = "/socket.io";

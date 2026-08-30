@@ -81,5 +81,10 @@ export const LAHORE_AREAS: AreaData[] = [
   },
   { id: "gulshan-e-ravi", name: "Gulshan-e-Ravi", blocks: letterBlocks("A B C D E F G H") },
   { id: "samanabad", name: "Samanabad", blocks: ["Main Samanabad", "Poonch Road", "Chauburji", "Multan Chungi"] },
+  {
+    id: "lake-city",
+    name: "Lake City",
+    blocks: ["Sector M1", "Sector M2", "Sector M2A", "Sector M3", "Sector M3A", "Sector M4", "Sector M5", "Sector M6", "Sector M7", "Sector M7B", "Sector M8"],
+  },
   { id: "shadman", name: "Shadman", blocks: ["Shadman 1", "Shadman 2", "Shadman Market"] },
 ];

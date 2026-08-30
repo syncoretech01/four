@@ -11,6 +11,7 @@ import { SOCKET_PATH } from "@four/shared";
 import { config } from "../config.js";
 import { resolveSession, SESSION_COOKIE } from "../plugins/session.js";
 import { handleChatMessage } from "../chat/chatService.js";
+import { ingestRiderPosition } from "../services/riderService.js";
 
 type IO = Server<ClientToServerEvents, ServerToClientEvents>;
 
@@ -37,6 +38,7 @@ export function initIO(server: HttpServer): IO {
     if (!session) return next(new Error("no session"));
     socket.data.sessionId = session.sessionId;
     socket.data.isAdmin = session.isAdmin;
+    socket.data.riderId = session.riderId;
     next();
   });
 
@@ -54,6 +56,12 @@ export function initIO(server: HttpServer): IO {
       if (socket.data.isAdmin) void socket.join("admin");
     });
 
+    socket.on("rider:position", (payload) => {
+      const riderId = socket.data.riderId as string | null;
+      if (!riderId || typeof payload?.lat !== "number" || typeof payload?.lng !== "number") return;
+      void ingestRiderPosition(riderId, payload.lat, payload.lng, payload.heading ?? null);
+    });
+
     socket.on("chat:send", (payload, ack) => {
       const message = typeof payload?.message === "string" ? payload.message.trim() : "";
       if (!message || message.length > 600) {
@@ -61,7 +69,10 @@ export function initIO(server: HttpServer): IO {
         return;
       }
       ack?.(true);
-      void handleChatMessage({ sessionId, isAdmin: socket.data.isAdmin as boolean }, message);
+      void handleChatMessage(
+        { sessionId, isAdmin: socket.data.isAdmin as boolean, riderId: (socket.data.riderId as string | null) ?? null },
+        message,
+      );
     });
   });
 

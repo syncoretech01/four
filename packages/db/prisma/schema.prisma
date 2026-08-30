@@ -26,10 +26,19 @@ enum ChatRole {
   ASSISTANT
 }
 
+enum RiderStatus {
+  OFFLINE
+  ONLINE
+}
+
 /// Guest browser sessions. `id` = sha256 of the cookie token.
 model Session {
   id         String   @id
   isAdmin    Boolean  @default(false)
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  riderId    String?
+  rider      Rider?    @relation(fields: [riderId], references: [id], onDelete: SetNull)
   createdAt  DateTime @default(now())
   expiresAt  DateTime
   lastSeenAt DateTime @default(now())
@@ -157,6 +166,14 @@ model Order {
   total        Int
   posReference String?
   placedAt     DateTime      @default(now())
+  branchId     String?
+  branch       Branch?       @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  customerId   String?
+  customer     Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  riderId      String?
+  rider        Rider?        @relation(fields: [riderId], references: [id], onDelete: SetNull)
+  destLat      Float?
+  destLng      Float?
 
   lines  OrderLine[]
   events OrderEvent[]
@@ -164,6 +181,8 @@ model Order {
   @@index([sessionId])
   @@index([status])
   @@index([placedAt])
+  @@index([branchId, status])
+  @@index([customerId])
 }
 
 model OrderLine {
@@ -202,4 +221,49 @@ model ChatMessage {
   createdAt DateTime @default(now())
 
   @@index([sessionId, createdAt])
+}
+
+model Branch {
+  id      String  @id
+  name    String
+  shortName String
+  address String
+  lat     Float
+  lng     Float
+  /// Area ids served by this branch
+  areaIds String[] @default([])
+  active  Boolean @default(true)
+
+  orders Order[]
+  riders Rider[]
+}
+
+/// Created implicitly from guest checkout details (phone = identity).
+model Customer {
+  id        String   @id @default(cuid())
+  phone     String   @unique
+  name      String
+  createdAt DateTime @default(now())
+
+  orders   Order[]
+  sessions Session[]
+}
+
+model Rider {
+  id         String      @id @default(cuid())
+  name       String
+  phone      String      @unique
+  /// Login PIN (demo-grade; swap for OTP before public launch)
+  pin        String
+  branchId   String
+  branch     Branch      @relation(fields: [branchId], references: [id])
+  status     RiderStatus @default(OFFLINE)
+  lastLat    Float?
+  lastLng    Float?
+  lastSeenAt DateTime?
+
+  orders   Order[]
+  sessions Session[]
+
+  @@index([branchId])
 }

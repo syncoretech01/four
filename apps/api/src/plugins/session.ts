@@ -15,6 +15,7 @@ const TOUCH_INTERVAL_MS = 60 * 60 * 1000;
 export interface SessionContext {
   sessionId: string;
   isAdmin: boolean;
+  riderId: string | null;
 }
 
 declare module "fastify" {
@@ -59,7 +60,7 @@ export async function resolveSession(token: string | undefined): Promise<Session
       .update({ where: { id: sessionId }, data: { lastSeenAt: new Date(), expiresAt: expiry() } })
       .catch(() => {});
   }
-  return { sessionId, isAdmin: row.isAdmin };
+  return { sessionId, isAdmin: row.isAdmin, riderId: row.riderId };
 }
 
 export async function sessionPlugin(app: FastifyInstance): Promise<void> {
@@ -70,7 +71,7 @@ export async function sessionPlugin(app: FastifyInstance): Promise<void> {
     if (!ctx) {
       const { token: newToken, sessionId } = await createGuestSession();
       setSessionCookie(reply, newToken);
-      ctx = { sessionId, isAdmin: false };
+      ctx = { sessionId, isAdmin: false, riderId: null };
     }
     req.session = ctx;
   });

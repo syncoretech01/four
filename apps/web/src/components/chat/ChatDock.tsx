@@ -15,6 +15,7 @@ import { api } from "@/lib/api";
 import { getSocket } from "@/lib/socket";
 import { useStore } from "@/lib/store";
 import { useRealtimeVoice, type VoiceToolOutcome } from "./useRealtimeVoice";
+import { useSpeechVoice } from "./useSpeechVoice";
 
 interface ToolChip {
   name: string;
@@ -46,6 +47,8 @@ export function ChatDock() {
   const reduce = useReducedMotion();
   const openCheckout = useStore((s) => s.openCheckout);
   const setCartOpen = useStore((s) => s.setCartOpen);
+  /** True when the last user message came in by microphone: replies are then spoken back. */
+  const spokeLastRef = useRef(false);
 
   // history + capability probe
   useEffect(() => {
@@ -122,6 +125,7 @@ export function ChatDock() {
         next[idx] = { ...next[idx], content, streaming: false };
         return next;
       });
+      if (spokeLastRef.current) speakRef.current(content);
       applyConfirm(confirmAction);
       if (navigateTo) router.push(navigateTo);
     };
@@ -139,31 +143,44 @@ export function ChatDock() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [turns]);
 
+  const sendMessage = useCallback(
+    (message: string, spoken: boolean) => {
+      if (!message) return;
+      spokeLastRef.current = spoken;
+      setTurns((p) => [...p, { id: `u-${Date.now()}`, role: "user", content: message }]);
+      const socket = getSocket();
+      if (socket.connected) {
+        socket.emit("chat:send", { message });
+      } else {
+        // HTTP fallback keeps the assistant working without websockets
+        api<{ content: string; toolCalls: ToolChip[]; navigateTo: string | null; confirmAction: unknown | null }>("/api/chat/messages", {
+          method: "POST",
+          body: JSON.stringify({ message }),
+        })
+          .then((r) => {
+            setTurns((p) => [...p, { id: `a-${Date.now()}`, role: "assistant", content: r.content, tools: r.toolCalls }]);
+            if (spokeLastRef.current) speakRef.current(r.content);
+            applyConfirm(r.confirmAction);
+            if (r.navigateTo) router.push(r.navigateTo);
+          })
+          .catch(() =>
+            setTurns((p) => [...p, { id: `a-${Date.now()}`, role: "assistant", content: "Sorry, I lost connection - try again?" }]),
+          );
+      }
+    },
+    [applyConfirm, router],
+  );
+
   const send = (e: React.FormEvent) => {
     e.preventDefault();
     const message = input.trim();
-    if (!message) return;
     setInput("");
-    setTurns((p) => [...p, { id: `u-${Date.now()}`, role: "user", content: message }]);
-    const socket = getSocket();
-    if (socket.connected) {
-      socket.emit("chat:send", { message });
-    } else {
-      // HTTP fallback keeps the assistant working without websockets
-      api<{ content: string; toolCalls: ToolChip[]; navigateTo: string | null; confirmAction: unknown | null }>("/api/chat/messages", {
-        method: "POST",
-        body: JSON.stringify({ message }),
-      })
-        .then((r) => {
-          setTurns((p) => [...p, { id: `a-${Date.now()}`, role: "assistant", content: r.content, tools: r.toolCalls }]);
-          applyConfirm(r.confirmAction);
-          if (r.navigateTo) router.push(r.navigateTo);
-        })
-        .catch(() =>
-          setTurns((p) => [...p, { id: `a-${Date.now()}`, role: "assistant", content: "Sorry, I lost connection - try again?" }]),
-        );
-    }
+    sendMessage(message, false);
   };
+
+  const speech = useSpeechVoice((text) => sendMessage(text, true));
+  const speakRef = useRef(speech.speak);
+  speakRef.current = speech.speak;
 
   const runVoiceTool = useCallback(
     async (name: string, args: Record<string, unknown>): Promise<VoiceToolOutcome> => {
@@ -302,10 +319,32 @@ export function ChatDock() {
                 </div>
 
                 <form onSubmit={send} className="flex items-center gap-2 border-t border-ink/10 p-3">
+                  {!voiceEnabled && speech.supported && (
+                    <button
+                      type="button"
+                      onClick={speech.status === "listening" ? speech.stopListening : speech.listen}
+                      aria-label={speech.status === "listening" ? "Stop listening" : "Order by voice"}
+                      className={`relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition active:scale-90 ${
+                        speech.status === "listening" ? "bg-red text-cream" : "bg-beige-deep text-ink hover:text-red"
+                      }`}
+                    >
+                      {speech.status === "listening" && !reduce && (
+                        <motion.span
+                          className="absolute inset-0 rounded-full bg-red"
+                          animate={{ scale: [1, 1.35], opacity: [0.5, 0] }}
+                          transition={{ duration: 1.2, repeat: Infinity, ease: "easeOut" }}
+                        />
+                      )}
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="relative" aria-hidden>
+                        <rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor" />
+                        <path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                      </svg>
+                    </button>
+                  )}
                   <input
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="Type your order..."
+                    placeholder={speech.status === "listening" ? (speech.interim || "Listening...") : "Type your order..."}
                     aria-label="Message the assistant"
                     className="h-11 flex-1 rounded-full border border-ink/15 bg-cream px-4 text-sm text-ink outline-none transition focus:border-red focus:ring-2 focus:ring-red/30"
                   />

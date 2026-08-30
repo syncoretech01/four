@@ -3,10 +3,32 @@
  * variants, modifier groups) from @four/shared. Safe to run repeatedly;
  * never deletes orders or carts.
  */
-import { MENU_CATEGORIES, MENU_ITEMS, MODIFIER_GROUPS } from "@four/shared";
+import { BRANCHES, MENU_CATEGORIES, MENU_ITEMS, MODIFIER_GROUPS } from "@four/shared";
 import { prisma } from "./index.js";
 
+/** Demo riders per branch; PINs are placeholders until real staff onboarding. */
+const DEMO_RIDERS = [
+  { name: "Bilal", phone: "03000000001", pin: "1234", branchId: "fairways-dha6" },
+  { name: "Danish", phone: "03000000002", pin: "1234", branchId: "fairways-dha6" },
+  { name: "Shahzaib", phone: "03000000003", pin: "1234", branchId: "allama-iqbal-town" },
+  { name: "Faizan", phone: "03000000004", pin: "1234", branchId: "lake-city" },
+];
+
 async function main(): Promise<void> {
+  for (const b of BRANCHES) {
+    await prisma.branch.upsert({
+      where: { id: b.id },
+      create: { id: b.id, name: b.name, shortName: b.shortName, address: b.address, lat: b.lat, lng: b.lng, areaIds: b.areaIds },
+      update: { name: b.name, shortName: b.shortName, address: b.address, lat: b.lat, lng: b.lng, areaIds: b.areaIds },
+    });
+  }
+  for (const r of DEMO_RIDERS) {
+    await prisma.rider.upsert({
+      where: { phone: r.phone },
+      create: r,
+      update: { name: r.name, branchId: r.branchId },
+    });
+  }
   for (const [i, group] of MODIFIER_GROUPS.entries()) {
     await prisma.modifierGroup.upsert({
       where: { id: group.id },
@@ -68,7 +90,11 @@ async function main(): Promise<void> {
 
   const items = await prisma.menuItem.count();
   const variants = await prisma.variant.count();
-  console.log(`Seeded ${MENU_CATEGORIES.length} categories, ${items} items, ${variants} variants.`);
+  const branches = await prisma.branch.count();
+  const riders = await prisma.rider.count();
+  console.log(
+    `Seeded ${MENU_CATEGORIES.length} categories, ${items} items, ${variants} variants, ${branches} branches, ${riders} riders.`,
+  );
 }
 
 main()
