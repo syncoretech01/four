@@ -1,0 +1,70 @@
+/*
+  Design-system stylesheet entry. Compiled by .ds-sync's Tailwind v4 CLI into
+  .design-sync/styles/ds.compiled.css, which cfg.cssEntry points at.
+
+  The app's own globals.css is imported rather than copied so the brand theme
+  has exactly one source of truth - edit tokens there, re-run the sync, done.
+  Its `@import "tailwindcss"` also brings Tailwind's automatic source detection
+  rooted at apps/web/src, so the compiled sheet carries the utility vocabulary
+  the whole storefront uses, not only the classes the seven synced components
+  happen to mention. That matters: designs built in Claude Design ship as static
+  CSS with no Tailwind at render time, so a class absent here does nothing.
+*/
+@import "../../apps/web/src/app/globals.css";
+
+/* Preview compositions live outside apps/web, so name them explicitly. */
+@source "../previews";
+
+/*
+  next/font defines these two variables on <html> at runtime (see layout.tsx).
+  The bundle has no next/font, so bind them to the real faces shipped via
+  cfg.extraFonts - otherwise --font-display/--font-body silently fall through
+  to their Trebuchet/system fallbacks in every design.
+*/
+@theme {
+  --font-fredoka: "Fredoka";
+  --font-poppins: "Poppins";
+}
+
+/*
+  Safelist the brand palette across bg/text/border with alpha steps.
+
+  Tailwind emits only the utilities it finds in the scanned sources, but a
+  design agent composing new layouts writes classes this repo never happened to
+  use - and designs render as static CSS with no Tailwind at render time, so a
+  class that is not here silently does nothing. The storefront's own idiom leans
+  on alpha (border-ink/10, bg-beige/85, text-cream/70), so those steps have to
+  exist for the whole palette, not just the handful already written down.
+*/
+@source inline("{bg,text,border}-{beige,beige-deep,cream,red,red-deep,ink,ink-soft}{,/5,/10,/15,/20,/25,/30,/40,/50,/60,/70,/75,/80,/85,/90,/95}");
+
+/*
+  Safelist the layout and type vocabulary a design agent needs to compose new
+  sections. Same reasoning as the palette above, and it is the more important
+  half: the storefront only ever wrote the utilities its own seven components
+  needed, so without this a perfectly ordinary lg:grid-cols-4 or min-h-screen
+  resolves to nothing in a rendered design. Keep this list in step with the
+  families named in conventions.md - that file promises these exist.
+*/
+@source inline("{p,px,py,pt,pr,pb,pl,m,mx,my,mt,mr,mb,ml,gap,gap-x,gap-y}-{0,1,2,3,4,5,6,8,10,12,16,20,24}");
+@source inline("{sm:,md:,lg:,}{grid-cols,col-span}-{1,2,3,4,5,6}");
+@source inline("{sm:,md:,lg:,}{flex,inline-flex,grid,block,hidden}");
+@source inline("{flex-col,flex-row,flex-wrap,items-start,items-center,items-end,justify-start,justify-center,justify-end,justify-between}");
+@source inline("text-{xs,sm,base,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl}");
+@source inline("{sm:,md:,lg:,}text-{center,left,right}");
+@source inline("font-{normal,medium,semibold,bold}");
+@source inline("rounded{,-sm,-md,-lg,-xl,-2xl,-3xl,-full}");
+@source inline("max-w-{sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,full}");
+@source inline("{w,h}-{full,auto}");
+@source inline("min-h-{screen,full}");
+@source inline("leading-{tight,snug,normal,relaxed}");
+@source inline("shadow{,-sm,-md,-lg,-xl,-2xl}");
+@source inline("{mx-auto,overflow-hidden,relative,absolute,object-cover,object-contain,w-fit,not-italic,uppercase,truncate}");
+
+/*
+  The theme defines four animations but the storefront only ever uses two of
+  them as utility classes - Marquee drives its reverse row through the raw
+  var(--animate-marquee-reverse) in an inline style, and nothing uses float
+  yet. Emit all four so conventions.md can honestly offer them.
+*/
+@source inline("{motion-safe:,}animate-{marquee,marquee-reverse,spin-slow,float,spin,pulse,ping}");

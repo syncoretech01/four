@@ -15,16 +15,30 @@
       "cache": false,
       "persistent": true,
       "env": [
+        "NODE_ENV",
+        "PORT",
+        "WEB_PORT",
         "DATABASE_URL",
         "APP_SECRET",
-        "ADMIN_PASSWORD",
+        "ADMIN_PIN",
         "WEB_ORIGIN",
         "NEXT_PUBLIC_API_URL",
+        "NEXT_PUBLIC_SITE_URL",
+        "OPENAI_API_KEY",
+        "OPENAI_MODEL",
+        "OPENAI_REALTIME_MODEL",
+        "OPENAI_REALTIME_VOICE",
         "POS_PROVIDER",
         "POS_WEBHOOK_URL",
         "POS_WEBHOOK_TOKEN",
-        "OPENAI_API_KEY",
-        "PORT"
+        "CORNPOS_API_URL",
+        "CORNPOS_API_KEY",
+        "CORNPOS_BRANCH_MAP",
+        "FOODICS_API_TOKEN",
+        "FOODICS_BRANCH_ID",
+        "FORCE_OPEN",
+        "TAX_RATE_COD",
+        "TAX_RATE_CARD"
       ]
     },
     "typecheck": {

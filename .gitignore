@@ -7,3 +7,11 @@ dist/
 *.tsbuildinfo
 next-env.d.ts
 .DS_Store
+
+# design-sync: staged converter, build output, and machine-local state.
+# Everything else under .design-sync/ is a committed sync input.
+.ds-sync/
+ds-bundle/
+.design-sync/.cache/
+.design-sync/learnings/
+.design-sync/node_modules
