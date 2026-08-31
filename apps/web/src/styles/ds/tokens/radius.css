@@ -1,0 +1,12 @@
+/* v2 shape — chunky, playful, outlined. Pills for actions, 18px sticker cards. */
+:root {
+  --radius-sm: 8px;
+  --radius-md: 12px;    /* inputs, small tiles */
+  --radius-lg: 16px;    /* chat bubbles */
+  --radius-card: 18px;  /* THE card radius */
+  --radius-hero: 28px;  /* hero photo frames */
+  --radius-pill: 9999px;/* buttons, chips, badges, steppers */
+  --border-w: 1px;
+  --border-w-strong: 2px; /* the sticker outline — cards, buttons, chips */
+  --border-w-frame: 4px;  /* milk frame around cut-out photo fields */
+}

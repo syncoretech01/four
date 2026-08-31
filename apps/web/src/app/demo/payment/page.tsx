@@ -45,13 +45,13 @@ export default function PaymentDemoPage() {
           </p>
         </div>
 
-        <div className="rounded-card bg-cream p-7">
+        <div className="rounded-card bg-cream p-7 border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
           <h1 className="font-display text-2xl font-semibold text-ink">Pay online</h1>
           <p className="mt-1 text-sm text-ink-soft">
             How online payment would work once {BRAND.name} has a merchant account.
           </p>
 
-          <dl className="mt-6 grid gap-1.5 border-y border-ink/10 py-4 text-sm">
+          <dl className="mt-6 grid gap-1.5 border-y border-ink-900/20 py-4 text-sm">
             <div className="flex justify-between">
               <dt className="text-ink-soft">Subtotal</dt>
               <dd className="tabular-nums text-ink">{formatPKR(SUBTOTAL)}</dd>
@@ -88,7 +88,7 @@ export default function PaymentDemoPage() {
               </div>
               <button
                 onClick={() => setStage("gateway")}
-                className="mt-5 w-full rounded-full bg-red py-3.5 font-semibold text-cream transition hover:bg-red-deep"
+                className="mt-5 w-full rounded-full bg-red py-3.5 font-semibold text-cream transition hover:bg-red-deep border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
               >
                 Continue to {chosen.label}
               </button>
@@ -108,13 +108,13 @@ export default function PaymentDemoPage() {
               <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={() => setStage("approved")}
-                  className="rounded-full bg-red py-3 text-sm font-semibold text-cream transition hover:bg-red-deep"
+                  className="rounded-full bg-red py-3 text-sm font-semibold text-cream transition hover:bg-red-deep border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
                 >
                   Approve
                 </button>
                 <button
                   onClick={() => setStage("declined")}
-                  className="rounded-full border-2 border-ink/20 py-3 text-sm font-semibold text-ink transition hover:border-ink/50"
+                  className="rounded-full border-2 border-ink-900/30 py-3 text-sm font-semibold text-ink transition hover:border-ink/50"
                 >
                   Decline
                 </button>
@@ -144,7 +144,7 @@ export default function PaymentDemoPage() {
           {stage !== "choose" && (
             <button
               onClick={() => setStage("choose")}
-              className="mt-5 w-full rounded-full border-2 border-ink/15 py-3 text-sm font-semibold text-ink transition hover:border-ink/40"
+              className="mt-5 w-full rounded-full border-2 border-ink-900/25 py-3 text-sm font-semibold text-ink transition hover:border-ink/40"
             >
               Start again
             </button>

@@ -71,7 +71,7 @@ export function LogoHero() {
             initial={reduce ? false : { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-ink/10 bg-cream/70 px-4 py-2 text-xs font-bold uppercase tracking-[0.14em] text-ink backdrop-blur"
+            className="f-livepill mb-6"
           >
             <span className="relative flex h-2.5 w-2.5">
               {open && (
@@ -97,7 +97,7 @@ export function LogoHero() {
             initial={reduce ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.1, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-6 max-w-[34ch] text-lg font-medium leading-relaxed text-ink-soft sm:text-xl"
+            className="f-lede mt-6 max-w-[34ch] sm:text-xl"
           >
             Smash burgers, crown crust pizzas and loaded fries by Pakistan&apos;s biggest creators.
           </motion.p>
@@ -162,8 +162,8 @@ function MagneticCta({
       whileTap={{ scale: 0.96 }}
       className={
         primary
-          ? "rounded-full bg-red px-8 py-4 text-base font-bold text-cream shadow-lg shadow-red/25 transition-colors hover:bg-red-deep"
-          : "rounded-full border-2 border-ink/25 px-8 py-4 text-base font-bold text-ink transition-colors hover:border-ink"
+          ? "f-btn f-btn--primary f-btn--lg"
+          : "f-btn f-btn--secondary f-btn--lg"
       }
     >
       {children}
@@ -250,20 +250,20 @@ function HeroCard({
       />
       <motion.div
         style={reduce ? undefined : { x: px, y: py }}
-        className="relative overflow-hidden rounded-[2rem] border-4 border-cream shadow-2xl shadow-ink/25"
+        className="relative overflow-hidden rounded-hero border-4 border-paper-0 outline-2 outline-ink-900 [box-shadow:var(--shadow-pop-lg)]"
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/gallery/gallery-3.jpg"
           alt="A FOUR smash burger, fresh off the pass"
-          className="aspect-square w-full object-cover"
+          className="aspect-square w-full object-cover [filter:saturate(1.12)_contrast(1.06)_sepia(.06)]"
         />
       </motion.div>
 
       <motion.svg
         viewBox="180 100 700 900"
         aria-hidden
-        className="absolute -bottom-8 -left-8 h-32 w-32 drop-shadow-[0_10px_18px_rgba(38,32,26,0.3)] sm:h-40 sm:w-40"
+        className="absolute -bottom-8 -left-8 h-32 w-32 [filter:drop-shadow(4px_6px_0_rgba(34,25,19,0.9))] sm:h-40 sm:w-40"
         style={reduce ? undefined : { x: hx, y: hy, rotate: rot }}
         animate={reduce ? undefined : { y: [0, -8, 0] }}
         transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
@@ -273,7 +273,7 @@ function HeroCard({
         </g>
       </motion.svg>
 
-      <div className="absolute -right-4 -top-6 h-24 w-24 rounded-full bg-cream/90 p-2 shadow-xl shadow-ink/20 sm:-right-8 sm:h-28 sm:w-28">
+      <div className="absolute -right-4 -top-6 h-24 w-24 rounded-full border-2 border-ink-900 bg-paper-0 p-2 [box-shadow:var(--shadow-pop)] sm:-right-8 sm:h-28 sm:w-28">
         <RotatingSeal />
       </div>
     </motion.div>

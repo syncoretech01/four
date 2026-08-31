@@ -99,7 +99,7 @@ function RidersTab({
 
   return (
     <div className="mt-8 grid gap-4">
-      <div className="rounded-card bg-cream p-6">
+      <div className="rounded-card bg-cream p-6 border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
         <h2 className="font-display text-lg font-bold text-ink">Add a rider</h2>
         <div className="mt-4 grid gap-3 sm:grid-cols-5">
           <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Name" className={inputCls} />
@@ -118,7 +118,7 @@ function RidersTab({
           <button
             onClick={create}
             disabled={form.name.trim().length < 2 || form.phone.replace(/\D/g, "").length < 11 || form.pin.length < 4 || !form.branchId}
-            className="rounded-full bg-red px-5 py-2 text-sm font-semibold text-cream transition hover:bg-red-deep disabled:opacity-50"
+            className="rounded-full bg-red px-5 py-2 text-sm font-semibold text-cream transition hover:bg-red-deep disabled:opacity-50 border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
           >
             Add rider
           </button>
@@ -152,7 +152,7 @@ function RidersTab({
               <select
                 value={r.branchId}
                 onChange={(e) => patch(r.id, { branchId: e.target.value })}
-                className="h-9 rounded-full border border-ink/15 bg-cream px-3 text-xs font-semibold text-ink outline-none focus:border-red"
+                className="h-9 rounded-full border-2 border-ink-900/25 bg-cream px-3 text-xs font-semibold text-ink outline-none focus:border-red [box-shadow:var(--shadow-pop-red)]"
               >
                 {branches.map((b) => (
                   <option key={b.id} value={b.id}>
@@ -168,7 +168,7 @@ function RidersTab({
                     placeholder="New PIN"
                     inputMode="numeric"
                     autoFocus
-                    className="h-9 w-28 rounded-full border border-ink/15 bg-cream px-3 text-center text-xs font-semibold text-ink outline-none focus:border-red"
+                    className="h-9 w-28 rounded-full border-2 border-ink-900/25 bg-cream px-3 text-center text-xs font-semibold text-ink outline-none focus:border-red [box-shadow:var(--shadow-pop-red)]"
                   />
                   <button
                     onClick={async () => {
@@ -176,7 +176,7 @@ function RidersTab({
                       setPinEdit(null);
                     }}
                     disabled={pinEdit.pin.length < 4}
-                    className="rounded-full bg-red px-4 py-2 text-xs font-semibold text-cream transition hover:bg-red-deep disabled:opacity-50"
+                    className="rounded-full bg-red px-4 py-2 text-xs font-semibold text-cream transition hover:bg-red-deep disabled:opacity-50 border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
                   >
                     Save
                   </button>
@@ -187,7 +187,7 @@ function RidersTab({
               ) : (
                 <button
                   onClick={() => setPinEdit({ id: r.id, pin: "" })}
-                  className="rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold text-ink-soft transition hover:border-red hover:text-red"
+                  className="rounded-full border-2 border-ink-900/30 px-4 py-2 text-xs font-semibold text-ink-soft transition hover:border-red hover:text-red"
                 >
                   Reset PIN
                 </button>
@@ -312,7 +312,7 @@ export default function AdminPage() {
   if (!authed) {
     return (
       <main className="flex min-h-[100dvh] items-center justify-center px-4">
-        <form onSubmit={login} className="w-full max-w-sm rounded-card bg-cream p-8 shadow-xl shadow-ink/10">
+        <form onSubmit={login} className="w-full max-w-sm rounded-card bg-cream p-8 border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
           <span className="text-red">
             <BrandLogo className="h-8" />
           </span>
@@ -329,13 +329,13 @@ export default function AdminPage() {
               maxLength={8}
               value={pin}
               onChange={(e) => setPin(e.target.value.replace(/\D/g, ""))}
-              className="h-14 rounded-xl border border-ink/15 bg-cream px-4 text-center text-2xl tracking-[0.5em] text-ink outline-none focus:border-red focus:ring-2 focus:ring-red/30"
+              className="h-14 rounded-xl border-2 border-ink-900/25 bg-cream px-4 text-center text-2xl tracking-[0.5em] text-ink outline-none focus:border-red focus:ring-2 focus:ring-red/30"
             />
           </label>
           {error && <p className="mt-3 text-sm font-medium text-red">{error}</p>}
           <button
             disabled={pin.length < 4}
-            className="mt-5 w-full rounded-full bg-red py-3.5 font-bold text-cream shadow-lg shadow-red/25 transition hover:bg-red-deep active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none"
+            className="mt-5 w-full rounded-full bg-red py-3.5 font-bold text-cream transition hover:bg-red-deep active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
           >
             Sign in
           </button>
@@ -386,7 +386,7 @@ export default function AdminPage() {
 
       {tab === "pos" ? (
         <div className="mt-8 grid gap-4">
-          <div className="rounded-card bg-cream p-6">
+          <div className="rounded-card bg-cream p-6 border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
             <h2 className="font-display text-lg font-bold text-ink">What the POS receives</h2>
             <p className="mt-1 text-sm text-ink-soft">
               The exact payload the bridge sends for each order - the integration a POS vendor
@@ -395,12 +395,12 @@ export default function AdminPage() {
             </p>
           </div>
           {posFeed.entries.length === 0 && (
-            <p className="rounded-card bg-cream p-8 text-center text-ink-soft">
+            <p className="rounded-card bg-cream p-8 text-center text-ink-soft border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
               Nothing captured yet. Place an order with POS_PROVIDER=demo and it appears here.
             </p>
           )}
           {posFeed.entries.map((e, i) => (
-            <article key={i} className="rounded-card bg-cream p-6">
+            <article key={i} className="rounded-card bg-cream p-6 border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
               <p className="text-xs font-semibold uppercase tracking-wide text-ink-soft">{e.receivedAt}</p>
               <pre className="mt-3 overflow-x-auto rounded-xl bg-ink/5 p-4 text-xs leading-relaxed text-ink">
                 {JSON.stringify(e.order, null, 2)}
@@ -431,9 +431,9 @@ export default function AdminPage() {
               </button>
             ))}
           </div>
-          {orders.length === 0 && <p className="rounded-card bg-cream p-8 text-center text-ink-soft">No orders yet today.</p>}
+          {orders.length === 0 && <p className="rounded-card bg-cream p-8 text-center text-ink-soft border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">No orders yet today.</p>}
           {orders.map((o) => (
-            <article key={o.orderNumber} className="rounded-card bg-cream p-6">
+            <article key={o.orderNumber} className="rounded-card bg-cream p-6 border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-3">
@@ -476,7 +476,7 @@ export default function AdminPage() {
                     <select
                       value={o.riderId ?? ""}
                       onChange={(e) => setRider(o.orderNumber, e.target.value)}
-                      className="h-9 rounded-full border border-ink/15 bg-cream px-3 text-xs font-semibold text-ink outline-none focus:border-red"
+                      className="h-9 rounded-full border-2 border-ink-900/25 bg-cream px-3 text-xs font-semibold text-ink outline-none focus:border-red [box-shadow:var(--shadow-pop-red)]"
                     >
                       <option value="">Assign rider...</option>
                       {riders
@@ -495,13 +495,13 @@ export default function AdminPage() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => cancel(o.orderNumber)}
-                        className="rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold text-ink-soft transition hover:border-red hover:text-red"
+                        className="rounded-full border-2 border-ink-900/30 px-4 py-2 text-xs font-semibold text-ink-soft transition hover:border-red hover:text-red"
                       >
                         Cancel
                       </button>
                       <button
                         onClick={() => advance(o.orderNumber, o.status)}
-                        className="rounded-full bg-red px-5 py-2 text-sm font-bold text-cream shadow-md shadow-red/20 transition hover:bg-red-deep active:scale-[0.98]"
+                        className="rounded-full bg-red px-5 py-2 text-sm font-bold text-cream transition hover:bg-red-deep active:scale-[0.98] border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
                       >
                         Mark {ORDER_STATUS_LABELS[NEXT_STATUS[o.status]!]}
                       </button>

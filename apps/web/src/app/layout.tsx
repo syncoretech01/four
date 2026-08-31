@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Fredoka, Poppins } from "next/font/google";
+import { Passion_One, Archivo } from "next/font/google";
 import "./globals.css";
 
-const fredoka = Fredoka({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-fredoka", display: "swap" });
-const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-poppins", display: "swap" });
+// v2 type: Passion One display caps + Archivo body (design system readme, "Type substitution").
+const passion = Passion_One({ subsets: ["latin"], weight: ["400", "700", "900"], variable: "--font-passion", display: "swap" });
+const archivo = Archivo({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-archivo", display: "swap" });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -36,12 +37,12 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#e9dcc5",
+  themeColor: "#f8f1e3",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${fredoka.variable} ${poppins.variable}`}>
+    <html lang="en" className={`${passion.variable} ${archivo.variable}`}>
       <body className="grain min-h-[100dvh]">{children}</body>
     </html>
   );

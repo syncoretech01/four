@@ -29,11 +29,11 @@ export function SmartImage({
   if (missing) {
     return (
       <div
-        className={`flex items-center justify-center bg-[radial-gradient(circle_at_35%_30%,#efe3cd,#ddcdb0)] ${className}`}
+        className={`flex items-center justify-center bg-[radial-gradient(circle_at_35%_30%,var(--red-tint),var(--paper-300))] ${className}`}
         role="img"
         aria-label={alt}
       >
-        <span className="font-display text-5xl font-semibold text-red/15 select-none">
+        <span className="font-display text-5xl font-bold uppercase text-red/20 select-none">
           {(fallbackLabel ?? alt).slice(0, 1).toUpperCase()}
         </span>
       </div>

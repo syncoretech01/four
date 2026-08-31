@@ -115,7 +115,7 @@ export default function RiderPage() {
   if (!me) {
     return (
       <main className="flex min-h-[100dvh] items-center justify-center px-4">
-        <form onSubmit={login} className="w-full max-w-sm rounded-card bg-cream p-8 shadow-xl shadow-ink/10">
+        <form onSubmit={login} className="w-full max-w-sm rounded-card bg-cream p-8 border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
           <span className="text-red">
             <BrandLogo className="h-8" />
           </span>
@@ -128,7 +128,7 @@ export default function RiderPage() {
               onChange={(e) => setPhone(e.target.value)}
               inputMode="tel"
               placeholder="0300 0000001"
-              className="h-12 rounded-xl border border-ink/15 bg-cream px-4 text-ink outline-none focus:border-red focus:ring-2 focus:ring-red/30"
+              className="h-12 rounded-xl border-2 border-ink-900/25 bg-cream px-4 text-ink outline-none focus:border-red focus:ring-2 focus:ring-red/30"
             />
           </label>
           <label className="mt-4 grid gap-2">
@@ -138,11 +138,11 @@ export default function RiderPage() {
               value={pin}
               onChange={(e) => setPin(e.target.value)}
               inputMode="numeric"
-              className="h-12 rounded-xl border border-ink/15 bg-cream px-4 text-ink outline-none focus:border-red focus:ring-2 focus:ring-red/30"
+              className="h-12 rounded-xl border-2 border-ink-900/25 bg-cream px-4 text-ink outline-none focus:border-red focus:ring-2 focus:ring-red/30"
             />
           </label>
           {error && <p className="mt-3 text-sm font-medium text-red">{error}</p>}
-          <button className="mt-5 w-full rounded-full bg-red py-3.5 font-bold text-cream shadow-lg shadow-red/25 transition hover:bg-red-deep active:scale-[0.98]">
+          <button className="mt-5 w-full rounded-full bg-red py-3.5 font-bold text-cream transition hover:bg-red-deep active:scale-[0.98] border-2 border-ink-900 [box-shadow:var(--shadow-pop)]">
             Sign in
           </button>
         </form>
@@ -178,8 +178,8 @@ export default function RiderPage() {
             <p className="font-display flex items-center gap-2 text-xl font-bold">
               {streaming && (
                 <span className="relative flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-cream opacity-60 motion-safe:animate-ping" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-cream" />
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-cream opacity-60 motion-safe:animate-ping border-2 border-red-press [box-shadow:var(--shadow-pop-red)]" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-cream border-2 border-red-press [box-shadow:var(--shadow-pop-red)]" />
                 </span>
               )}
               {streaming ? "You're live" : "Go live"}
@@ -208,12 +208,12 @@ export default function RiderPage() {
       <div className="mt-8 flex items-baseline justify-between">
         <h2 className="font-display text-2xl font-bold tracking-tight text-ink">Your deliveries</h2>
         {me.orders.length > 0 && (
-          <span className="rounded-full bg-red px-3 py-1 text-xs font-bold text-cream">{me.orders.length} active</span>
+          <span className="rounded-full bg-red px-3 py-1 text-xs font-bold text-cream border-2 border-ink-900 [box-shadow:var(--shadow-pop)]">{me.orders.length} active</span>
         )}
       </div>
       <div className="mt-3 grid gap-3">
         {me.orders.length === 0 && (
-          <p className="rounded-card bg-cream p-8 text-center text-sm font-medium text-ink-soft">
+          <p className="rounded-card bg-cream p-8 text-center text-sm font-medium text-ink-soft border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
             Nothing assigned right now. New deliveries appear here.
           </p>
         )}
@@ -221,7 +221,7 @@ export default function RiderPage() {
           const out = o.status === "OUT_FOR_DELIVERY";
           const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${o.address}, ${o.block}, ${o.areaName}, Lahore`)}`;
           return (
-            <article key={o.orderNumber} className="overflow-hidden rounded-card bg-cream shadow-sm shadow-ink/5">
+            <article key={o.orderNumber} className="overflow-hidden rounded-card bg-cream border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
               <div className="p-5">
                 <div className="flex items-center justify-between">
                   <h3 className="font-display text-xl font-bold text-ink">{o.orderNumber}</h3>
@@ -257,7 +257,7 @@ export default function RiderPage() {
                 <div className="mt-4 grid grid-cols-2 gap-2">
                   <a
                     href={`tel:${o.phone}`}
-                    className="flex items-center justify-center gap-2 rounded-full border-2 border-ink/15 py-3 text-sm font-bold text-ink transition hover:border-ink active:scale-[0.98]"
+                    className="flex items-center justify-center gap-2 rounded-full border-2 border-ink-900/25 py-3 text-sm font-bold text-ink transition hover:border-ink active:scale-[0.98]"
                   >
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
                       <path d="M4 4h4l2 5-3 2a12 12 0 0 0 6 6l2-3 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 2 6a2 2 0 0 1 2-2Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
@@ -268,7 +268,7 @@ export default function RiderPage() {
                     href={mapsHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 rounded-full border-2 border-ink/15 py-3 text-sm font-bold text-ink transition hover:border-ink active:scale-[0.98]"
+                    className="flex items-center justify-center gap-2 rounded-full border-2 border-ink-900/25 py-3 text-sm font-bold text-ink transition hover:border-ink active:scale-[0.98]"
                   >
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
                       <path d="M12 21s-7-6.1-7-11a7 7 0 1 1 14 0c0 4.9-7 11-7 11Z" stroke="currentColor" strokeWidth="2" />

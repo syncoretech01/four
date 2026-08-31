@@ -19,7 +19,7 @@ export function Story() {
   const yB = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [-40, 40]);
 
   return (
-    <section id="story" ref={ref} className="relative scroll-mt-20 overflow-hidden bg-beige-deep/60 py-28">
+    <section id="story" ref={ref} className="relative scroll-mt-20 overflow-hidden bg-[var(--bg-page-alt)] py-28">
       {/* oversized brand numeral bleeding off the left edge */}
       <span
         aria-hidden
@@ -35,17 +35,17 @@ export function Story() {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         >
-          <p className="mb-3 text-sm font-bold uppercase tracking-[0.16em] text-red">The story</p>
-          <h2 className="font-display text-5xl font-bold leading-[0.95] tracking-tight text-ink sm:text-6xl">
+          <p className="f-eyebrow">The story</p>
+          <h2 className="f-heading f-heading--lg sm:text-6xl">
             Four creators.
             <br />
             One <span className="text-red">obsession.</span>
           </h2>
-          <p className="mt-6 max-w-[50ch] text-lg leading-relaxed text-ink-soft">
+          <p className="f-lede">
             FOUR is owned by four of Pakistan&apos;s biggest creators, built on one promise: burgers worth the hype.
             Every 110g patty smashed to order, every crown crust stuffed by hand, every batch from scratch.
           </p>
-          <p className="mt-4 max-w-[50ch] leading-relaxed text-ink-soft">
+          <p className="mt-4 max-w-[50ch] leading-relaxed text-ink-600">
             From our kitchens across Lahore, straight to your block.
           </p>
         </motion.div>
@@ -56,7 +56,7 @@ export function Story() {
               src="/gallery/gallery-1.jpg"
               alt="FOUR smash burgers fresh off the pass"
               fallbackLabel="F"
-              className="aspect-[3/4] w-full rounded-card object-cover shadow-xl shadow-ink/15"
+              className="aspect-[3/4] w-full -rotate-2 rounded-card border-2 border-ink-900 object-cover [box-shadow:var(--shadow-pop-lg)] [filter:saturate(1.12)_contrast(1.06)_sepia(.06)]"
             />
           </motion.div>
           <motion.div style={{ y: yB }}>
@@ -64,7 +64,7 @@ export function Story() {
               src="/gallery/gallery-2.jpg"
               alt="A FOUR crown crust pizza"
               fallbackLabel="O"
-              className="aspect-[3/4] w-full rounded-card object-cover shadow-xl shadow-ink/15"
+              className="aspect-[3/4] w-full rotate-2 rounded-card border-2 border-ink-900 object-cover [box-shadow:var(--shadow-pop-lg)] [filter:saturate(1.12)_contrast(1.06)_sepia(.06)]"
             />
           </motion.div>
         </div>

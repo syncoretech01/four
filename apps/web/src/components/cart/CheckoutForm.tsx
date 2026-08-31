@@ -96,26 +96,24 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
     }
   };
 
-  const inputCls = (err?: string) =>
-    `h-12 w-full rounded-xl border bg-cream px-4 text-ink outline-none transition focus:ring-2 ${
-      err ? "border-red focus:border-red focus:ring-red/30" : "border-ink/15 focus:border-red focus:ring-red/30"
-    }`;
+  const inputCls = (err?: string) => `f-input${err ? " is-invalid" : ""}`;
+  const selectCls = (err?: string) => `f-input f-select${err ? " is-invalid" : ""}`;
 
   return (
-    <div className="flex-1 overflow-y-auto p-6">
-      <button onClick={onBack} className="mb-4 text-sm font-medium text-ink-soft transition hover:text-ink">
+    <div className="f-drawer__body">
+      <button onClick={onBack} className="f-btn f-btn--quiet f-btn--sm mb-4 !px-0">
         &larr; Back to cart
       </button>
 
       <div className="grid gap-4">
-        <label className="grid gap-1.5">
-          <span className="text-xs font-semibold uppercase tracking-wide text-ink">Name</span>
+        <label className="f-field">
+          <span className="f-field__label">Name</span>
           <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" className={inputCls(fieldErrors.name)} />
-          {fieldErrors.name && <span className="text-xs text-red">{fieldErrors.name}</span>}
+          {fieldErrors.name && <span className="f-field__error">{fieldErrors.name}</span>}
         </label>
 
-        <label className="grid gap-1.5">
-          <span className="text-xs font-semibold uppercase tracking-wide text-ink">Mobile number</span>
+        <label className="f-field">
+          <span className="f-field__label">Mobile number</span>
           <input
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
@@ -123,19 +121,19 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
             inputMode="tel"
             className={inputCls(fieldErrors.phone)}
           />
-          {fieldErrors.phone && <span className="text-xs text-red">{fieldErrors.phone}</span>}
+          {fieldErrors.phone && <span className="f-field__error">{fieldErrors.phone}</span>}
         </label>
 
         <div className="grid grid-cols-2 gap-3">
-          <label className="grid gap-1.5">
-            <span className="text-xs font-semibold uppercase tracking-wide text-ink">Area</span>
+          <label className="f-field">
+            <span className="f-field__label">Area</span>
             <select
               value={areaId}
               onChange={(e) => {
                 setAreaId(e.target.value);
                 setBlock("");
               }}
-              className={inputCls(fieldErrors.area)}
+              className={selectCls(fieldErrors.area)}
             >
               <option value="" disabled>
                 Area
@@ -147,9 +145,9 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
               ))}
             </select>
           </label>
-          <label className="grid gap-1.5">
-            <span className="text-xs font-semibold uppercase tracking-wide text-ink">Block</span>
-            <select value={block} onChange={(e) => setBlock(e.target.value)} disabled={!area} className={inputCls(fieldErrors.area)}>
+          <label className="f-field">
+            <span className="f-field__label">Block</span>
+            <select value={block} onChange={(e) => setBlock(e.target.value)} disabled={!area} className={selectCls(fieldErrors.area)}>
               <option value="" disabled>
                 Block
               </option>
@@ -160,41 +158,37 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
               ))}
             </select>
           </label>
-          {fieldErrors.area && <span className="col-span-2 -mt-2 text-xs text-red">{fieldErrors.area}</span>}
+          {fieldErrors.area && <span className="f-field__error col-span-2 -mt-2">{fieldErrors.area}</span>}
         </div>
 
-        <label className="grid gap-1.5">
-          <span className="text-xs font-semibold uppercase tracking-wide text-ink">Street address</span>
+        <label className="f-field">
+          <span className="f-field__label">Street address</span>
           <input
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             placeholder="House 12, Street 8"
             className={inputCls(fieldErrors.address)}
           />
-          {fieldErrors.address && <span className="text-xs text-red">{fieldErrors.address}</span>}
+          {fieldErrors.address && <span className="f-field__error">{fieldErrors.address}</span>}
         </label>
 
-        <label className="grid gap-1.5">
-          <span className="text-xs font-semibold uppercase tracking-wide text-ink">Order note (optional)</span>
+        <label className="f-field">
+          <span className="f-field__label">Order note (optional)</span>
           <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Extra sauce, no onions..." className={inputCls()} />
         </label>
 
-        <div className="grid gap-1.5">
-          <span className="text-xs font-semibold uppercase tracking-wide text-ink">Payment</span>
+        <div className="f-field">
+          <span className="f-field__label">Payment</span>
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => setPayment("COD")}
-              className={`rounded-xl border-2 px-4 py-3.5 text-sm font-semibold transition ${
-                payment === "COD" ? "border-red bg-red/5 text-red" : "border-ink/15 text-ink hover:border-ink/40"
-              }`}
+              className={`f-chip f-chip--square f-chip--soft justify-center ${payment === "COD" ? "is-on" : ""}`}
             >
               Cash on delivery
             </button>
             <button
               onClick={() => setPayment("CARD")}
-              className={`rounded-xl border-2 px-4 py-3.5 text-sm font-semibold transition ${
-                payment === "CARD" ? "border-red bg-red/5 text-red" : "border-ink/15 text-ink hover:border-ink/40"
-              }`}
+              className={`f-chip f-chip--square f-chip--soft justify-center ${payment === "CARD" ? "is-on" : ""}`}
             >
               Card on delivery
             </button>
@@ -202,26 +196,26 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
         </div>
 
         {errorMsg && (
-          <p role="alert" className="rounded-xl bg-red/10 px-4 py-3 text-sm font-medium text-red">
+          <p role="alert" className="f-badge f-badge--error w-full justify-start !normal-case !tracking-normal !text-sm">
             {errorMsg}
           </p>
         )}
 
         {quote && (
-          <dl className="mt-1 grid gap-1 border-t border-ink/10 pt-4 text-sm">
-            <div className="flex justify-between text-ink-soft">
+          <dl className="f-summary f-summary--ruled mt-1">
+            <div className="f-summary__row">
               <dt>Subtotal</dt>
               <dd>{formatPKR(quote.subtotal)}</dd>
             </div>
-            <div className="flex justify-between text-ink-soft">
+            <div className="f-summary__row">
               <dt>Delivery</dt>
               <dd>{quote.deliveryFee === 0 ? "Free" : formatPKR(quote.deliveryFee)}</dd>
             </div>
-            <div className="flex justify-between text-ink-soft">
+            <div className="f-summary__row">
               <dt>Tax ({Math.round(quote.taxRate * 100)}%)</dt>
               <dd>{formatPKR(quote.tax)}</dd>
             </div>
-            <div className="flex justify-between text-base font-bold text-ink">
+            <div className="f-summary__row is-total">
               <dt>Total</dt>
               <dd>{formatPKR(quote.total)}</dd>
             </div>
@@ -231,7 +225,7 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
         <button
           onClick={place}
           disabled={stage === "placing" || !quote || !open}
-          className="mt-1 w-full rounded-full bg-red py-4 text-base font-bold text-cream shadow-lg shadow-red/25 transition hover:bg-red-deep active:scale-[0.98] disabled:opacity-50 disabled:shadow-none"
+          className={`f-btn f-btn--primary f-btn--lg f-btn--block mt-1 ${stage === "placing" ? "is-loading" : ""}`}
         >
           {!open
             ? "Kitchen closed"
@@ -242,7 +236,7 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
                 : "Cart is empty"}
         </button>
         {!open && (
-          <p className="mt-3 text-center text-sm font-medium text-ink-soft">
+          <p className="mt-3 text-center text-sm font-semibold text-ink-600">
             We are closed right now. {HOURS_LABEL} - your cart will still be here.
           </p>
         )}

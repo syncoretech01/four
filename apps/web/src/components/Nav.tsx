@@ -19,13 +19,16 @@ export function Nav() {
 
   return (
     <>
+      {/* Past 24px the bar lands: paper ground, 10px blur, the 2px ink rule. */}
       <header
-        className={`fixed inset-x-0 top-0 z-40 transition-all duration-300 ${
-          scrolled ? "border-b border-ink/10 bg-beige/90 backdrop-blur-md" : "border-b border-transparent bg-beige/40 backdrop-blur-sm"
+        className={`fixed inset-x-0 top-0 z-40 transition-all duration-[250ms] ${
+          scrolled
+            ? "border-b-2 border-ink-900 bg-paper-100/90 backdrop-blur-[10px]"
+            : "border-b-2 border-transparent bg-paper-100/40 backdrop-blur-sm"
         }`}
       >
         <nav
-          className={`mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 transition-all duration-300 sm:px-6 ${
+          className={`mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 transition-all duration-[250ms] sm:px-6 ${
             scrolled ? "h-14" : "h-16"
           }`}
         >
@@ -33,7 +36,7 @@ export function Nav() {
             <BrandLogo className="h-7" />
           </a>
 
-          <div className="hidden items-center gap-7 text-sm font-medium text-ink md:flex">
+          <div className="hidden items-center gap-7 text-sm font-bold uppercase tracking-[0.04em] text-ink-900 md:flex">
             <a href="/#menu" className="transition hover:text-red">Menu</a>
             <a href="/#story" className="transition hover:text-red">Our Story</a>
             <a href="/#visit" className="transition hover:text-red">Visit Us</a>
@@ -44,7 +47,7 @@ export function Nav() {
             <button
               onClick={() => setLocOpen(true)}
               data-open-location
-              className="hidden max-w-52 items-center gap-2 truncate rounded-full border border-ink/15 px-4 py-2 text-xs font-medium text-ink transition hover:border-red hover:text-red sm:flex"
+              className="f-chip f-chip--sm hidden max-w-52 sm:inline-flex"
             >
               <svg width="12" height="14" viewBox="0 0 12 14" fill="none" aria-hidden>
                 <path d="M6 13S1 8.6 1 5.4a5 5 0 1 1 10 0C11 8.6 6 13 6 13Z" stroke="currentColor" strokeWidth="1.5" />
@@ -56,14 +59,10 @@ export function Nav() {
             <button
               onClick={() => setCartOpen(true)}
               aria-label={`Open cart, ${cart.itemCount} items`}
-              className="relative flex h-10 items-center gap-2 rounded-full bg-red px-5 text-sm font-semibold text-cream transition hover:bg-red-deep active:scale-[0.98]"
+              className="f-btn f-btn--primary f-btn--sm"
             >
               Cart
-              {cart.itemCount > 0 && (
-                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-cream px-1 text-[11px] font-bold text-red">
-                  {cart.itemCount}
-                </span>
-              )}
+              {cart.itemCount > 0 && <span className="f-badge f-badge--count">{cart.itemCount}</span>}
             </button>
           </div>
         </nav>

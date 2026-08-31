@@ -1,29 +1,82 @@
 @import "tailwindcss";
 
 /*
-  FOUR brand system - exact palette from the brand book:
-  beige #E9DCC5 ground, red #9D1D20 accent, white, warm ink text.
-  Display/body faces are stand-ins until the licensed Aminute/Aloevera
-  files arrive (see README); swap the @theme font vars then.
+  FOUR design system v2 - "Sticker Club".
+  Tokens and component CSS are vendored from the Claude Design project
+  (four-design-system-b4f1f02f) under src/styles/ds - treat those files as
+  generated: re-export from the design system rather than hand-editing them.
+  This file owns only the bridge into Tailwind and the app-level extras.
 */
+@import "../styles/ds/tokens/colors.css";
+@import "../styles/ds/tokens/typography.css";
+@import "../styles/ds/tokens/spacing.css";
+@import "../styles/ds/tokens/radius.css";
+@import "../styles/ds/tokens/elevation.css";
+@import "../styles/ds/tokens/motion.css";
+@import "../styles/ds/tokens/base.css";
+@import "../styles/ds/components/components.css";
+
+/*
+  next/font loads Passion One + Archivo and exposes them as --font-passion /
+  --font-archivo (see app/layout.tsx). The DS declares the family names
+  directly, so re-point its two type tokens at the self-hosted faces - this
+  keeps the DS files untouched and avoids the render-blocking Google CDN
+  import that ships in the design system's own styles.css.
+*/
+:root {
+  --font-display: var(--font-passion), "Trebuchet MS", sans-serif;
+  --font-body: var(--font-archivo), system-ui, sans-serif;
+  --font-condensed: var(--font-passion), sans-serif;
+}
+
 @theme {
-  --color-beige: #e9dcc5;
-  --color-beige-deep: #ddcdb0;
-  --color-cream: #f6efe1;
+  /* v2 warm-paper ramp. The legacy names are kept and re-pointed so existing
+     markup (bg-beige, text-ink-soft, ...) moves to the new palette in place. */
+  --color-paper-0: #fffcf4;
+  --color-paper-100: #f8f1e3;
+  --color-paper-200: #efe3cc;
+  --color-paper-300: #e0d1b3;
+  --color-ink-400: #a3927c;
+  --color-ink-600: #6b5d4d;
+  --color-ink-900: #221913;
+
   --color-red: #9d1d20;
-  --color-red-deep: #7c1416;
-  --color-ink: #26201a;
-  --color-ink-soft: #5f574b;
+  --color-red-hover: #8a1619;
+  --color-red-press: #7a1113;
+  --color-red-tint: #f6e2da;
 
-  --font-display: var(--font-fredoka), "Trebuchet MS", sans-serif;
-  --font-body: var(--font-poppins), system-ui, sans-serif;
+  --color-success: #2e7d3f;
+  --color-success-tint: #e2efdd;
+  --color-warning: #8f5b0e;
+  --color-warning-tint: #f7e9cd;
+  --color-error: #b03026;
+  --color-error-tint: #f9e0da;
 
-  --radius-card: 1.25rem;
+  /* legacy v1 aliases -> v2 ramp */
+  --color-beige: #f8f1e3;
+  --color-beige-deep: #efe3cc;
+  --color-cream: #fffcf4;
+  --color-red-deep: #7a1113;
+  --color-ink: #221913;
+  --color-ink-soft: #6b5d4d;
 
-  --animate-marquee: marquee 32s linear infinite;
-  --animate-marquee-reverse: marquee-reverse 32s linear infinite;
-  --animate-spin-slow: spin 18s linear infinite;
-  --animate-float: float 5s ease-in-out infinite;
+  --font-display: var(--font-passion), "Trebuchet MS", sans-serif;
+  --font-body: var(--font-archivo), system-ui, sans-serif;
+
+  --radius-card: 18px;
+  --radius-hero: 28px;
+
+  --shadow-pop-sm: 2px 2px 0 #221913;
+  --shadow-pop: 3px 3px 0 #221913;
+  --shadow-pop-lg: 6px 6px 0 #221913;
+  --shadow-pop-red: 3px 3px 0 #7a1113;
+  --shadow-soft: 0 14px 34px rgba(34, 25, 19, 0.16);
+
+  --animate-marquee: marquee 26s linear infinite;
+  --animate-marquee-reverse: marquee-reverse 26s linear infinite;
+  --animate-spin-slow: spin 16s linear infinite;
+  --animate-float: float 4s ease-in-out infinite;
+  --animate-wobble: wobble 5s ease-in-out infinite;
 
   @keyframes marquee {
     from { transform: translateX(0); }
@@ -35,47 +88,25 @@
   }
   @keyframes float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    50% { transform: translateY(-9px); }
+  }
+  @keyframes wobble {
+    0%, 100% { transform: rotate(-4deg); }
+    50% { transform: rotate(3deg); }
   }
 }
 
-html {
-  color-scheme: light;
-  scroll-behavior: smooth;
+/*
+  Layout scaffolding the DS assumes but does not ship (four-screens.css in the
+  design is canvas-only chrome). These are the two repeating page shapes.
+*/
+.wrap {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
 }
-
-body {
-  background: var(--color-beige);
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  -webkit-font-smoothing: antialiased;
+@media (min-width: 640px) {
+  .wrap { padding-inline: var(--gutter-lg); }
 }
-
-::selection {
-  background: var(--color-red);
-  color: var(--color-cream);
-}
-
-.font-display {
-  font-family: var(--font-display);
-}
-
-/* fixed + pointer-events-none: never repaints on scroll */
-.grain::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 70;
-  pointer-events: none;
-  opacity: 0.04;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
+.wrap-narrow { max-width: var(--container-narrow); }
+.band { padding-block: var(--section-y); }

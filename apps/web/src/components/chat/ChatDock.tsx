@@ -212,7 +212,7 @@ export function ChatDock() {
           }
         }}
         aria-label={open ? "Close assistant" : "Open ordering assistant"}
-        className="fixed bottom-5 right-5 z-40 flex h-15 w-15 items-center justify-center rounded-full bg-red text-cream shadow-xl shadow-red/30 transition hover:bg-red-deep"
+        className="fixed bottom-5 right-5 z-40 flex h-15 w-15 items-center justify-center rounded-full bg-red text-cream transition hover:bg-red-deep border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
         whileTap={reduce ? undefined : { scale: 0.92 }}
       >
         {open ? (
@@ -234,14 +234,14 @@ export function ChatDock() {
           <motion.section
             role="dialog"
             aria-label="FOUR ordering assistant"
-            className="fixed bottom-24 right-5 z-40 flex h-[min(36rem,74dvh)] w-[min(25rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-card bg-cream shadow-2xl shadow-ink/25"
+            className="fixed bottom-24 right-5 z-40 flex h-[min(36rem,74dvh)] w-[min(25rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-card bg-cream border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]"
             initial={reduce ? { opacity: 0 } : { opacity: 0, y: 24, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={reduce ? { opacity: 0 } : { opacity: 0, y: 24, scale: 0.96 }}
             transition={{ type: "spring", stiffness: 320, damping: 28 }}
           >
             <header className="flex items-center gap-3 bg-red px-5 py-4 text-cream">
-              <span className="font-display flex h-9 w-9 items-center justify-center rounded-full bg-cream text-sm font-bold text-red">
+              <span className="font-display flex h-9 w-9 items-center justify-center rounded-full bg-cream text-sm font-bold text-red border-2 border-red-press [box-shadow:var(--shadow-pop-red)]">
                 4
               </span>
               <div className="flex-1">
@@ -319,7 +319,7 @@ export function ChatDock() {
                   ))}
                 </div>
 
-                <form onSubmit={send} className="flex items-center gap-2 border-t border-ink/10 p-3">
+                <form onSubmit={send} className="flex items-center gap-2 border-t border-ink-900/20 p-3">
                   {!voiceEnabled && speech.supported && (
                     <button
                       type="button"
@@ -331,7 +331,7 @@ export function ChatDock() {
                     >
                       {speech.status === "listening" && !reduce && (
                         <motion.span
-                          className="absolute inset-0 rounded-full bg-red"
+                          className="absolute inset-0 rounded-full bg-red border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
                           animate={{ scale: [1, 1.35], opacity: [0.5, 0] }}
                           transition={{ duration: 1.2, repeat: Infinity, ease: "easeOut" }}
                         />
@@ -347,12 +347,12 @@ export function ChatDock() {
                     onChange={(e) => setInput(e.target.value)}
                     placeholder={speech.status === "listening" ? (speech.interim || "Listening...") : "Type your order..."}
                     aria-label="Message the assistant"
-                    className="h-11 flex-1 rounded-full border border-ink/15 bg-cream px-4 text-sm text-ink outline-none transition focus:border-red focus:ring-2 focus:ring-red/30"
+                    className="h-11 flex-1 rounded-full border-2 border-ink-900/25 bg-cream px-4 text-sm text-ink outline-none transition focus:border-red focus:ring-2 focus:ring-red/30 [box-shadow:var(--shadow-pop-red)]"
                   />
                   <button
                     type="submit"
                     aria-label="Send"
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red text-cream transition hover:bg-red-deep active:scale-90"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red text-cream transition hover:bg-red-deep active:scale-90 border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
                       <path d="M3 12L21 3l-4 18-5.5-6.5L3 12Z" fill="currentColor" />
@@ -413,7 +413,7 @@ function VoicePanel({ voice }: { voice: ReturnType<typeof useRealtimeVoice> }) {
         ))}
       </div>
 
-      <div className="border-t border-ink/10 p-3 text-center">
+      <div className="border-t border-ink-900/20 p-3 text-center">
         {voice.status === "live" || voice.status === "connecting" ? (
           <button
             onClick={voice.stop}
@@ -424,7 +424,7 @@ function VoicePanel({ voice }: { voice: ReturnType<typeof useRealtimeVoice> }) {
         ) : (
           <button
             onClick={() => void voice.start()}
-            className="rounded-full bg-red px-6 py-2.5 text-sm font-semibold text-cream transition hover:bg-red-deep"
+            className="rounded-full bg-red px-6 py-2.5 text-sm font-semibold text-cream transition hover:bg-red-deep border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
           >
             Start talking
           </button>

@@ -49,7 +49,7 @@ export default function PayPage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-beige px-4">
-      <div className="w-full max-w-md rounded-3xl bg-cream p-8 shadow-xl shadow-ink/10">
+      <div className="w-full max-w-md rounded-3xl bg-cream p-8 border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-red">Demo payment gateway</p>
         <h1 className="mt-2 text-2xl font-bold text-ink">Complete your payment</h1>
 
@@ -94,7 +94,7 @@ export default function PayPage() {
               <button
                 onClick={pay}
                 disabled={state === "paying" || !token}
-                className="mt-6 w-full rounded-full bg-red py-4 text-base font-semibold text-cream transition hover:bg-red-deep active:scale-[0.98] disabled:opacity-50"
+                className="mt-6 w-full rounded-full bg-red py-4 text-base font-semibold text-cream transition hover:bg-red-deep active:scale-[0.98] disabled:opacity-50 border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
               >
                 {state === "paying" ? "Processing..." : `Pay ${formatPKR(order.total)} (demo)`}
               </button>

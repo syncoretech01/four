@@ -1,0 +1,24 @@
+/* v2 elevation — hard offset "sticker" shadows in solid ink, plus one soft
+   ambient for overlays. Never neutral-grey blurs. */
+:root {
+  --shadow-pop-sm: 2px 2px 0 var(--ink-900);   /* chips, small buttons */
+  --shadow-pop: 3px 3px 0 var(--ink-900);      /* buttons, badges */
+  --shadow-pop-lg: 6px 6px 0 var(--ink-900);   /* cards, modals */
+  --shadow-pop-red: 3px 3px 0 var(--red-press);/* on-red elements */
+  --shadow-soft: 0 14px 34px rgba(34, 25, 19, 0.16); /* drawers, docks, toasts */
+  --shadow-sticker: 4px 6px 0 rgba(34, 25, 19, 0.9); /* the floating hand mark */
+
+  --blur-nav: 10px; /* @kind other */  /* sticky header past 24px scroll */
+  --blur-scrim: 3px; /* @kind other */ /* behind modals */
+  --grain-opacity: 0.05; /* @kind other */
+
+  /* legacy v1 aliases */
+  --shadow-card: 0 1px 2px 0 var(--ink-a08);
+  --shadow-card-hover: var(--shadow-pop-lg);
+  --shadow-badge: var(--shadow-pop-sm);
+  --shadow-cta: var(--shadow-pop);
+  --shadow-cta-cream: var(--shadow-pop);
+  --shadow-float: var(--shadow-soft);
+  --shadow-overlay: var(--shadow-soft);
+  --shadow-overlay-heavy: var(--shadow-soft);
+}

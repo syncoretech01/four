@@ -55,7 +55,7 @@ function SignIn({ onSignedIn }: { onSignedIn: () => void }) {
   };
 
   return (
-    <div className="rounded-card bg-cream p-8">
+    <div className="rounded-card bg-cream p-8 border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
       <h2 className="font-display text-xl font-semibold text-ink">Ordered from another device?</h2>
       <p className="mt-1 text-sm text-ink-soft">
         Sign in with your mobile number and we&apos;ll send a one-time code to pull up your order history.
@@ -70,12 +70,12 @@ function SignIn({ onSignedIn }: { onSignedIn: () => void }) {
               placeholder="0300 1234567"
               inputMode="tel"
               aria-label="Mobile number"
-              className="h-12 w-full rounded-xl border border-ink/15 bg-beige/40 px-4 text-ink outline-none transition focus:border-red focus:ring-2 focus:ring-red/30"
+              className="h-12 w-full rounded-xl border-2 border-ink-900/25 bg-beige/40 px-4 text-ink outline-none transition focus:border-red focus:ring-2 focus:ring-red/30"
             />
             <button
               onClick={request}
               disabled={stage === "busy" || phone.replace(/\D/g, "").length < 11}
-              className="rounded-full bg-red py-3 text-sm font-semibold text-cream transition hover:bg-red-deep disabled:opacity-50"
+              className="rounded-full bg-red py-3 text-sm font-semibold text-cream transition hover:bg-red-deep disabled:opacity-50 border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
             >
               {stage === "busy" ? "Sending..." : "Send code"}
             </button>
@@ -96,12 +96,12 @@ function SignIn({ onSignedIn }: { onSignedIn: () => void }) {
               placeholder="6-digit code"
               inputMode="numeric"
               aria-label="One-time code"
-              className="h-12 w-full rounded-xl border border-ink/15 bg-beige/40 px-4 text-center font-mono text-lg tracking-[0.4em] text-ink outline-none transition focus:border-red focus:ring-2 focus:ring-red/30"
+              className="h-12 w-full rounded-xl border-2 border-ink-900/25 bg-beige/40 px-4 text-center font-mono text-lg tracking-[0.4em] text-ink outline-none transition focus:border-red focus:ring-2 focus:ring-red/30"
             />
             <button
               onClick={verify}
               disabled={code.length !== 6}
-              className="rounded-full bg-red py-3 text-sm font-semibold text-cream transition hover:bg-red-deep disabled:opacity-50"
+              className="rounded-full bg-red py-3 text-sm font-semibold text-cream transition hover:bg-red-deep disabled:opacity-50 border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
             >
               Verify &amp; show my orders
             </button>
@@ -160,13 +160,13 @@ export default function OrdersPage() {
         </div>
 
         <div className="mt-8 grid gap-4">
-          {orders === null && <div className="h-40 animate-pulse rounded-card bg-beige-deep/60" />}
+          {orders === null && <div className="h-40 animate-pulse rounded-card bg-beige-deep/60 border-2 border-ink-900/25" />}
           {orders?.length === 0 && (
-            <div className="rounded-card bg-cream p-10 text-center">
+            <div className="rounded-card bg-cream p-10 text-center border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
               <p className="text-ink-soft">No orders on this device yet. Your first one is a scroll away.</p>
               <Link
                 href="/#menu"
-                className="mt-4 inline-block rounded-full bg-red px-6 py-3 text-sm font-semibold text-cream transition hover:bg-red-deep"
+                className="mt-4 inline-block rounded-full bg-red px-6 py-3 text-sm font-semibold text-cream transition hover:bg-red-deep border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
               >
                 See the menu
               </Link>
@@ -176,7 +176,7 @@ export default function OrdersPage() {
             <Link
               key={o.orderNumber}
               href={`/track/${o.orderNumber}`}
-              className="group rounded-card bg-cream p-6 transition hover:shadow-lg hover:shadow-ink/10"
+              className="f-card--interactive group rounded-card bg-cream p-6 border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]"
             >
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>

@@ -74,14 +74,14 @@ export default function TrackPage({ params }: { params: Promise<{ orderNumber: s
       <Nav />
       <main className="mx-auto min-h-[calc(100dvh-4rem)] max-w-3xl px-4 pb-24 pt-28 sm:px-6">
         {notFound ? (
-          <div className="rounded-card bg-cream p-10 text-center">
+          <div className="rounded-card bg-cream p-10 text-center border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
             <h1 className="font-display text-3xl font-bold text-ink">Order not found</h1>
             <p className="mt-3 text-ink-soft">Check the order number, or ask the assistant to track your latest order.</p>
           </div>
         ) : !order ? (
           <div className="grid gap-6">
-            <div className="h-52 animate-pulse rounded-card bg-beige-deep/60" />
-            <div className="h-72 animate-pulse rounded-card bg-beige-deep/60" />
+            <div className="h-52 animate-pulse rounded-card bg-beige-deep/60 border-2 border-ink-900/25" />
+            <div className="h-72 animate-pulse rounded-card bg-beige-deep/60 border-2 border-ink-900/25" />
           </div>
         ) : (
           <div className="grid gap-6">
@@ -99,8 +99,8 @@ export default function TrackPage({ params }: { params: Promise<{ orderNumber: s
                   <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.16em] text-cream/70">
                     {outForDelivery && (
                       <span className="relative flex h-2.5 w-2.5">
-                        <span className="absolute inline-flex h-full w-full rounded-full bg-cream opacity-60 motion-safe:animate-ping" />
-                        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-cream" />
+                        <span className="absolute inline-flex h-full w-full rounded-full bg-cream opacity-60 motion-safe:animate-ping border-2 border-red-press [box-shadow:var(--shadow-pop-red)]" />
+                        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-cream border-2 border-red-press [box-shadow:var(--shadow-pop-red)]" />
                       </span>
                     )}
                     {order.orderNumber}
@@ -124,7 +124,7 @@ export default function TrackPage({ params }: { params: Promise<{ orderNumber: s
                   {order.paymentUrl && (
                     <a
                       href={order.paymentUrl}
-                      className="mt-4 inline-block rounded-full bg-cream px-7 py-3.5 text-sm font-bold text-red shadow-lg shadow-ink/20 transition hover:bg-white active:scale-[0.98]"
+                      className="mt-4 inline-block rounded-full bg-cream px-7 py-3.5 text-sm font-bold text-red transition hover:bg-white active:scale-[0.98] border-2 border-red-press [box-shadow:var(--shadow-pop-red)]"
                     >
                       Complete payment · {formatPKR(order.total)}
                     </a>
@@ -141,42 +141,25 @@ export default function TrackPage({ params }: { params: Promise<{ orderNumber: s
 
             {/* timeline */}
             {!cancelled && !awaitingPayment && (
-              <div className="rounded-card bg-cream p-8">
-                <ol className="grid gap-0">
+              <div className="rounded-card bg-cream p-8 border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
+                <ol className="f-timeline">
                   {ORDER_STATUS_FLOW.map((status, i) => {
                     const done = i <= currentIndex;
                     const active = i === currentIndex && !delivered;
                     const at = order.events.find((e) => e.status === status)?.at;
                     return (
-                      <li key={status} className="relative flex gap-4 pb-8 last:pb-0">
-                        {i < ORDER_STATUS_FLOW.length - 1 && (
-                          <span
-                            className={`absolute left-[15px] top-8 h-[calc(100%-1.5rem)] w-1 rounded-full ${
-                              i < currentIndex ? "bg-red" : "bg-ink/10"
-                            }`}
-                            aria-hidden
-                          />
-                        )}
-                        <span className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center">
-                          {active && (
-                            <span className="absolute inline-flex h-8 w-8 rounded-full bg-red/30 motion-safe:animate-ping" aria-hidden />
-                          )}
-                          <span
-                            className={`relative flex h-8 w-8 items-center justify-center rounded-full border-2 ${
-                              done ? "border-red bg-red text-cream" : "border-ink/15 bg-cream text-transparent"
-                            }`}
-                          >
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
-                              <path d="M4 12.5l5 5L20 7" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                          </span>
+                      <li key={status} className={`f-timeline__step ${done ? "is-done" : ""}`}>
+                        {i < ORDER_STATUS_FLOW.length - 1 && <span className="f-timeline__line" aria-hidden />}
+                        <span className="f-timeline__node">
+                          {active && <span className="f-timeline__ping motion-reduce:hidden" aria-hidden />}
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+                            <path d="M4 12.5l5 5L20 7" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
                         </span>
-                        <div className="pt-1">
-                          <p className={`font-display text-lg font-bold ${done ? "text-ink" : "text-ink-soft"}`}>
-                            {ORDER_STATUS_LABELS[status]}
-                          </p>
+                        <div>
+                          <p className="f-timeline__label">{ORDER_STATUS_LABELS[status]}</p>
                           {at && (
-                            <p className="text-sm text-ink-soft">
+                            <p className="f-timeline__time">
                               {new Date(at).toLocaleTimeString("en-PK", { hour: "2-digit", minute: "2-digit" })}
                             </p>
                           )}
@@ -190,7 +173,7 @@ export default function TrackPage({ params }: { params: Promise<{ orderNumber: s
 
             {/* live map */}
             {order.destLat != null && order.destLng != null && !cancelled && !awaitingPayment && !delivered && (
-              <div className="overflow-hidden rounded-card bg-cream p-3">
+              <div className="overflow-hidden rounded-card bg-cream p-3 border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
                 <TrackMap
                   orderNumber={order.orderNumber}
                   branchId={order.branchId}
@@ -207,7 +190,7 @@ export default function TrackPage({ params }: { params: Promise<{ orderNumber: s
             )}
 
             {/* summary */}
-            <div className="rounded-card bg-cream p-8">
+            <div className="rounded-card bg-cream p-8 border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
               <h2 className="font-display text-2xl font-bold tracking-tight text-ink">Order summary</h2>
               <ul className="mt-5 grid gap-3">
                 {order.lines.map((l, i) => (
@@ -223,7 +206,7 @@ export default function TrackPage({ params }: { params: Promise<{ orderNumber: s
                   </li>
                 ))}
               </ul>
-              <dl className="mt-5 grid gap-1.5 border-t border-ink/10 pt-4 text-sm">
+              <dl className="mt-5 grid gap-1.5 border-t border-ink-900/20 pt-4 text-sm">
                 <div className="flex justify-between text-ink-soft"><dt>Subtotal</dt><dd>{formatPKR(order.subtotal)}</dd></div>
                 <div className="flex justify-between text-ink-soft"><dt>Delivery</dt><dd>{order.deliveryFee === 0 ? "Free" : formatPKR(order.deliveryFee)}</dd></div>
                 <div className="flex justify-between text-ink-soft"><dt>Tax</dt><dd>{formatPKR(order.tax)}</dd></div>

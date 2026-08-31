@@ -1,0 +1,40 @@
+/* FOUR type.
+   Brand book faces: Aminute (display) + Aloevera Display (body) — both
+   commercial, not shipped. The product ships Fredoka + Poppins as stand-ins
+   (see readme.md § Type substitution). Anton is the closest free match to
+   Aminute's heavy condensed cut and is available for print/poster display. */
+:root {
+  --font-display: "Passion One", "Trebuchet MS", sans-serif; /* loud, chunky-rounded — matches the wordmark */
+  --font-body: "Archivo", system-ui, sans-serif;
+  --font-condensed: "Passion One", sans-serif;
+
+  /* scale — Tailwind steps, exactly as used in the product */
+  --text-2xs: 0.6875rem; /* 11px — badge / tool chip */
+  --text-xs: 0.75rem;    /* 12px — eyebrow, meta */
+  --text-sm: 0.875rem;   /* 14px — nav, body small, buttons */
+  --text-base: 1rem;     /* 16px */
+  --text-lg: 1.125rem;   /* 18px — lede */
+  --text-xl: 1.25rem;    /* 20px — card title */
+  --text-2xl: 1.5rem;    /* 24px */
+  --text-3xl: 1.875rem;  /* 30px — modal title */
+  --text-4xl: 2.25rem;   /* 36px */
+  --text-5xl: 3rem;      /* 48px — section heading */
+  --text-6xl: 3.75rem;   /* 60px */
+  --text-7xl: 4.5rem;    /* 72px — hype band */
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  --leading-display: 0.95;
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+
+  --tracking-display: -0.025em; /* headings are tracked tight */
+  --tracking-normal: 0;
+  --tracking-eyebrow: 0.16em;   /* uppercase eyebrow above a heading */
+  --tracking-pill: 0.14em;      /* uppercase status pill */
+  --tracking-seal: 0.12em;      /* circular seal text */
+}

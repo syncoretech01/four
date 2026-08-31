@@ -21,12 +21,12 @@ export function HypeBand() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-[16ch] font-display text-5xl font-bold leading-[0.95] tracking-tight sm:text-7xl"
+          className="f-heading max-w-[16ch] text-5xl !text-[var(--paper-0)] sm:text-7xl"
         >
           Three kitchens. One Lahore obsession.
         </motion.h2>
 
-        <div className="mt-14 grid grid-cols-1 gap-px overflow-hidden rounded-card border border-cream/20 bg-cream/20 sm:grid-cols-3">
+        <div className="mt-14 grid grid-cols-1 gap-px overflow-hidden rounded-card border-2 border-paper-0 bg-paper-0/40 [box-shadow:var(--shadow-pop-red)] sm:grid-cols-3">
           {BRANCHES.map((b, i) => (
             <motion.div
               key={b.id}
@@ -52,13 +52,13 @@ export function HypeBand() {
         >
           <a
             href="#menu"
-            className="rounded-full bg-cream px-8 py-4 text-base font-bold text-red shadow-lg shadow-ink/20 transition hover:bg-white active:scale-[0.98]"
+            className="f-btn f-btn--cream f-btn--lg"
           >
             Order online
           </a>
           <button
             onClick={() => document.querySelector<HTMLButtonElement>("header [data-open-location]")?.click()}
-            className="rounded-full border-2 border-cream/50 px-8 py-4 text-base font-bold text-cream transition hover:border-cream active:scale-[0.98]"
+            className="f-btn f-btn--on-red f-btn--lg"
           >
             Check your block
           </button>

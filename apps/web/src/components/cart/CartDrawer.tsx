@@ -43,25 +43,25 @@ export function CartDrawer() {
     <AnimatePresence>
       {open && (
         <motion.div className="fixed inset-0 z-50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-          <div className="absolute inset-0 bg-ink/50 backdrop-blur-sm" onClick={close} aria-hidden />
+          <div className="f-scrim" onClick={close} aria-hidden />
           <motion.aside
             role="dialog"
             aria-modal="true"
             aria-label="Your order"
-            className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-cream shadow-2xl"
+            className="f-drawer"
             initial={reduce ? false : { x: "100%" }}
             animate={{ x: 0 }}
             exit={reduce ? { opacity: 0 } : { x: "100%" }}
             transition={{ type: "spring", stiffness: 320, damping: 34 }}
           >
-            <header className="flex items-center justify-between border-b border-ink/10 p-6">
-              <h2 className="font-display text-2xl font-bold tracking-tight text-ink">
+            <header className="f-drawer__head">
+              <h2 className="f-drawer__title">
                 {checkoutOpen ? "Checkout" : "Your order"}
               </h2>
               <button
                 onClick={close}
                 aria-label="Close cart"
-                className="flex h-9 w-9 items-center justify-center rounded-full text-ink-soft transition hover:bg-beige-deep hover:text-ink active:scale-95"
+                className="f-iconbtn f-iconbtn--sm f-iconbtn--plain"
               >
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
                   <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -73,21 +73,21 @@ export function CartDrawer() {
               <CheckoutForm onBack={closeCheckout} onDone={close} />
             ) : (
               <>
-                <div className="flex-1 overflow-y-auto p-6">
+                <div className="f-drawer__body">
                   {cart.lines.length === 0 ? (
-                    <div className="flex h-full flex-col items-center justify-center gap-5 text-center">
-                      <svg viewBox="180 100 700 900" className="h-24 w-24 text-red/20" aria-hidden>
+                    <div className="f-empty h-full">
+                      <svg viewBox="180 100 700 900" className="f-empty__glyph text-red" aria-hidden>
                         <g transform={HAND_MARK.transform}>
                           <path d={HAND_MARK.d} fill="currentColor" />
                         </g>
                       </svg>
-                      <p className="max-w-[26ch] text-lg font-medium text-ink-soft">
+                      <p className="f-empty__text">
                         Nothing here yet. Browse the menu, or tell the assistant what you&apos;re craving.
                       </p>
                       <a
                         href="#menu"
                         onClick={close}
-                        className="rounded-full bg-red px-7 py-3 text-sm font-bold text-cream transition hover:bg-red-deep active:scale-[0.98]"
+                        className="f-btn f-btn--primary f-btn--md"
                       >
                         See the menu
                       </a>
@@ -103,42 +103,42 @@ export function CartDrawer() {
                             animate={{ opacity: 1, height: "auto" }}
                             exit={reduce ? { opacity: 0 } : { opacity: 0, height: 0 }}
                             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                            className="flex items-start gap-3 overflow-hidden"
+                            className="f-line overflow-hidden"
                           >
-                            <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-beige-deep">
+                            <div className="f-line__thumb">
                               {l.image && (
                                 <SmartImage src={l.image} alt={l.name} fallbackLabel={l.name} className="h-full w-full object-cover" />
                               )}
                             </div>
                             <div className="min-w-0 flex-1">
-                              <p className="truncate font-bold text-ink">
+                              <p className="f-line__name truncate">
                                 {l.name}
                                 {l.variantLabel ? ` (${l.variantLabel})` : ""}
                               </p>
                               {l.modifiers.length > 0 && (
-                                <p className="truncate text-xs text-ink-soft">
+                                <p className="f-line__mods truncate">
                                   {l.modifiers.map((m) => (m.qty > 1 ? `${m.label} x${m.qty}` : m.label)).join(", ")}
                                 </p>
                               )}
-                              <div className="mt-2 flex items-center gap-3">
-                                <div className="flex items-center rounded-full border border-ink/15">
+                              <div className="f-line__foot">
+                                <div className="f-qty f-qty--sm">
                                   <button
                                     onClick={() => setQty(l.lineId, l.qty - 1)}
                                     aria-label={`Remove one ${l.name}`}
-                                    className="flex h-8 w-8 items-center justify-center font-bold text-ink transition hover:text-red active:scale-90"
+                                    className="f-qty__btn"
                                   >
                                     -
                                   </button>
-                                  <span className="w-6 text-center text-sm font-bold">{l.qty}</span>
+                                  <span className="f-qty__val">{l.qty}</span>
                                   <button
                                     onClick={() => setQty(l.lineId, l.qty + 1)}
                                     aria-label={`Add one ${l.name}`}
-                                    className="flex h-8 w-8 items-center justify-center font-bold text-ink transition hover:text-red active:scale-90"
+                                    className="f-qty__btn"
                                   >
                                     +
                                   </button>
                                 </div>
-                                <span className="text-sm font-bold text-ink">{formatPKR(l.lineTotal)}</span>
+                                <span className="f-line__total">{formatPKR(l.lineTotal)}</span>
                               </div>
                             </div>
                           </motion.li>
@@ -149,10 +149,10 @@ export function CartDrawer() {
                 </div>
 
                 {cart.lines.length > 0 && (
-                  <footer className="border-t border-ink/10 p-6">
+                  <footer className="f-drawer__foot">
                     {/* free-delivery progress: a genuine nudge, not decoration */}
                     <div className="mb-4">
-                      <p className="text-sm font-medium text-ink">
+                      <p className="text-sm font-semibold text-ink-900">
                         {freeIn === 0 ? (
                           <span className="font-bold text-red">Free delivery unlocked.</span>
                         ) : (
@@ -161,23 +161,25 @@ export function CartDrawer() {
                           </>
                         )}
                       </p>
-                      <div className="mt-2 h-2 overflow-hidden rounded-full bg-beige-deep">
+                      <div className="f-progress">
                         <motion.div
-                          className="h-full rounded-full bg-red"
+                          className="f-progress__fill"
                           initial={false}
                           animate={{ width: `${freePct}%` }}
                           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                         />
                       </div>
                     </div>
-                    <dl className="flex items-center justify-between text-sm">
-                      <dt className="text-ink-soft">Subtotal</dt>
-                      <dd className="text-lg font-bold text-ink">{formatPKR(cart.subtotal)}</dd>
+                    <dl className="f-summary mt-4">
+                      <div className="f-summary__row is-total">
+                        <dt>Subtotal</dt>
+                        <dd>{formatPKR(cart.subtotal)}</dd>
+                      </div>
                     </dl>
-                    <p className="mt-1 text-xs text-ink-soft">Delivery and tax are added at checkout.</p>
+                    <p className="mt-1 text-xs text-ink-600">Delivery and tax are added at checkout.</p>
                     <button
                       onClick={startCheckout}
-                      className="mt-4 w-full rounded-full bg-red py-4 text-base font-bold text-cream shadow-lg shadow-red/25 transition hover:bg-red-deep active:scale-[0.98]"
+                      className="f-btn f-btn--primary f-btn--lg f-btn--block mt-4"
                     >
                       Checkout · {cart.itemCount} item{cart.itemCount === 1 ? "" : "s"}
                     </button>
