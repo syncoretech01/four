@@ -15,10 +15,10 @@ export { BrandLogo } from "../../apps/web/src/components/BrandLogo";
 export { SmartImage } from "../../apps/web/src/components/SmartImage";
 export { LogoHero } from "../../apps/web/src/components/hero/LogoHero";
 export { Marquee } from "../../apps/web/src/components/sections/Marquee";
-export { Story } from "../../apps/web/src/components/sections/Story";
-export { Visit } from "../../apps/web/src/components/sections/Visit";
+export { CraftStory } from "../../apps/web/src/components/sections/CraftStory";
+export { WorldFlavours } from "../../apps/web/src/components/sections/WorldFlavours";
 export { Footer } from "../../apps/web/src/components/sections/Footer";
-export { HypeBand } from "../../apps/web/src/components/sections/HypeBand";
+export { DealsBand } from "../../apps/web/src/components/sections/DealsBand";
 export { RotatingSeal } from "../../apps/web/src/components/hero/RotatingSeal";
 
 /*

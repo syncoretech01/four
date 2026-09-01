@@ -11,6 +11,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { useReduceMotion } from "@/lib/useAnim";
+import { useBottomBarVisible } from "@/lib/useBottomBar";
 import type { OrderQuote } from "@four/shared";
 import { api } from "@/lib/api";
 import { getSocket } from "@/lib/socket";
@@ -46,6 +47,8 @@ export function ChatDock() {
   const [voiceEnabled, setVoiceEnabled] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const reduce = useReduceMotion();
+  // lift clear of the mobile basket bar on /menu so the two never collide
+  const barVisible = useBottomBarVisible();
   const openCheckout = useStore((s) => s.openCheckout);
   const setCartOpen = useStore((s) => s.setCartOpen);
   /** True when the last user message came in by microphone: replies are then spoken back. */
@@ -212,7 +215,9 @@ export function ChatDock() {
           }
         }}
         aria-label={open ? "Close assistant" : "Open ordering assistant"}
-        className="fixed bottom-5 right-5 z-40 flex h-15 w-15 items-center justify-center rounded-full bg-red text-cream transition hover:bg-red-deep border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
+        className={`fixed right-5 z-40 flex h-15 w-15 items-center justify-center rounded-full bg-red text-cream transition hover:bg-red-deep border-2 border-ink-900 [box-shadow:var(--shadow-pop)] ${
+          barVisible ? "bottom-24 lg:bottom-5" : "bottom-5"
+        }`}
         whileTap={reduce ? undefined : { scale: 0.92 }}
       >
         {open ? (
@@ -234,7 +239,9 @@ export function ChatDock() {
           <motion.section
             role="dialog"
             aria-label="FOUR ordering assistant"
-            className="fixed bottom-24 right-5 z-40 flex h-[min(36rem,74dvh)] w-[min(25rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-card bg-cream border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]"
+            className={`fixed right-5 z-40 flex h-[min(36rem,74dvh)] w-[min(25rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-card bg-cream border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)] ${
+              barVisible ? "bottom-[10.5rem] lg:bottom-24" : "bottom-24"
+            }`}
             initial={reduce ? { opacity: 0 } : { opacity: 0, y: 24, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={reduce ? { opacity: 0 } : { opacity: 0, y: 24, scale: 0.96 }}

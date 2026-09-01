@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ORDER_STATUS_LABELS, formatPKR, type OrderView, type OrderStatusName } from "@four/shared";
 import { api, ApiError } from "@/lib/api";
+import { reorder } from "@/lib/reorder";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/sections/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
@@ -68,7 +69,9 @@ function SignIn({ onSignedIn }: { onSignedIn: () => void }) {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="0300 1234567"
+              type="tel"
               inputMode="tel"
+              autoComplete="tel"
               aria-label="Mobile number"
               className="h-12 w-full rounded-xl border-2 border-ink-900/25 bg-beige/40 px-4 text-ink outline-none transition focus:border-red focus:ring-2 focus:ring-red/30"
             />
@@ -95,6 +98,7 @@ function SignIn({ onSignedIn }: { onSignedIn: () => void }) {
               onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
               placeholder="6-digit code"
               inputMode="numeric"
+              autoComplete="one-time-code"
               aria-label="One-time code"
               className="h-12 w-full rounded-xl border-2 border-ink-900/25 bg-beige/40 px-4 text-center font-mono text-lg tracking-[0.4em] text-ink outline-none transition focus:border-red focus:ring-2 focus:ring-red/30"
             />
@@ -117,6 +121,23 @@ function SignIn({ onSignedIn }: { onSignedIn: () => void }) {
         )}
       </div>
     </div>
+  );
+}
+
+function ReorderButton({ order }: { order: OrderView }) {
+  const [busy, setBusy] = useState(false);
+  return (
+    <button
+      onClick={async () => {
+        setBusy(true);
+        await reorder(order);
+        setBusy(false);
+      }}
+      disabled={busy}
+      className={`f-btn f-btn--outline-red f-btn--sm ${busy ? "is-loading" : ""}`}
+    >
+      Order it again
+    </button>
   );
 }
 
@@ -143,7 +164,7 @@ export default function OrdersPage() {
   return (
     <>
       <Nav />
-      <main className="mx-auto min-h-[calc(100dvh-4rem)] max-w-3xl px-4 pb-24 pt-28 sm:px-6">
+      <main id="main" className="mx-auto min-h-[calc(100dvh-4rem)] max-w-3xl px-4 pb-24 pt-28 sm:px-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <h1 className="font-display text-4xl font-semibold text-ink">Your orders</h1>
@@ -165,7 +186,7 @@ export default function OrdersPage() {
             <div className="rounded-card bg-cream p-10 text-center border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
               <p className="text-ink-soft">No orders on this device yet. Your first one is a scroll away.</p>
               <Link
-                href="/#menu"
+                href="/menu"
                 className="mt-4 inline-block rounded-full bg-red px-6 py-3 text-sm font-semibold text-cream transition hover:bg-red-deep border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
               >
                 See the menu
@@ -173,34 +194,38 @@ export default function OrdersPage() {
             </div>
           )}
           {orders?.map((o) => (
-            <Link
-              key={o.orderNumber}
-              href={`/track/${o.orderNumber}`}
-              className="f-card--interactive group rounded-card bg-cream p-6 border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]"
-            >
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <p className="font-display text-xl font-semibold text-ink group-hover:text-red">{o.orderNumber}</p>
-                  <p className="text-sm text-ink-soft">
-                    {new Date(o.placedAt).toLocaleDateString("en-PK", { day: "numeric", month: "short" })} ·{" "}
-                    {o.lines.reduce((n, l) => n + l.qty, 0)} items · {o.branchName ?? "FOUR"}
-                  </p>
+            <article key={o.orderNumber} className="rounded-card bg-cream border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
+              <Link href={`/track/${o.orderNumber}`} className="group block p-6 pb-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="font-display text-xl font-semibold text-ink group-hover:text-red">{o.orderNumber}</p>
+                    <p className="text-sm text-ink-soft">
+                      {new Date(o.placedAt).toLocaleDateString("en-PK", { day: "numeric", month: "short" })} ·{" "}
+                      {o.lines.reduce((n, l) => n + l.qty, 0)} items · {o.branchName ?? "FOUR"}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={`rounded-full px-3 py-1.5 text-xs font-bold ${
+                        o.status === "CANCELLED" ? "bg-ink/10 text-ink-soft" : o.status === "DELIVERED" ? "bg-ink/10 text-ink" : "bg-red text-cream"
+                      }`}
+                    >
+                      {ORDER_STATUS_LABELS[o.status as OrderStatusName] ?? o.status}
+                    </span>
+                    <span className="font-bold text-ink">{formatPKR(o.total)}</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span
-                    className={`rounded-full px-3 py-1.5 text-xs font-bold ${
-                      o.status === "CANCELLED" ? "bg-ink/10 text-ink-soft" : o.status === "DELIVERED" ? "bg-ink/10 text-ink" : "bg-red text-cream"
-                    }`}
-                  >
-                    {ORDER_STATUS_LABELS[o.status as OrderStatusName] ?? o.status}
-                  </span>
-                  <span className="font-bold text-ink">{formatPKR(o.total)}</span>
-                </div>
+                <p className="mt-3 truncate text-sm text-ink-soft">
+                  {o.lines.map((l) => `${l.qty}x ${l.name}`).join(", ")}
+                </p>
+              </Link>
+              <div className="flex items-center gap-3 border-t-2 border-paper-300 px-6 py-3">
+                <ReorderButton order={o} />
+                <Link href={`/track/${o.orderNumber}`} className="f-btn f-btn--quiet f-btn--sm !px-0">
+                  Track →
+                </Link>
               </div>
-              <p className="mt-3 truncate text-sm text-ink-soft">
-                {o.lines.map((l) => `${l.qty}x ${l.name}`).join(", ")}
-              </p>
-            </Link>
+            </article>
           ))}
 
           {!customer && orders !== null && <SignIn onSignedIn={refresh} />}

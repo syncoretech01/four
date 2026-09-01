@@ -17,26 +17,18 @@
     "SmartImage": "../../apps/web/src/components/SmartImage.tsx",
     "LogoHero": "../../apps/web/src/components/hero/LogoHero.tsx",
     "Marquee": "../../apps/web/src/components/sections/Marquee.tsx",
-    "Story": "../../apps/web/src/components/sections/Story.tsx",
-    "Visit": "../../apps/web/src/components/sections/Visit.tsx",
     "Footer": "../../apps/web/src/components/sections/Footer.tsx",
     "PreviewRoot": null,
-    "HypeBand": "../../apps/web/src/components/sections/HypeBand.tsx",
-    "RotatingSeal": "../../apps/web/src/components/hero/RotatingSeal.tsx"
+    "RotatingSeal": "../../apps/web/src/components/hero/RotatingSeal.tsx",
+    "CraftStory": "../../apps/web/src/components/sections/CraftStory.tsx",
+    "WorldFlavours": "../../apps/web/src/components/sections/WorldFlavours.tsx",
+    "DealsBand": "../../apps/web/src/components/sections/DealsBand.tsx"
   },
   "buildCmd": "sh .design-sync/prepare.sh",
   "overrides": {
     "LogoHero": {
       "cardMode": "single",
       "viewport": "1200x820"
-    },
-    "Story": {
-      "cardMode": "single",
-      "viewport": "1200x640"
-    },
-    "Visit": {
-      "cardMode": "single",
-      "viewport": "1200x620"
     },
     "Footer": {
       "cardMode": "single",
@@ -45,7 +37,15 @@
     "Marquee": {
       "cardMode": "column"
     },
-    "HypeBand": {
+    "CraftStory": {
+      "cardMode": "single",
+      "viewport": "1200x900"
+    },
+    "WorldFlavours": {
+      "cardMode": "single",
+      "viewport": "1200x820"
+    },
+    "DealsBand": {
       "cardMode": "single",
       "viewport": "1200x900"
     }

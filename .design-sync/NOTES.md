@@ -11,13 +11,16 @@ at `.design-sync/ds-pkg/` that re-exports the presentation components from
 `apps/web/src/components`, and the converter bundles that.
 
 Nine components are in scope, chosen because they render standalone:
-`BrandLogo`, `SmartImage`, `RotatingSeal`, `LogoHero`, `Marquee`, `Story`,
-`HypeBand`, `Visit`, `Footer`.
+`BrandLogo`, `SmartImage`, `RotatingSeal`, `LogoHero`, `Marquee`, `CraftStory`,
+`WorldFlavours`, `DealsBand`, `Footer`. (The chain-repositioning rebuild retired
+`Story`/`HypeBand`/`Visit`; `CraftStory`/`DealsBand` are their successors and
+`LocationsTeaser` replaced `Visit` but reads the zustand store, so it is out.)
 
 Deliberately excluded — each needs app infrastructure with no meaning inside a
-design: `Nav`, `LocationModal`, `CartDrawer` (zustand store), `CheckoutForm`
+design: `Nav`/`MobileNav`, `LocationModal`, `CartDrawer` (zustand store), `CheckoutForm`
 (API + payment), `ChatDock` (OpenAI realtime voice), `FourMap` / `TrackMap`
-(maplibre + live GPS), `MenuSection`, `ItemModal`, `BoardLightbox`.
+(maplibre + live GPS), `MenuBrowser`, `MenuPreview`, `BestsellerShowcase`, `ItemCard`,
+`ItemModal`, `LocationsTeaser`, `ToastStack` (toast store).
 
 To add one later: re-export it from `ds-pkg/index.ts` **and** pin its source
 path in `config.json`'s `componentSrcMap`. Doing only one of the two silently

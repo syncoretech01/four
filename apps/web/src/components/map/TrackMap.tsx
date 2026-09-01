@@ -17,19 +17,22 @@ function el(html: string): HTMLElement {
 }
 
 const destPin = () =>
-  el(`<div style="width:34px;height:34px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#9d1d20;border:3px solid #f6efe1;box-shadow:0 4px 10px rgba(38,32,26,.35);display:flex;align-items:center;justify-content:center">
+  el(`<div aria-hidden="true" style="width:34px;height:34px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#9d1d20;border:3px solid #f6efe1;box-shadow:0 4px 10px rgba(38,32,26,.35);display:flex;align-items:center;justify-content:center">
     <span style="transform:rotate(45deg);color:#f6efe1;font-weight:800;font-family:sans-serif;font-size:13px">4</span>
   </div>`);
 
 const branchPin = () =>
-  el(`<div style="width:26px;height:26px;border-radius:8px;background:#26201a;border:2px solid #f6efe1;box-shadow:0 3px 8px rgba(38,32,26,.3);display:flex;align-items:center;justify-content:center;color:#f6efe1;font-size:12px">🍔</div>`);
+  el(`<div aria-hidden="true" style="width:26px;height:26px;border-radius:8px;background:#26201a;border:2px solid #f6efe1;box-shadow:0 3px 8px rgba(38,32,26,.3);display:flex;align-items:center;justify-content:center;color:#f6efe1;font-weight:800;font-family:sans-serif;font-size:13px">4</div>`);
 
-const riderDot = () =>
-  el(`<div style="position:relative;width:22px;height:22px">
-    <span style="position:absolute;inset:-8px;border-radius:50%;background:rgba(157,29,32,.25);animation:fourping 1.6s ease-out infinite"></span>
+const riderDot = () => {
+  // the ping is decoration; freeze it for reduced-motion users
+  const reduce = typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  return el(`<div aria-hidden="true" style="position:relative;width:22px;height:22px">
+    ${reduce ? "" : `<span style="position:absolute;inset:-8px;border-radius:50%;background:rgba(157,29,32,.25);animation:fourping 1.6s ease-out infinite"></span>`}
     <span style="position:absolute;inset:0;border-radius:50%;background:#9d1d20;border:3px solid #f6efe1;box-shadow:0 3px 8px rgba(38,32,26,.4)"></span>
     <style>@keyframes fourping{0%{transform:scale(.6);opacity:.8}100%{transform:scale(1.6);opacity:0}}</style>
   </div>`);
+};
 
 export function TrackMap({
   orderNumber,

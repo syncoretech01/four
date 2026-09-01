@@ -6,6 +6,7 @@
  * status hero, a timeline with a pulsing live node, and the branded map.
  */
 import { use, useEffect, useState } from "react";
+import Link from "next/link";
 import dynamic from "next/dynamic";
 import { motion } from "motion/react";
 import { useReduceMotion } from "@/lib/useAnim";
@@ -72,11 +73,25 @@ export default function TrackPage({ params }: { params: Promise<{ orderNumber: s
   return (
     <>
       <Nav />
-      <main className="mx-auto min-h-[calc(100dvh-4rem)] max-w-3xl px-4 pb-24 pt-28 sm:px-6">
+      <main id="main" className="mx-auto min-h-[calc(100dvh-4rem)] max-w-3xl px-4 pb-24 pt-28 sm:px-6">
         {notFound ? (
           <div className="rounded-card bg-cream p-10 text-center border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
             <h1 className="font-display text-3xl font-bold text-ink">Order not found</h1>
             <p className="mt-3 text-ink-soft">Check the order number, or ask the assistant to track your latest order.</p>
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+              <Link href="/orders" className="f-btn f-btn--primary f-btn--md">
+                See my orders
+              </Link>
+              <Link href="/menu" className="f-btn f-btn--quiet f-btn--sm">
+                Browse the menu
+              </Link>
+            </div>
+            <p className="mt-4 text-sm text-ink-soft">
+              Or call us on{" "}
+              <a href={BRAND.phoneHref} className="font-extrabold">
+                {BRAND.phone}
+              </a>
+            </p>
           </div>
         ) : !order ? (
           <div className="grid gap-6">
@@ -85,6 +100,10 @@ export default function TrackPage({ params }: { params: Promise<{ orderNumber: s
           </div>
         ) : (
           <div className="grid gap-6">
+            {/* announce socket-driven status changes to screen readers */}
+            <p className="sr-only" role="status">
+              Order status: {headline}
+            </p>
             {/* status hero: the one thing the customer opened the page for */}
             <motion.div
               initial={reduce ? false : { opacity: 0, y: 16 }}

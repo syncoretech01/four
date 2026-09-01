@@ -19,12 +19,14 @@ interface AppState {
   quote: OrderQuote | null;
   location: DeliveryLocation | null;
   locationDismissed: boolean;
+  locationModalOpen: boolean;
   setCart: (cart: CartView) => void;
   setCartOpen: (open: boolean) => void;
   openCheckout: (quote: OrderQuote | null) => void;
   closeCheckout: () => void;
   setLocation: (loc: DeliveryLocation | null) => void;
   dismissLocation: () => void;
+  setLocationModalOpen: (open: boolean) => void;
 }
 
 export const useStore = create<AppState>()(
@@ -36,16 +38,20 @@ export const useStore = create<AppState>()(
       quote: null,
       location: null,
       locationDismissed: false,
+      locationModalOpen: false,
       setCart: (cart) => set({ cart }),
       setCartOpen: (cartOpen) => set({ cartOpen, ...(cartOpen ? {} : { checkoutOpen: false }) }),
       openCheckout: (quote) => set({ cartOpen: true, checkoutOpen: true, quote }),
       closeCheckout: () => set({ checkoutOpen: false, quote: null }),
       setLocation: (location) => set({ location }),
       dismissLocation: () => set({ locationDismissed: true }),
+      setLocationModalOpen: (locationModalOpen) => set({ locationModalOpen }),
     }),
     {
       name: "four-ui",
-      partialize: (s) => ({ location: s.location }),
+      // locationDismissed persists so the first-visit gate doesn't re-pop on
+      // every page load for someone who chose "just browsing"
+      partialize: (s) => ({ location: s.location, locationDismissed: s.locationDismissed }),
     },
   ),
 );

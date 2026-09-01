@@ -270,6 +270,7 @@ export async function getOrder(orderNumberOrId: string): Promise<OrderView | nul
         : undefined,
     etaLabel: etaForArea(order.areaId),
     lines: order.lines.map((l) => ({
+      itemId: l.itemId,
       name: l.name,
       variantLabel: l.variantLabel ?? undefined,
       modifiers: (l.modifiers as string[]) ?? [],

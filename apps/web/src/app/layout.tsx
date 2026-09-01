@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Passion_One, Archivo } from "next/font/google";
+import { ToastStack } from "@/components/ToastStack";
+import { ActiveOrderPill } from "@/components/ActiveOrderPill";
 import "./globals.css";
 
 // v2 type: Passion One display caps + Archivo body (design system readme, "Type substitution").
@@ -10,9 +12,12 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "FOUR | Smash Burgers & Crown Crust Pizzas - Lahore",
+  title: {
+    default: "FOUR | Smash Burgers & Crown Crust Pizzas - Lahore",
+    template: "%s | FOUR",
+  },
   description:
-    "FOUR: gourmet smash burgers, crown crust pizzas, loaded fries and shakes by Pakistan's biggest creators. Order online across Lahore - DHA, Gulberg, Model Town, Johar Town and more.",
+    "FOUR makes smash burgers, crown crust pizzas, loaded fries and shakes fresh in three Lahore kitchens. Order online, 1 pm to 3 am daily - delivery across DHA, Gulberg, Johar Town and 20+ areas.",
   icons: {
     icon: [
       { url: "/brand/logomark.svg", type: "image/svg+xml" },
@@ -43,7 +48,14 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${passion.variable} ${archivo.variable}`}>
-      <body className="grain min-h-[100dvh]">{children}</body>
+      <body className="grain min-h-[100dvh]">
+        <a href="#main" className="skip-link">
+          Skip to content
+        </a>
+        {children}
+        <ToastStack />
+        <ActiveOrderPill />
+      </body>
     </html>
   );
 }

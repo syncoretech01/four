@@ -1,13 +1,20 @@
 "use client";
 
+import { useState } from "react";
+import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { useReduceMotion } from "@/lib/useAnim";
-import { formatPKR, FREE_DELIVERY_ABOVE } from "@four/shared";
-import { api } from "@/lib/api";
+import { useDismissable } from "@/lib/useDismissable";
+import { useKitchenOpen } from "@/lib/useKitchenOpen";
+import { formatPKR, DELIVERY_FEE, FREE_DELIVERY_ABOVE } from "@four/shared";
+import { api, ApiError } from "@/lib/api";
+import { toast } from "@/lib/toast";
 import { useStore } from "@/lib/store";
 import { SmartImage } from "../SmartImage";
 import { CheckoutForm } from "./CheckoutForm";
+import { ItemModal, type ItemModalEdit, type MenuItemView } from "../menu/ItemModal";
 import { HAND_MARK } from "../hero/logoPaths";
+import type { CartLineView } from "@four/shared";
 
 export function CartDrawer() {
   const open = useStore((s) => s.cartOpen);
@@ -17,11 +24,35 @@ export function CartDrawer() {
   const openCheckout = useStore((s) => s.openCheckout);
   const closeCheckout = useStore((s) => s.closeCheckout);
   const reduce = useReduceMotion();
+  const kitchenOpen = useKitchenOpen();
 
   const close = () => setOpen(false);
+  useDismissable(open, close);
+
+  // cart-line editing: fetch the full item, reopen the picker seeded from the line
+  const [editing, setEditing] = useState<{ item: MenuItemView; edit: ItemModalEdit } | null>(null);
+
+  const editLine = async (line: CartLineView) => {
+    try {
+      const { item } = await api<{ item: MenuItemView }>(`/api/menu/items/${line.itemId}`);
+      setEditing({
+        item,
+        edit: {
+          lineId: line.lineId,
+          variantId: line.variantId,
+          qty: line.qty,
+          modifiers: line.modifiers.map((m) => ({ groupId: m.groupId, optionId: m.optionId, qty: m.qty })),
+        },
+      });
+    } catch {
+      toast.error("Couldn't open that item — try again.");
+    }
+  };
 
   const setQty = (lineId: string, qty: number) => {
-    api("/api/cart/lines", { method: "PATCH", body: JSON.stringify({ lineId, qty }) }).catch(() => {});
+    api("/api/cart/lines", { method: "PATCH", body: JSON.stringify({ lineId, qty }) }).catch(() => {
+      toast.error("Couldn't update your order — check your connection.");
+    });
   };
 
   const startCheckout = async () => {
@@ -31,8 +62,10 @@ export function CartDrawer() {
         body: JSON.stringify({ payment: "COD" }),
       });
       openCheckout(quote);
-    } catch {
-      /* cart emptied under us; drawer already reflects it */
+    } catch (e) {
+      // an empty-cart refusal already shows in the drawer; a network failure
+      // would otherwise make the button silently do nothing
+      if (!(e instanceof ApiError)) toast.error("Couldn't start checkout — check your connection.");
     }
   };
 
@@ -40,8 +73,9 @@ export function CartDrawer() {
   const freePct = Math.min(100, (cart.subtotal / FREE_DELIVERY_ABOVE) * 100);
 
   return (
-    <AnimatePresence>
-      {open && (
+    <>
+      <AnimatePresence>
+        {open && (
         <motion.div className="fixed inset-0 z-50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
           <div className="f-scrim" onClick={close} aria-hidden />
           <motion.aside
@@ -84,13 +118,13 @@ export function CartDrawer() {
                       <p className="f-empty__text">
                         Nothing here yet. Browse the menu, or tell the assistant what you&apos;re craving.
                       </p>
-                      <a
-                        href="#menu"
+                      <Link
+                        href="/menu"
                         onClick={close}
                         className="f-btn f-btn--primary f-btn--md"
                       >
                         See the menu
-                      </a>
+                      </Link>
                     </div>
                   ) : (
                     <ul className="grid gap-4">
@@ -121,6 +155,15 @@ export function CartDrawer() {
                                 </p>
                               )}
                               <div className="f-line__foot">
+                                {(l.variantId || l.modifiers.length > 0) && (
+                                  <button
+                                    onClick={() => editLine(l)}
+                                    aria-label={`Edit ${l.name}`}
+                                    className="f-btn f-btn--quiet f-btn--sm !h-auto !px-0 !text-xs"
+                                  >
+                                    Edit
+                                  </button>
+                                )}
                                 <div className="f-qty f-qty--sm">
                                   <button
                                     onClick={() => setQty(l.lineId, l.qty - 1)}
@@ -176,20 +219,31 @@ export function CartDrawer() {
                         <dd>{formatPKR(cart.subtotal)}</dd>
                       </div>
                     </dl>
-                    <p className="mt-1 text-xs text-ink-600">Delivery and tax are added at checkout.</p>
+                    <p className="mt-1 text-xs text-ink-600">
+                      {freeIn === 0
+                        ? "Free delivery on this order · tax added at checkout."
+                        : `Delivery ${formatPKR(DELIVERY_FEE)} (free over ${formatPKR(FREE_DELIVERY_ABOVE)}) · tax added at checkout.`}
+                    </p>
                     <button
                       onClick={startCheckout}
                       className="f-btn f-btn--primary f-btn--lg f-btn--block mt-4"
                     >
                       Checkout · {cart.itemCount} item{cart.itemCount === 1 ? "" : "s"}
                     </button>
+                    {!kitchenOpen && (
+                      <p className="mt-3 text-center text-xs font-semibold text-ink-600">
+                        We open at 1:00 pm — you can build your order now and place it then.
+                      </p>
+                    )}
                   </footer>
                 )}
               </>
             )}
           </motion.aside>
         </motion.div>
-      )}
-    </AnimatePresence>
+        )}
+      </AnimatePresence>
+      <ItemModal item={editing?.item ?? null} edit={editing?.edit} onClose={() => setEditing(null)} />
+    </>
   );
 }

@@ -1,25 +1,44 @@
 "use client";
 
 /**
- * Signature hero, loud edition: the exact FOUR wordmark still assembles
- * itself (each letter outline draws in, then floods with fill) and stays
- * cursor-reactive in 3D. Around it, brand energy: a warm colour-blocked
- * ground, the hero food shot on a red blob with a floating hand sticker and
- * a spinning promise seal, a live "open now" pill, and a springy entrance.
- * All wordmark/hand artwork is the untouched brand vector.
+ * Signature hero, video edition: the footage is the whole section - full
+ * bleed, edge to edge, behind a fixed nav - and every line of copy is set on
+ * top of it. The exact FOUR wordmark still assembles itself (each letter
+ * outline draws in, then floods with fill over a red offset ghost) and stays
+ * cursor-reactive in 3D. Around it the marketing does real work: a live
+ * open/closed pill, the promise, two CTAs, and the three claims that decide
+ * a food order - speed, free-delivery threshold, coverage. All wordmark and
+ * hand artwork is the untouched brand vector.
+ *
+ * Every number on this screen comes from @four/shared, so the hero can never
+ * quietly drift from what checkout actually charges or promises.
  */
 import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
 import { useReduceMotion } from "@/lib/useAnim";
-import { isOpenAt } from "@four/shared";
-import { LETTER_F, LETTER_O, LETTER_U, LETTER_R, HAND_MARK } from "./logoPaths";
+import {
+  isOpenAt,
+  BASE_DELIVERY_MINUTES,
+  FREE_DELIVERY_ABOVE,
+  BRANCHES,
+  LAHORE_AREAS,
+  formatPKR,
+} from "@four/shared";
+import { LETTER_F, LETTER_O, LETTER_U, LETTER_R } from "./logoPaths";
 import { RotatingSeal } from "./RotatingSeal";
+import { HeroVideo } from "./HeroVideo";
 
 const LETTERS = [
   { path: LETTER_F, depth: 0.5 },
   { path: LETTER_O, depth: 1.2 },
   { path: LETTER_U, depth: 0.8 },
   { path: LETTER_R, depth: 0.55 },
+];
+
+const PROOF = [
+  { icon: "bolt", label: `${BASE_DELIVERY_MINUTES}-min delivery` },
+  { icon: "van", label: `Free over ${formatPKR(FREE_DELIVERY_ABOVE)}` },
+  { icon: "pin", label: `${BRANCHES.length} kitchens · ${LAHORE_AREAS.length} areas` },
 ];
 
 export function LogoHero() {
@@ -51,74 +70,127 @@ export function LogoHero() {
   };
 
   return (
-    <section id="top" className="relative overflow-hidden pt-16">
-      {/* colour-blocked ground: soft brand-red bloom, never a flat beige void */}
-      <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute -right-40 top-10 h-[38rem] w-[38rem] rounded-full bg-red/10 blur-3xl" />
-        <div className="absolute -left-24 bottom-0 h-80 w-80 rounded-full bg-red/5 blur-2xl" />
-      </div>
+    <section
+      id="top"
+      className="relative isolate min-h-[100svh] w-full overflow-hidden bg-ink-900 text-paper-0"
+    >
+      <HeroVideo />
 
+      {/*
+        The footage is a centred burger build sequence, so the copy splits
+        into a top band and a bottom band and leaves the middle of the frame
+        to the animation.
+      */}
       <div
         onPointerMove={reduce ? undefined : onPointerMove}
         onPointerLeave={() => {
           mx.set(0);
           my.set(0);
         }}
-        className="relative mx-auto grid min-h-[calc(100dvh-4rem)] max-w-7xl grid-cols-1 items-center gap-8 px-4 pb-28 pt-6 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:gap-10 lg:pb-10"
+        className="relative z-10 mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-between gap-8 px-4 pb-14 pt-24 sm:px-6 sm:pb-16 sm:pt-28"
       >
-        <div className="order-2 lg:order-1">
-          <motion.div
-            initial={reduce ? false : { opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="f-livepill mb-6"
-          >
-            <span className="relative flex h-2.5 w-2.5">
-              {open && (
-                <span className="absolute inline-flex h-full w-full rounded-full bg-red opacity-60 motion-safe:animate-ping" />
-              )}
-              <span className={`relative inline-flex h-2.5 w-2.5 rounded-full ${open ? "bg-red" : "bg-ink/30"}`} />
+        <div className="flex items-start justify-between gap-6">
+          <div>
+            <motion.div
+              initial={reduce ? false : { opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              className="f-livepill"
+            >
+              <span className="relative flex h-2.5 w-2.5">
+                {open && (
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-red opacity-60 motion-safe:animate-ping" />
+                )}
+                <span className={`relative inline-flex h-2.5 w-2.5 rounded-full ${open ? "bg-red" : "bg-ink/30"}`} />
+              </span>
+              {open ? "Open now · delivering till 3am" : "Opens 1pm · order ahead"}
+            </motion.div>
+
+            <motion.div
+              aria-hidden
+              style={reduce ? undefined : { rotateX: tiltX, rotateY: tiltY, transformPerspective: 900 }}
+              className="mt-4 sm:mt-5"
+            >
+              <svg
+                viewBox="95 340 890 340"
+                className="w-full max-w-[13rem] [filter:drop-shadow(0_8px_22px_rgba(34,25,19,0.6))] sm:max-w-[15rem] lg:max-w-[17rem]"
+              >
+                {LETTERS.map(({ path, depth }, i) => (
+                  <HeroLetter key={i} path={path} depth={depth} index={i} sx={sx} sy={sy} drawn={drawn} reduce={!!reduce} />
+                ))}
+              </svg>
+            </motion.div>
+          </div>
+
+          <HeroSeal reduce={!!reduce} />
+        </div>
+
+        <div className="max-w-3xl">
+          <h1>
+            {/* The visible line is decorative so a screen reader hears the
+                full sentence once, not twice. */}
+            <span className="sr-only">
+              FOUR — smash burgers, crown crust pizzas and loaded fries, made from scratch and
+              delivered across Lahore in about {BASE_DELIVERY_MINUTES} minutes.
             </span>
-            {open ? "Open now · delivering till 3am" : "Opens 1pm · order ahead"}
-          </motion.div>
+            <motion.span
+              aria-hidden
+              initial={reduce ? false : { opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              className="f-heading block text-4xl !text-[var(--paper-0)] [text-shadow:0_2px_18px_rgba(34,25,19,0.7)] sm:text-5xl lg:text-6xl"
+            >
+              Smashed to order.
+              <br />
+              At your door in{" "}
+              <span className="inline-block -rotate-2 rounded-[10px] bg-red px-3 pb-1.5 pt-0.5 text-paper-0 [box-shadow:var(--shadow-pop)] [text-shadow:none]">
+                {BASE_DELIVERY_MINUTES}
+              </span>{" "}
+              min.
+            </motion.span>
+          </h1>
 
-          <motion.div
-            style={reduce ? undefined : { rotateX: tiltX, rotateY: tiltY, transformPerspective: 900 }}
-            className="max-w-[34rem] lg:max-w-none"
-          >
-            <svg viewBox="95 340 890 340" className="w-full max-w-[26rem] sm:max-w-lg lg:max-w-xl" role="img" aria-label="FOUR">
-              {LETTERS.map(({ path, depth }, i) => (
-                <HeroLetter key={i} path={path} depth={depth} index={i} sx={sx} sy={sy} drawn={drawn} reduce={!!reduce} />
-              ))}
-            </svg>
-          </motion.div>
-
+          {/* One line, because the film is already showing the craft. */}
           <motion.p
             initial={reduce ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="f-lede mt-6 max-w-[34ch] sm:text-xl"
+            transition={{ delay: 1.05, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-4 max-w-[52ch] text-base font-medium leading-relaxed text-paper-0/90 [text-shadow:0_1px_10px_rgba(34,25,19,0.8)] sm:text-lg"
           >
-            Smash burgers, crown crust pizzas and loaded fries by Pakistan&apos;s biggest creators.
+            110g patties pressed to a lace-edged crisp. Crown crusts stuffed by hand every morning.
+            Sauces from scratch, in three Lahore kitchens.
           </motion.p>
 
           <motion.div
             initial={reduce ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.3, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-8 flex flex-wrap items-center gap-3"
+            transition={{ delay: 1.2, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-6 flex flex-wrap items-center gap-3"
           >
-            <MagneticCta href="#menu" primary reduce={!!reduce}>
-              Order online
+            <MagneticCta href="/menu" primary reduce={!!reduce}>
+              Start your order
             </MagneticCta>
-            <MagneticCta href="#menu" reduce={!!reduce}>
-              See the menu
+            <MagneticCta
+              onClick={() => document.querySelector<HTMLButtonElement>("header [data-open-location]")?.click()}
+              reduce={!!reduce}
+            >
+              Do you deliver to me?
             </MagneticCta>
           </motion.div>
-        </div>
 
-        <div className="order-1 lg:order-2">
-          <HeroCard sx={sx} sy={sy} reduce={!!reduce} />
+          <motion.ul
+            initial={reduce ? false : { opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.35, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-5 flex flex-wrap items-center gap-2.5"
+          >
+            {PROOF.map((p) => (
+              <li key={p.label} className="f-hero-proof">
+                <ProofIcon name={p.icon} />
+                {p.label}
+              </li>
+            ))}
+          </motion.ul>
         </div>
       </div>
     </section>
@@ -128,11 +200,13 @@ export function LogoHero() {
 /** CTA that leans toward the cursor - motion values only, never React state. */
 function MagneticCta({
   href,
+  onClick,
   children,
   primary = false,
   reduce,
 }: {
-  href: string;
+  href?: string;
+  onClick?: () => void;
   children: React.ReactNode;
   primary?: boolean;
   reduce: boolean;
@@ -142,32 +216,65 @@ function MagneticCta({
   const sx = useSpring(x, { stiffness: 300, damping: 18 });
   const sy = useSpring(y, { stiffness: 300, damping: 18 });
 
+  const lean = reduce
+    ? undefined
+    : (e: React.PointerEvent<HTMLElement>) => {
+        const r = e.currentTarget.getBoundingClientRect();
+        x.set(((e.clientX - r.left) / r.width - 0.5) * 14);
+        y.set(((e.clientY - r.top) / r.height - 0.5) * 10);
+      };
+  const rest = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  // On the video, the secondary CTA is the cream-on-transparent variant -
+  // a paper button here would read as a hole punched in the footage.
+  const className = primary ? "f-btn f-btn--primary f-btn--lg" : "f-btn f-btn--on-red f-btn--lg backdrop-blur-md";
+  const motionProps = {
+    style: reduce ? undefined : { x: sx, y: sy },
+    onPointerMove: lean,
+    onPointerLeave: rest,
+    whileTap: { scale: 0.96 },
+    className,
+  };
+
+  if (href) {
+    return (
+      <motion.a href={href} {...motionProps}>
+        {children}
+      </motion.a>
+    );
+  }
   return (
-    <motion.a
-      href={href}
-      style={reduce ? undefined : { x: sx, y: sy }}
-      onPointerMove={
-        reduce
-          ? undefined
-          : (e) => {
-              const r = e.currentTarget.getBoundingClientRect();
-              x.set(((e.clientX - r.left) / r.width - 0.5) * 14);
-              y.set(((e.clientY - r.top) / r.height - 0.5) * 10);
-            }
-      }
-      onPointerLeave={() => {
-        x.set(0);
-        y.set(0);
-      }}
-      whileTap={{ scale: 0.96 }}
-      className={
-        primary
-          ? "f-btn f-btn--primary f-btn--lg"
-          : "f-btn f-btn--secondary f-btn--lg"
-      }
-    >
+    <motion.button type="button" onClick={onClick} {...motionProps}>
       {children}
-    </motion.a>
+    </motion.button>
+  );
+}
+
+function ProofIcon({ name }: { name: string }) {
+  if (name === "bolt") {
+    return (
+      <svg width="12" height="14" viewBox="0 0 12 14" aria-hidden>
+        <path d="M7 1 1.5 8h3.2L5 13l5.5-7H7.3L7 1Z" fill="currentColor" />
+      </svg>
+    );
+  }
+  if (name === "van") {
+    return (
+      <svg width="16" height="14" viewBox="0 0 16 14" fill="none" aria-hidden>
+        <path d="M1 3.5h7.5v6H1v-6ZM8.5 5.5h3l2.5 2.5v1.5h-5.5v-4Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
+        <circle cx="4" cy="11" r="1.6" stroke="currentColor" strokeWidth="1.4" />
+        <circle cx="11.5" cy="11" r="1.6" stroke="currentColor" strokeWidth="1.4" />
+      </svg>
+    );
+  }
+  return (
+    <svg width="12" height="14" viewBox="0 0 12 14" fill="none" aria-hidden>
+      <path d="M6 13S1 8.6 1 5.4a5 5 0 1 1 10 0C11 8.6 6 13 6 13Z" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="6" cy="5.4" r="1.6" fill="currentColor" />
+    </svg>
   );
 }
 
@@ -194,11 +301,21 @@ function HeroLetter({
   return (
     <motion.g style={reduce ? undefined : { x, y }}>
       <g transform={path.transform}>
+        {/* Offset-print ghost: brand red sits behind the cream face so the
+            wordmark still carries the colour when it is set on footage. */}
+        <motion.path
+          d={path.d}
+          fill="#9d1d20"
+          transform="translate(16, 18)"
+          initial={reduce ? false : { opacity: 0 }}
+          animate={{ opacity: drawn || reduce ? 1 : 0 }}
+          transition={{ delay: reduce ? 0 : 0.2 + index * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        />
         {!reduce && (
           <motion.path
             d={path.d}
             fill="none"
-            stroke="#9d1d20"
+            stroke="#fffcf4"
             strokeWidth={6}
             initial={{ pathLength: 0, opacity: 1 }}
             animate={{ pathLength: 1, opacity: drawn ? 0 : 1 }}
@@ -210,7 +327,7 @@ function HeroLetter({
         )}
         <motion.path
           d={path.d}
-          fill="#9d1d20"
+          fill="#fffcf4"
           initial={reduce ? false : { opacity: 0, scale: 0.94 }}
           animate={{ opacity: drawn || reduce ? 1 : 0, scale: 1 }}
           transition={{ delay: reduce ? 0 : 0.15 + index * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
@@ -220,62 +337,17 @@ function HeroLetter({
   );
 }
 
-/** Hero food photo on a red blob, with the magnetic hand sticker + spinning seal. */
-function HeroCard({
-  sx,
-  sy,
-  reduce,
-}: {
-  sx: ReturnType<typeof useSpring>;
-  sy: ReturnType<typeof useSpring>;
-  reduce: boolean;
-}) {
-  const px = useTransform(sx, (v: number) => v * -0.8);
-  const py = useTransform(sy, (v: number) => v * -0.8);
-  const hx = useTransform(sx, (v: number) => v * 1.8);
-  const hy = useTransform(sy, (v: number) => v * 1.4);
-  const rot = useTransform(sx, (v: number) => -6 + v * 0.5);
-
+/** The promise seal, parked opposite the wordmark in the top band. */
+function HeroSeal({ reduce }: { reduce: boolean }) {
   return (
     <motion.div
-      className="relative mx-auto max-w-sm sm:max-w-md lg:max-w-none"
-      initial={reduce ? false : { opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+      aria-hidden
+      initial={reduce ? false : { opacity: 0, scale: 0.85, rotate: -12 }}
+      animate={{ opacity: 1, scale: 1, rotate: 0 }}
+      transition={{ duration: 0.7, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
+      className="hidden h-24 w-24 shrink-0 rounded-full border-2 border-ink-900 bg-paper-0 p-2 [box-shadow:var(--shadow-pop-lg)] sm:block lg:h-28 lg:w-28"
     >
-      {/* red blob behind the food - full brand colour, not a flat card */}
-      <div
-        aria-hidden
-        className="absolute inset-3 -rotate-6 rounded-[42%_58%_54%_46%/47%_44%_56%_53%] bg-red"
-      />
-      <motion.div
-        style={reduce ? undefined : { x: px, y: py }}
-        className="relative overflow-hidden rounded-hero border-4 border-paper-0 outline-2 outline-ink-900 [box-shadow:var(--shadow-pop-lg)]"
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/gallery/gallery-3.jpg"
-          alt="A FOUR smash burger, fresh off the pass"
-          className="aspect-square w-full object-cover [filter:saturate(1.12)_contrast(1.06)_sepia(.06)]"
-        />
-      </motion.div>
-
-      <motion.svg
-        viewBox="180 100 700 900"
-        aria-hidden
-        className="absolute -bottom-8 -left-8 h-32 w-32 [filter:drop-shadow(4px_6px_0_rgba(34,25,19,0.9))] sm:h-40 sm:w-40"
-        style={reduce ? undefined : { x: hx, y: hy, rotate: rot }}
-        animate={reduce ? undefined : { y: [0, -8, 0] }}
-        transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-      >
-        <g transform={HAND_MARK.transform}>
-          <path d={HAND_MARK.d} fill="#f6efe1" />
-        </g>
-      </motion.svg>
-
-      <div className="absolute -right-4 -top-6 h-24 w-24 rounded-full border-2 border-ink-900 bg-paper-0 p-2 [box-shadow:var(--shadow-pop)] sm:-right-8 sm:h-28 sm:w-28">
-        <RotatingSeal />
-      </div>
+      <RotatingSeal />
     </motion.div>
   );
 }

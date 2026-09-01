@@ -1,9 +1,9 @@
 # FOUR - Restaurant Platform
 
 Online ordering platform for **FOUR** (Fairways, DHA Phase 6, Lahore): smash
-burgers, crown crust pizzas, loaded fries and shakes by Pakistan's biggest
-creators. Monorepo: Next.js storefront, Fastify + Socket.IO API, Postgres,
-AI chat + voice ordering, kitchen console, POS bridge.
+burgers, crown crust pizzas, loaded fries and shakes, made from scratch in
+three Lahore kitchens. Monorepo: Next.js storefront, Fastify + Socket.IO API,
+Postgres, AI chat + voice ordering, kitchen console, POS bridge.
 
 ## Quick start (development)
 

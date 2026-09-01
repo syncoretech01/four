@@ -3,10 +3,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useReduceMotion } from "@/lib/useAnim";
+import { useDismissable } from "@/lib/useDismissable";
 import { formatPKR } from "@four/shared";
 import { api, ApiError } from "@/lib/api";
 import { useStore } from "@/lib/store";
 import { SmartImage } from "../SmartImage";
+import { TagStack } from "./tags";
 
 export interface MenuItemView {
   id: string;
@@ -35,8 +37,28 @@ function optionPrice(
   return 0;
 }
 
-/** Full item card: real photo, size picker, meal deals / add-ons, qty, add to cart. */
-export function ItemModal({ item, onClose }: { item: MenuItemView | null; onClose: () => void }) {
+/**
+ * Full item card: real photo, size picker, meal deals / add-ons, qty, add to
+ * cart. With `edit` it becomes the cart-line editor: seeded from the line,
+ * "Update" swaps the line in place (add first, then drop the old one, so the
+ * cart never flashes empty).
+ */
+export interface ItemModalEdit {
+  lineId: string;
+  variantId?: string;
+  qty: number;
+  modifiers: { groupId: string; optionId: string; qty: number }[];
+}
+
+export function ItemModal({
+  item,
+  edit,
+  onClose,
+}: {
+  item: MenuItemView | null;
+  edit?: ItemModalEdit;
+  onClose: () => void;
+}) {
   const setCartOpen = useStore((s) => s.setCartOpen);
   const [variantSlug, setVariantSlug] = useState<string | undefined>();
   const [qty, setQty] = useState(1);
@@ -47,23 +69,14 @@ export function ItemModal({ item, onClose }: { item: MenuItemView | null; onClos
 
   useEffect(() => {
     if (item) {
-      setVariantSlug(item.variants[0]?.slug);
-      setQty(1);
-      setPicked({});
+      setVariantSlug(edit?.variantId ?? item.variants[0]?.slug);
+      setQty(edit?.qty ?? 1);
+      setPicked(edit ? Object.fromEntries(edit.modifiers.map((m) => [`${m.groupId}|${m.optionId}`, m.qty])) : {});
       setError("");
     }
-  }, [item]);
+  }, [item, edit]);
 
-  useEffect(() => {
-    if (!item) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [item, onClose]);
+  useDismissable(Boolean(item), onClose);
 
   const unitPrice = useMemo(() => {
     if (!item) return 0;
@@ -112,10 +125,14 @@ export function ItemModal({ item, onClose }: { item: MenuItemView | null; onClos
           }),
         }),
       });
+      if (edit) {
+        // drop the line being replaced only after the new one is safely in
+        await api("/api/cart/lines", { method: "PATCH", body: JSON.stringify({ lineId: edit.lineId, qty: 0 }) });
+      }
       onClose();
       setCartOpen(true);
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : "Could not add to cart. Try again.");
+      setError(e instanceof ApiError ? e.message : edit ? "Could not update the line. Try again." : "Could not add to cart. Try again.");
     } finally {
       setBusy(false);
     }
@@ -149,11 +166,7 @@ export function ItemModal({ item, onClose }: { item: MenuItemView | null; onClos
                 fallbackLabel={item.name}
                 className="h-full w-full object-cover [filter:saturate(1.12)_contrast(1.06)_sepia(.06)]"
               />
-              {item.tags.includes("bestseller") && (
-                <span className="f-badge f-badge--accent absolute left-5 top-5 -rotate-3">
-                  Bestseller
-                </span>
-              )}
+              <TagStack tags={item.tags} className="absolute left-5 top-5" />
               <button
                 onClick={onClose}
                 aria-label="Close"
@@ -174,11 +187,15 @@ export function ItemModal({ item, onClose }: { item: MenuItemView | null; onClos
 
               {item.variants.length > 0 && (
                 <div className="mt-6">
-                  <span className="f-field__label">Choose size</span>
-                  <div className="mt-2 flex flex-wrap gap-2">
+                  <span id="size-label" className="f-field__label">
+                    Choose size
+                  </span>
+                  <div role="radiogroup" aria-labelledby="size-label" className="mt-2 flex flex-wrap gap-2">
                     {item.variants.map((v) => (
                       <button
                         key={v.slug}
+                        role="radio"
+                        aria-checked={v.slug === variantSlug}
                         onClick={() => setVariantSlug(v.slug)}
                         className={`f-chip ${v.slug === variantSlug ? "is-on" : ""}`}
                       >
@@ -191,19 +208,20 @@ export function ItemModal({ item, onClose }: { item: MenuItemView | null; onClos
 
               {item.modifierGroups.map((group) => (
                 <div key={group.id} className="mt-6">
-                  <span className="f-field__label">
+                  <span id={`mods-${group.id}`} className="f-field__label">
                     {group.label}
                     <span className="ml-2 font-medium normal-case tracking-normal text-ink-600">
                       {group.maxSelections === 1 ? "pick one" : `up to ${group.maxSelections}`}
                     </span>
                   </span>
-                  <div className="mt-2 flex flex-wrap gap-2">
+                  <div role="group" aria-labelledby={`mods-${group.id}`} className="mt-2 flex flex-wrap gap-2">
                     {group.options.map((opt) => {
                       const key = `${group.id}|${opt.slug}`;
                       const on = Boolean(picked[key]);
                       return (
                         <button
                           key={opt.slug}
+                          aria-pressed={on}
                           onClick={() => toggleOption(group.id, opt.slug, group.maxSelections)}
                           className={`f-chip f-chip--sm f-chip--soft ${on ? "is-on" : ""}`}
                         >
@@ -246,7 +264,9 @@ export function ItemModal({ item, onClose }: { item: MenuItemView | null; onClos
                   aria-busy={busy}
                   className={`f-btn f-btn--primary f-btn--lg flex-1 ${busy ? "is-loading" : ""}`}
                 >
-                  {`Add ${qty > 1 ? `${qty} ` : ""}to cart · ${formatPKR(unitPrice * qty)}`}
+                  {edit
+                    ? `Update · ${formatPKR(unitPrice * qty)}`
+                    : `Add ${qty > 1 ? `${qty} ` : ""}to cart · ${formatPKR(unitPrice * qty)}`}
                 </button>
               </div>
             </div>

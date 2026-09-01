@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { HOURS_LABEL, LAHORE_AREAS, formatPKR, isOpenAt, type OrderQuote, type OrderView } from "@four/shared";
+import { HOURS_LABEL, LAHORE_AREAS, formatPKR, type OrderQuote, type OrderView } from "@four/shared";
 import { api, ApiError } from "@/lib/api";
+import { useKitchenOpen } from "@/lib/useKitchenOpen";
 import { useStore } from "@/lib/store";
 
 type Stage = "form" | "placing";
@@ -30,13 +31,7 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
   const [stage, setStage] = useState<Stage>("form");
   // the server refuses orders outside opening hours; mirror that here so the
   // customer is told before filling the form in, not after submitting it
-  const [open, setOpen] = useState(true);
-  useEffect(() => {
-    const tick = () => setOpen(isOpenAt());
-    tick();
-    const id = setInterval(tick, 60_000);
-    return () => clearInterval(id);
-  }, []);
+  const open = useKitchenOpen();
   const [errorMsg, setErrorMsg] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
@@ -108,8 +103,20 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
       <div className="grid gap-4">
         <label className="f-field">
           <span className="f-field__label">Name</span>
-          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" className={inputCls(fieldErrors.name)} />
-          {fieldErrors.name && <span className="f-field__error">{fieldErrors.name}</span>}
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Full name"
+            autoComplete="name"
+            aria-invalid={fieldErrors.name ? true : undefined}
+            aria-describedby={fieldErrors.name ? "err-name" : undefined}
+            className={inputCls(fieldErrors.name)}
+          />
+          {fieldErrors.name && (
+            <span id="err-name" className="f-field__error">
+              {fieldErrors.name}
+            </span>
+          )}
         </label>
 
         <label className="f-field">
@@ -118,10 +125,18 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="0300 1234567"
+            type="tel"
             inputMode="tel"
+            autoComplete="tel"
+            aria-invalid={fieldErrors.phone ? true : undefined}
+            aria-describedby={fieldErrors.phone ? "err-phone" : undefined}
             className={inputCls(fieldErrors.phone)}
           />
-          {fieldErrors.phone && <span className="f-field__error">{fieldErrors.phone}</span>}
+          {fieldErrors.phone && (
+            <span id="err-phone" className="f-field__error">
+              {fieldErrors.phone}
+            </span>
+          )}
         </label>
 
         <div className="grid grid-cols-2 gap-3">
@@ -133,6 +148,8 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
                 setAreaId(e.target.value);
                 setBlock("");
               }}
+              aria-invalid={fieldErrors.area ? true : undefined}
+              aria-describedby={fieldErrors.area ? "err-area" : undefined}
               className={selectCls(fieldErrors.area)}
             >
               <option value="" disabled>
@@ -147,7 +164,14 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
           </label>
           <label className="f-field">
             <span className="f-field__label">Block</span>
-            <select value={block} onChange={(e) => setBlock(e.target.value)} disabled={!area} className={selectCls(fieldErrors.area)}>
+            <select
+              value={block}
+              onChange={(e) => setBlock(e.target.value)}
+              disabled={!area}
+              aria-invalid={fieldErrors.area ? true : undefined}
+              aria-describedby={fieldErrors.area ? "err-area" : undefined}
+              className={selectCls(fieldErrors.area)}
+            >
               <option value="" disabled>
                 Block
               </option>
@@ -158,7 +182,11 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
               ))}
             </select>
           </label>
-          {fieldErrors.area && <span className="f-field__error col-span-2 -mt-2">{fieldErrors.area}</span>}
+          {fieldErrors.area && (
+            <span id="err-area" className="f-field__error col-span-2 -mt-2">
+              {fieldErrors.area}
+            </span>
+          )}
         </div>
 
         <label className="f-field">
@@ -167,9 +195,16 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             placeholder="House 12, Street 8"
+            autoComplete="street-address"
+            aria-invalid={fieldErrors.address ? true : undefined}
+            aria-describedby={fieldErrors.address ? "err-address" : undefined}
             className={inputCls(fieldErrors.address)}
           />
-          {fieldErrors.address && <span className="f-field__error">{fieldErrors.address}</span>}
+          {fieldErrors.address && (
+            <span id="err-address" className="f-field__error">
+              {fieldErrors.address}
+            </span>
+          )}
         </label>
 
         <label className="f-field">
@@ -178,15 +213,21 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
         </label>
 
         <div className="f-field">
-          <span className="f-field__label">Payment</span>
-          <div className="grid grid-cols-2 gap-3">
+          <span id="pay-label" className="f-field__label">
+            Payment
+          </span>
+          <div role="radiogroup" aria-labelledby="pay-label" className="grid grid-cols-2 gap-3">
             <button
+              role="radio"
+              aria-checked={payment === "COD"}
               onClick={() => setPayment("COD")}
               className={`f-chip f-chip--square f-chip--soft justify-center ${payment === "COD" ? "is-on" : ""}`}
             >
               Cash on delivery
             </button>
             <button
+              role="radio"
+              aria-checked={payment === "CARD"}
               onClick={() => setPayment("CARD")}
               className={`f-chip f-chip--square f-chip--soft justify-center ${payment === "CARD" ? "is-on" : ""}`}
             >

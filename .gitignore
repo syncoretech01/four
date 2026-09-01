@@ -15,3 +15,6 @@ ds-bundle/
 .design-sync/.cache/
 .design-sync/learnings/
 .design-sync/node_modules
+
+# raw hero master - serve hero.webm/hero.mp4; the 14MB source stays local (see public/hero/README.md)
+apps/web/public/hero/fourhero.mp4

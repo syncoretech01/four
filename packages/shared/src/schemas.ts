@@ -92,7 +92,16 @@ export interface OrderView {
   paymentUrl?: string;
   /** "35-45 min", from the delivery area's distance. */
   etaLabel?: string;
-  lines: { name: string; variantLabel?: string; modifiers: string[]; qty: number; unitPrice: number; lineTotal: number }[];
+  lines: {
+    /** Menu item id - lets the client rebuild the line (reorder). */
+    itemId?: string;
+    name: string;
+    variantLabel?: string;
+    modifiers: string[];
+    qty: number;
+    unitPrice: number;
+    lineTotal: number;
+  }[];
   subtotal: number;
   deliveryFee: number;
   tax: number;

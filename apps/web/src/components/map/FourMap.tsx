@@ -126,7 +126,9 @@ export function FourMap({
     });
     mapRef.current = map;
     let cleanup: void | (() => void);
-    map.on("load", () => {
+    // style.load, not load: markers and bounds don't need tiles, and "load"
+    // can stall behind slow tile rendering (software GL, flaky networks)
+    map.once("style.load", () => {
       cleanup = onMapRef.current?.(map);
     });
     return () => {
