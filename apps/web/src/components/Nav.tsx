@@ -68,7 +68,8 @@ export function Nav() {
     <>
       <header className="fixed inset-x-0 top-0 z-40">
         <p className={`f-promo ${scrolled ? "is-collapsed" : ""}`} aria-hidden={scrolled || undefined}>
-          Free delivery over {formatPKR(FREE_DELIVERY_ABOVE)} · {HOURS_LABEL}
+          Free delivery over {formatPKR(FREE_DELIVERY_ABOVE)}
+          <span className="hidden sm:inline">&nbsp;· {HOURS_LABEL}</span>
         </p>
         <nav aria-label="Primary" className={`f-nav ${scrolled ? "is-scrolled" : ""}`}>
           <div className="wrap grid h-full grid-cols-[1fr_auto_1fr] items-center gap-4 md:flex md:justify-between">

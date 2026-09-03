@@ -32,10 +32,10 @@ export function DealsBand() {
           lede={`Fries and a drink on any burger from ${formatPKR(MEAL_DEAL_FROM)}. Cheaper than ordering them apart — we checked.`}
         />
 
-        <div className="mt-12 grid gap-[var(--grid-gap)] sm:grid-cols-2 xl:grid-cols-3 xl:[&>*:nth-child(3n)]:my-[140px] xl:[&>*:nth-child(3n+2)]:mt-[120px]">
+        <div className="mt-12 grid items-start gap-[var(--grid-gap)] sm:grid-cols-2 xl:grid-cols-3 xl:[&>*:nth-child(3n)]:my-[140px] xl:[&>*:nth-child(3n+2)]:mt-[120px]">
           {DEALS.map((d, i) => (
             <Reveal key={d.id} delay={i * 0.08}>
-              <article className="f-item f-item--deal h-full">
+              <article className="f-item f-item--deal">
                 <Link href={d.href} className="block" aria-label={`${d.name}, ${formatPKR(d.dealPrice)} - build this meal`}>
                   <div className="f-item__media">
                     <SmartImage src={`/menu-items/${d.itemId}.jpg`} alt="" fallbackLabel={d.name} className="h-full w-full" />

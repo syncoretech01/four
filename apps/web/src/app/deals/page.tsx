@@ -61,7 +61,7 @@ export default function DealsPage() {
         <section className="on-cream relative isolate">
           <DoodleBackdrop tone="red" edges />
           <div className="wrap band relative z-[1]">
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 xl:[&>*:nth-child(3n+2)]:mt-[120px] xl:[&>*:nth-child(3n)]:my-[140px]">
+            <div className="grid items-start grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 xl:[&>*:nth-child(3n+2)]:mt-[120px] xl:[&>*:nth-child(3n)]:my-[140px]">
               {deals.map((d) => (
                 <article key={d.id} className="f-item f-item--deal">
                   <Link href={d.href} className="flex flex-1 flex-col" aria-label={`${d.name}, ${formatPKR(d.dealPrice)} - build this meal`}>
