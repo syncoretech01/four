@@ -1,68 +1,33 @@
 "use client";
 
-import { motion } from "motion/react";
-import { useReduceMotion } from "@/lib/useAnim";
-import { formatPKR } from "@four/shared";
-import { SmartImage } from "../SmartImage";
+import { ItemCard } from "./ItemCard";
 import type { MenuItemView } from "./ItemModal";
 
 /**
- * The bestsellers, hung like an artist's portfolio: each dish is a numbered
- * work in a tilted frame with a gallery placard underneath. Horizontal rail
- * with scroll snap; tapping a work opens the full item picker.
- *
- * The tilt is CSS on `.f-work` (see globals.css) and the reveal animates
- * this outer wrapper, so motion's inline transform never flattens the hang.
+ * The bestsellers as one row of dish cards: a horizontal snap rail below
+ * 640px (`.f-cards-rail`), a 2/3-column grid above. One container, never
+ * both, so screen readers hear a single list and every photo loads once.
+ * Each card reveals itself (ItemCard owns the motion wrapper).
  */
 export function BestsellerShowcase({
   items,
   onSelect,
-  categoryLabels,
+  onQuickAdd = onSelect,
+  addedId = null,
 }: {
   items: MenuItemView[];
   onSelect: (item: MenuItemView) => void;
-  /** categoryId -> display label, for the placard's second line. */
-  categoryLabels?: Record<string, string>;
+  /** Quick-add handler; defaults to opening the picker. */
+  onQuickAdd?: (item: MenuItemView) => void;
+  /** Id of the item whose "Added" flash is showing, if any. */
+  addedId?: string | null;
 }) {
-  const reduce = useReduceMotion();
-
   return (
-    <div className="f-gallery" role="list" aria-label="Best sellers">
+    <div role="list" aria-label="Best sellers" className="f-cards-rail sm:grid sm:grid-cols-2 sm:gap-[var(--grid-gap)] xl:grid-cols-3">
       {items.map((item, i) => (
-        <motion.div
-          key={item.id}
-          role="listitem"
-          className="w-[min(76vw,19rem)] shrink-0 snap-center"
-          initial={reduce ? false : { opacity: 0, y: 28 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.55, delay: Math.min(i * 0.06, 0.3), ease: [0.16, 1, 0.3, 1] }}
-        >
-          <button
-            type="button"
-            onClick={() => onSelect(item)}
-            className="f-work"
-            aria-label={`${item.name}, ${formatPKR(item.basePrice)}${item.variants.length ? " and up" : ""} - view and order`}
-          >
-            <div className="f-work__frame">
-              <SmartImage src={item.image ?? `/menu-items/${item.id}.jpg`} alt={item.name} fallbackLabel={item.name} className="h-full w-full" />
-              <span className="f-work__no f-tag">No. {String(i + 1).padStart(2, "0")}</span>
-            </div>
-            <div className="f-work__plate">
-              <div>
-                <span className="f-work__title">{item.name}</span>
-                <span className="f-work__meta">
-                  {item.tags.includes("signature") ? "Signature · " : item.tags.includes("spicy") ? "Spicy · " : ""}
-                  {categoryLabels?.[item.categoryId] ?? "Fan favourite"}
-                </span>
-              </div>
-              <span className="f-work__price">
-                {formatPKR(item.basePrice)}
-                {item.variants.length > 0 && <span className="f-work__from">from</span>}
-              </span>
-            </div>
-          </button>
-        </motion.div>
+        <div key={item.id} role="listitem" className="w-[min(76vw,19rem)] shrink-0 snap-center sm:w-auto">
+          <ItemCard item={item} index={i} added={addedId === item.id} onOpen={onSelect} onQuickAdd={onQuickAdd} />
+        </div>
       ))}
     </div>
   );

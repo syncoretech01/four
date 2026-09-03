@@ -17,6 +17,8 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/sections/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { ChatDock } from "@/components/chat/ChatDock";
+import { PageTitleBand } from "@/components/ds/PageTitleBand";
+import { PillCta } from "@/components/ds/PillCta";
 
 type Customer = { id: string; name: string; phone: string };
 
@@ -55,32 +57,40 @@ function SignIn({ onSignedIn }: { onSignedIn: () => void }) {
     }
   };
 
+  const busy = stage === "busy";
+
   return (
-    <div className="rounded-card bg-cream p-8 border border-rule">
-      <h2 className="font-display text-xl text-ink-900">Ordered from another device?</h2>
-      <p className="mt-1 text-sm text-ink-600">
+    <div className="f-card f-card--pad-lg">
+      <h2 className="f-heading f-heading--sm">Ordered from another device?</h2>
+      <p className="mt-2 text-ink-600">
         Sign in with your mobile number and we&apos;ll send a one-time code to pull up your order history.
       </p>
 
-      <div className="mt-5 grid gap-3 sm:max-w-sm">
+      <div className="mt-6 grid gap-4 sm:max-w-sm">
         {stage !== "code" ? (
           <>
-            <input
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="0300 1234567"
-              type="tel"
-              inputMode="tel"
-              autoComplete="tel"
-              aria-label="Mobile number"
-              className="h-12 w-full rounded-xl border border-rule bg-beige/40 px-4 text-ink-900 outline-none transition focus:border-red focus:ring-2 focus:ring-red/30"
-            />
+            <div className="f-field">
+              <label htmlFor="orders-phone" className="f-field__label">
+                Mobile number
+              </label>
+              <input
+                id="orders-phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="0300 1234567"
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                aria-label="Mobile number"
+                className="f-input"
+              />
+            </div>
             <button
               onClick={request}
-              disabled={stage === "busy" || phone.replace(/\D/g, "").length < 11}
-              className="f-btn f-btn--red f-btn--md"
+              disabled={busy || phone.replace(/\D/g, "").length < 11}
+              className={`f-btn f-btn--red f-btn--md f-btn--block ${busy ? "is-loading" : ""}`}
             >
-              {stage === "busy" ? "Sending..." : "Send code"}
+              {busy ? "Sending..." : "Send code"}
             </button>
           </>
         ) : (
@@ -88,28 +98,32 @@ function SignIn({ onSignedIn }: { onSignedIn: () => void }) {
             <p className="text-sm text-ink-600">
               Code sent to <span className="font-semibold text-ink-900">{phone}</span>.
               {devCode && (
-                <span className="mt-1 block rounded-lg bg-beige/60 px-3 py-2 font-mono text-xs">
-                  Dev mode - your code is {devCode}
-                </span>
+                <span className="f-toolchip mt-2 block w-fit font-mono">Dev mode - your code is {devCode}</span>
               )}
             </p>
-            <input
-              value={code}
-              onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-              placeholder="6-digit code"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              aria-label="One-time code"
-              className="h-12 w-full rounded-xl border border-rule bg-beige/40 px-4 text-center font-mono text-lg tracking-[0.4em] text-ink-900 outline-none transition focus:border-red focus:ring-2 focus:ring-red/30"
-            />
+            <div className="f-field">
+              <label htmlFor="orders-code" className="f-field__label">
+                One-time code
+              </label>
+              <input
+                id="orders-code"
+                value={code}
+                onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                placeholder="6-digit code"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                aria-label="One-time code"
+                className="f-input f-input--pin"
+              />
+            </div>
             <button
               onClick={verify}
               disabled={code.length !== 6}
-              className="f-btn f-btn--red f-btn--md"
+              className={`f-btn f-btn--red f-btn--md f-btn--block ${busy ? "is-loading" : ""}`}
             >
               Verify &amp; show my orders
             </button>
-            <button onClick={() => setStage("phone")} className="text-xs font-medium text-ink-600 hover:text-ink-900">
+            <button onClick={() => setStage("phone")} className="f-btn f-btn--quiet justify-self-start">
               Use a different number
             </button>
           </>
@@ -141,6 +155,12 @@ function ReorderButton({ order }: { order: OrderView }) {
   );
 }
 
+function statusTone(status: string): string {
+  if (status === "CANCELLED") return "f-tag--muted";
+  if (status === "DELIVERED") return "f-tag--white";
+  return "f-tag--red";
+}
+
 export default function OrdersPage() {
   const [orders, setOrders] = useState<OrderView[] | null>(null);
   const [customer, setCustomer] = useState<Customer | null>(null);
@@ -164,71 +184,65 @@ export default function OrdersPage() {
   return (
     <>
       <Nav />
-      <main id="main" className="mx-auto min-h-[calc(100dvh-var(--bar-h))] max-w-3xl px-4 pb-24 pt-[calc(var(--bar-h)+2rem)] sm:px-6">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h1 className="font-display text-4xl text-ink-900">Your orders</h1>
-            <p className="mt-2 text-ink-600">Everything you have ordered from this device or phone number.</p>
-          </div>
+      <main id="main" className="bg-white">
+        <PageTitleBand
+          title="Your Orders"
+          tag="Account"
+          tag2="Reorder"
+          lede="Everything you have ordered from this device or phone number."
+        />
+
+        <div className="wrap wrap-narrow pb-24 pt-10">
           {customer && (
             <p className="text-sm text-ink-600">
               Signed in as <span className="font-semibold text-ink-900">{customer.phone}</span>{" "}
-              <button onClick={signOut} className="ml-2 font-medium text-red hover:underline">
+              <button onClick={signOut} className="f-btn f-btn--quiet ml-2">
                 Sign out
               </button>
             </p>
           )}
-        </div>
 
-        <div className="mt-8 grid gap-4">
-          {orders === null && <div className="h-40 animate-pulse rounded-card bg-beige-deep/60 border border-rule" />}
-          {orders?.length === 0 && (
-            <div className="rounded-card bg-cream p-10 text-center border border-rule">
-              <p className="text-ink-600">No orders on this device yet. Your first one is a scroll away.</p>
-              <Link
-                href="/menu"
-                className="f-btn f-btn--primary f-btn--md mt-4"
-              >
-                See the menu
-              </Link>
-            </div>
-          )}
-          {orders?.map((o) => (
-            <article key={o.orderNumber} className="rounded-card bg-cream border border-rule">
-              <Link href={`/track/${o.orderNumber}`} className="group block p-6 pb-4">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <p className="font-display text-xl text-ink-900 group-hover:text-red">{o.orderNumber}</p>
-                    <p className="text-sm text-ink-600">
-                      {new Date(o.placedAt).toLocaleDateString("en-PK", { day: "numeric", month: "short" })} ·{" "}
-                      {o.lines.reduce((n, l) => n + l.qty, 0)} items · {o.branchName ?? "FOUR"}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span
-                      className={`rounded-full px-3 py-1.5 text-xs font-bold ${
-                        o.status === "CANCELLED" ? "bg-ink-900/10 text-ink-600" : o.status === "DELIVERED" ? "bg-ink-900/10 text-ink-900" : "bg-red text-white"
-                      }`}
-                    >
-                      {ORDER_STATUS_LABELS[o.status as OrderStatusName] ?? o.status}
-                    </span>
-                    <span className="font-bold text-ink-900">{formatPKR(o.total)}</span>
-                  </div>
-                </div>
-                <p className="mt-3 truncate text-sm text-ink-600">
-                  {o.lines.map((l) => `${l.qty}x ${l.name}`).join(", ")}
-                </p>
-              </Link>
-              <div className="flex items-center gap-3 border-t border-rule px-6 py-3">
-                <ReorderButton order={o} />
-                <Link href={`/track/${o.orderNumber}`} className="f-btn f-btn--quiet f-btn--sm px-0">
-                  Track →
-                </Link>
+          <div className={`grid gap-4 ${customer ? "mt-6" : ""}`}>
+            {orders === null && <div className="h-40 animate-pulse rounded-[10px] bg-cream" />}
+            {orders?.length === 0 && (
+              <div className="f-card f-card--pad-lg f-empty">
+                <p className="f-empty__text">No orders on this device yet. Your first one is a scroll away.</p>
+                <PillCta href="/menu">See the menu</PillCta>
               </div>
-            </article>
-          ))}
+            )}
+            {orders?.map((o) => (
+              <article key={o.orderNumber} className="f-card f-card--sm overflow-hidden">
+                <Link href={`/track/${o.orderNumber}`} className="block p-6 pb-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <p className="font-display text-xl uppercase text-red">{o.orderNumber}</p>
+                      <p className="mt-1 text-sm text-ink-600">
+                        {new Date(o.placedAt).toLocaleDateString("en-PK", { day: "numeric", month: "short" })} ·{" "}
+                        {o.lines.reduce((n, l) => n + l.qty, 0)} items · {o.branchName ?? "FOUR"}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className={`f-tag ${statusTone(o.status)}`}>
+                        {ORDER_STATUS_LABELS[o.status as OrderStatusName] ?? o.status}
+                      </span>
+                      <span className="font-display text-lg text-red">{formatPKR(o.total)}</span>
+                    </div>
+                  </div>
+                  <p className="mt-3 truncate text-sm text-ink-600">
+                    {o.lines.map((l) => `${l.qty}x ${l.name}`).join(", ")}
+                  </p>
+                </Link>
+                <div className="flex items-center gap-4 border-t border-rule px-6 py-3">
+                  <ReorderButton order={o} />
+                  <Link href={`/track/${o.orderNumber}`} className="f-btn f-btn--quiet">
+                    Track →
+                  </Link>
+                </div>
+              </article>
+            ))}
 
-          {!customer && orders !== null && <SignIn onSignedIn={refresh} />}
+            {!customer && orders !== null && <SignIn onSignedIn={refresh} />}
+          </div>
         </div>
       </main>
       <Footer />

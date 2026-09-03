@@ -15,6 +15,7 @@ import {
   formatPKR,
 } from "@four/shared";
 import { useStore } from "@/lib/store";
+import { CLOSES_LABEL, OPENS_LABEL } from "@/lib/hours";
 import { BrandLogo } from "./BrandLogo";
 
 /**
@@ -90,7 +91,7 @@ export function LocationModal({
             role="dialog"
             aria-modal="true"
             aria-labelledby="location-title"
-            className="f-modal max-w-lg p-8"
+            className="f-modal max-w-lg p-8 sm:rounded-panel"
             initial={reduce ? false : { y: 48, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={reduce ? { opacity: 0 } : { y: 48, opacity: 0 }}
@@ -168,7 +169,7 @@ export function LocationModal({
                     transition={{ type: "spring", stiffness: 260, damping: 30 }}
                     className="overflow-hidden"
                   >
-                    <div className="f-card f-card--flat grid gap-2.5 p-4 text-sm font-semibold text-ink-900">
+                    <div className="f-card f-card--flat f-card--sm grid gap-2.5 p-4 text-sm font-medium text-ink-900">
                       <span className="flex items-center gap-2.5">
                         <DetailIcon name="clock" />
                         Delivery in about {deliveryEtaLabel(area.distanceKm)}
@@ -187,8 +188,8 @@ export function LocationModal({
                           <span className="f-dot__core" />
                         </span>
                         {kitchenOpen
-                          ? "Open now · delivering till 3:00 am"
-                          : "Kitchen opens at 1:00 pm — browse and fill your cart now"}
+                          ? `Open now · delivering till ${CLOSES_LABEL}`
+                          : `Kitchen opens at ${OPENS_LABEL} — browse and fill your cart now`}
                       </span>
                     </div>
                   </motion.div>
@@ -202,7 +203,7 @@ export function LocationModal({
               >
                 {area && block ? `Deliver here · ${deliveryEtaLabel(area.distanceKm)}` : "Order online"}
               </button>
-              <button onClick={onClose} className="f-btn f-btn--quiet f-btn--sm">
+              <button onClick={onClose} className="f-btn f-btn--quiet">
                 Just browsing? Explore the website
               </button>
             </div>

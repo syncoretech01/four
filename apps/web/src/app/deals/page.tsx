@@ -8,6 +8,11 @@ import { CartDrawer } from "@/components/cart/CartDrawer";
 import { ChatDock } from "@/components/chat/ChatDock";
 import { LocationGate } from "@/components/LocationModal";
 import { SmartImage } from "@/components/SmartImage";
+import { PageTitleBand } from "@/components/ds/PageTitleBand";
+import { SectionHeader } from "@/components/ds/SectionHeader";
+import { PillCta } from "@/components/ds/PillCta";
+import { PriceTag } from "@/components/ds/PriceTag";
+import { DoodleBackdrop } from "@/components/ds/DoodleBackdrop";
 
 export const metadata: Metadata = {
   title: "Deals & Offers - Meal Deals from Rs. 249",
@@ -39,65 +44,81 @@ export default function DealsPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(offerCatalogJsonLd) }} />
       <Nav />
       <main id="main">
-        {/* ── Hero ── */}
-        <header className="wrap pt-[calc(var(--bar-h)+2rem)]">
-          <p className="f-eyebrow">Deals &amp; offers</p>
-          <h1 className="f-heading f-heading--xl">Make It a Meal</h1>
-          <p className="f-lede">
-            Add fries and a drink to any burger from {formatPKR(MEAL_DEAL_FROM)} — here&apos;s exactly what the math
-            saves you.
-          </p>
-        </header>
+        {/* ── Title band ── */}
+        <PageTitleBand
+          title="Deals"
+          tag="Meal deals"
+          tag2={`From ${formatPKR(MEAL_DEAL_FROM)}`}
+          lede={
+            <>
+              Add fries and a drink to any burger from {formatPKR(MEAL_DEAL_FROM)} — here&apos;s exactly what the math
+              saves you.
+            </>
+          }
+        />
 
-        {/* ── Deal grid ── */}
-        <div className="wrap pb-24 pt-10">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-            {deals.map((d) => (
-              <article key={d.id} className="f-item flex h-full flex-col">
-                <Link href={d.href} className="flex h-full flex-col" aria-label={`${d.name}, ${formatPKR(d.dealPrice)} - build this meal`}>
-                  <div className="f-item__media">
-                    <SmartImage src={`/menu-items/${d.itemId}.jpg`} alt={d.name} fallbackLabel={d.name} className="h-full w-full" />
-                    <span className="f-item__flag f-tag">{d.badge}</span>
-                  </div>
-                  <div className="flex flex-1 flex-col gap-2 p-5">
-                    <h2 className="f-item__name">{d.name}</h2>
-                    <p className="text-sm font-semibold text-ink-600">{d.composition}</p>
-                    <div className="mt-auto flex items-baseline gap-3 pt-2">
-                      <span className="font-display text-3xl text-red">{formatPKR(d.dealPrice)}</span>
-                      {d.strikePrice && <span className="f-tag f-tag--struck">{formatPKR(d.strikePrice)}</span>}
+        {/* ── Deal grid (the page's cream band) ── */}
+        <section className="on-cream relative isolate">
+          <DoodleBackdrop tone="red" edges />
+          <div className="wrap band relative z-[1]">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 xl:[&>*:nth-child(3n+2)]:mt-[120px] xl:[&>*:nth-child(3n)]:my-[140px]">
+              {deals.map((d) => (
+                <article key={d.id} className="f-item f-item--deal">
+                  <Link href={d.href} className="flex flex-1 flex-col" aria-label={`${d.name}, ${formatPKR(d.dealPrice)} - build this meal`}>
+                    <div className="f-item__media">
+                      <SmartImage src={`/menu-items/${d.itemId}.jpg`} alt={d.name} fallbackLabel={d.name} className="h-full w-full" />
+                      <span className="f-tag f-tag--red f-tag--card absolute left-5 top-5">{d.badge}</span>
                     </div>
-                    <p className="text-xs font-medium text-ink-600">{d.note}</p>
-                    <span className="f-btn f-btn--primary f-btn--sm f-btn--block mt-2">Build this meal</span>
-                  </div>
-                </Link>
-              </article>
-            ))}
-          </div>
+                    <div className="f-item__body">
+                      <h2 className="f-item__name">{d.name}</h2>
+                      <p className="mt-1.5 text-sm font-medium text-ink-600">{d.composition}</p>
+                      <p className="mt-2 text-xs text-ink-600">{d.note}</p>
+                    </div>
+                    <div className="f-item__foot mt-auto pt-7">
+                      <span className="f-btn f-btn--secondary f-btn--sm">Build this meal</span>
+                      <span className="flex items-center gap-2">
+                        {d.strikePrice && <span className="f-tag f-tag--struck">{formatPKR(d.strikePrice)}</span>}
+                        <PriceTag price={d.dealPrice} />
+                      </span>
+                    </div>
+                  </Link>
+                </article>
+              ))}
+            </div>
 
-          <p className="mt-8 max-w-[70ch] text-xs leading-relaxed text-ink-600">
-            Prices exclusive of tax. Make-it-a-meal applies to burgers at checkout — pick the option inside any
-            burger. Savings compare the meal-deal price with the same items ordered separately, at today&apos;s menu
-            prices.
-          </p>
-        </div>
+            <p className="mt-10 max-w-[70ch] text-xs leading-relaxed text-ink-600">
+              Prices exclusive of tax. Make-it-a-meal applies to burgers at checkout — pick the option inside any
+              burger. Savings compare the meal-deal price with the same items ordered separately, at today&apos;s menu
+              prices.
+            </p>
+          </div>
+        </section>
 
         {/* ── The one red band: free delivery ── */}
-        <section className="on-red">
-          <div className="wrap py-24">
-            <h2 className="f-heading f-heading--lg max-w-[16ch]">
-              Over {formatPKR(FREE_DELIVERY_ABOVE)}? It rides free.
-            </h2>
-            <p className="mt-4 max-w-[52ch] text-lg font-medium text-white/85">
-              Standard delivery is a flat {formatPKR(DELIVERY_FEE)}, anywhere we ride. Clear{" "}
-              {formatPKR(FREE_DELIVERY_ABOVE)} and we cover it.
-            </p>
+        <section className="band">
+          <div className="wrap">
+            <div className="on-red relative isolate overflow-hidden rounded-[20px] px-6 py-16 sm:px-12">
+              <DoodleBackdrop />
+              <div className="relative z-[1]">
+            <SectionHeader
+              title={`Over ${formatPKR(FREE_DELIVERY_ABOVE)}? It rides free.`}
+              highlight="free"
+              lede={
+                <>
+                  Standard delivery is a flat {formatPKR(DELIVERY_FEE)}, anywhere we ride. Clear{" "}
+                  {formatPKR(FREE_DELIVERY_ABOVE)} and we cover it.
+                </>
+              }
+            />
             <div className="mt-10 flex flex-wrap items-center gap-4">
-              <Link href="/menu" className="f-btn f-btn--cream f-btn--lg">
+              <PillCta href="/menu" size="lg">
                 Start an order
-              </Link>
-              <Link href="/locations" className="f-btn f-btn--on-red f-btn--lg">
+              </PillCta>
+              <PillCta href="/locations" tone="on-red" arrow={false} size="lg">
                 Where we deliver
-              </Link>
+              </PillCta>
+            </div>
+              </div>
             </div>
           </div>
         </section>

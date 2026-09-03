@@ -48,10 +48,10 @@ export default function PayPage() {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-beige px-4">
-      <div className="w-full max-w-md rounded-[20px] bg-cream p-8 border border-rule">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-red">Demo payment gateway</p>
-        <h1 className="mt-2 text-2xl font-bold text-ink-900">Complete your payment</h1>
+    <main className="flex min-h-[100dvh] items-center justify-center bg-white px-4">
+      <div className="f-card f-card--pad-lg w-full max-w-md">
+        <p className="f-field__label">Demo payment gateway</p>
+        <h1 className="f-heading f-heading--md mt-2">Complete your payment</h1>
 
         {state === "loading" && <p className="mt-6 text-ink-600">Loading order...</p>}
 
@@ -63,25 +63,25 @@ export default function PayPage() {
 
         {order && state !== "loading" && state !== "error" && (
           <>
-            <dl className="mt-6 grid gap-2 rounded-[20px] bg-beige/60 p-4 text-sm">
-              <div className="flex justify-between text-ink-600">
+            <dl className="f-summary f-summary--ruled mt-6">
+              <div className="f-summary__row">
                 <dt>Order</dt>
                 <dd className="font-semibold text-ink-900">{order.orderNumber}</dd>
               </div>
-              <div className="flex justify-between text-ink-600">
+              <div className="f-summary__row">
                 <dt>Deliver to</dt>
                 <dd>
                   {order.block}, {order.areaName}
                 </dd>
               </div>
-              <div className="flex justify-between text-base font-bold text-ink-900">
+              <div className="f-summary__row is-total">
                 <dt>Amount</dt>
                 <dd>{formatPKR(order.total)}</dd>
               </div>
             </dl>
 
             {message && state === "ready" && (
-              <p role="alert" className="f-notice f-notice--error mt-4">
+              <p role="alert" className="f-notice f-notice--error mt-6">
                 {message}
               </p>
             )}
@@ -94,7 +94,7 @@ export default function PayPage() {
               <button
                 onClick={pay}
                 disabled={state === "paying" || !token}
-                className="f-btn f-btn--red f-btn--md f-btn--block mt-6"
+                className={`f-btn f-btn--red f-btn--lg f-btn--block mt-6 ${state === "paying" ? "is-loading" : ""}`}
               >
                 {state === "paying" ? "Processing..." : `Pay ${formatPKR(order.total)} (demo)`}
               </button>

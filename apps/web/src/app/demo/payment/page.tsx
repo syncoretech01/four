@@ -35,9 +35,9 @@ export default function PaymentDemoPage() {
   const chosen = METHODS.find((m) => m.id === method)!;
 
   return (
-    <main className="min-h-dvh bg-cream-dark px-4 py-10">
+    <main className="min-h-dvh bg-cream px-4 py-10">
       <div className="mx-auto grid max-w-lg gap-5">
-        <div className="rounded-xl border border-dashed border-rule bg-red/5 px-4 py-3">
+        <div className="rounded-card border border-rule bg-white px-4 py-3">
           <p className="text-sm font-bold uppercase tracking-wide text-red">Demonstration only</p>
           <p className="mt-1 text-sm text-ink-600">
             Nothing on this page charges anyone. There is no payment provider connected, no order is
@@ -45,8 +45,8 @@ export default function PaymentDemoPage() {
           </p>
         </div>
 
-        <div className="rounded-card bg-cream p-7 border border-rule">
-          <h1 className="font-display text-2xl text-ink-900">Pay online</h1>
+        <div className="rounded-panel bg-white p-7">
+          <h1 className="f-heading f-heading--sm">Pay online</h1>
           <p className="mt-1 text-sm text-ink-600">
             How online payment would work once {BRAND.name} has a merchant account.
           </p>
@@ -77,8 +77,8 @@ export default function PaymentDemoPage() {
                   <button
                     key={m.id}
                     onClick={() => setMethod(m.id)}
-                    className={`rounded-xl border px-4 py-3.5 text-left transition ${
-                      method === m.id ? "border-red bg-red/5" : "border-rule"
+                    className={`rounded-card border px-4 py-3.5 text-left transition ${
+                      method === m.id ? "border-red bg-cream" : "border-rule"
                     }`}
                   >
                     <span className="block text-sm font-semibold text-ink-900">{m.label}</span>
@@ -97,7 +97,7 @@ export default function PaymentDemoPage() {
 
           {stage === "gateway" && (
             <div className="mt-6 grid gap-4">
-              <div className="rounded-xl bg-ink-900/5 p-5 text-center">
+              <div className="rounded-card bg-cream p-5 text-center">
                 <p className="text-sm font-semibold text-ink-900">{chosen.label}</p>
                 <p className="mt-1 text-xs text-ink-600">
                   The real flow hands off to the provider here, so card details never reach
@@ -124,7 +124,7 @@ export default function PaymentDemoPage() {
 
           {stage === "approved" && (
             <div className="mt-6 grid gap-3 text-center">
-              <p className="font-display text-xl text-ink-900">Payment approved</p>
+              <p className="f-heading f-heading--sm">Payment approved</p>
               <p className="text-sm text-ink-600">
                 The order would now be confirmed and sent to the kitchen, exactly as a cash order is
                 today. No money moved: this is a demonstration.
@@ -134,7 +134,7 @@ export default function PaymentDemoPage() {
 
           {stage === "declined" && (
             <div className="mt-6 grid gap-3 text-center">
-              <p className="font-display text-xl text-ink-900">Payment declined</p>
+              <p className="f-heading f-heading--sm">Payment declined</p>
               <p className="text-sm text-ink-600">
                 No order is created and the cart is kept, so the customer can try another method.
               </p>
@@ -151,7 +151,7 @@ export default function PaymentDemoPage() {
           )}
         </div>
 
-        <Link href="/" className="text-center text-sm font-medium text-ink-600 underline-offset-4 hover:underline">
+        <Link href="/" className="f-btn f-btn--quiet justify-self-center">
           Back to the site
         </Link>
       </div>

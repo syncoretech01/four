@@ -4,13 +4,18 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useReduceMotion } from "@/lib/useAnim";
 import { useKitchenOpen } from "@/lib/useKitchenOpen";
+import { OPENS_LABEL } from "@/lib/hours";
 import { DELIVERY_FEE, FREE_DELIVERY_ABOVE, HOURS_LABEL, LAHORE_AREAS, deliveryEtaLabel, formatPKR } from "@four/shared";
 import { api } from "@/lib/api";
-import { toast } from "@/lib/toast";
 import { useStore } from "@/lib/store";
+import { PageTitleBand } from "../ds/PageTitleBand";
+import { SectionHeader } from "../ds/SectionHeader";
+import { DoodleBackdrop } from "../ds/DoodleBackdrop";
+import { CategoriesCarousel } from "../sections/CategoriesCarousel";
 import { ItemModal, type MenuItemView } from "./ItemModal";
 import { ItemCard } from "./ItemCard";
 import { BestsellerShowcase } from "./BestsellerShowcase";
+import { useQuickAdd } from "./useQuickAdd";
 import type { MenuCategoryView } from "./types";
 
 const BESTSELLERS_ID = "bestsellers";
@@ -29,9 +34,8 @@ export function MenuBrowser() {
   const [failed, setFailed] = useState(false);
   const [active, setActive] = useState<string>(BESTSELLERS_ID);
   const [query, setQuery] = useState("");
-  const [selected, setSelected] = useState<MenuItemView | null>(null);
-  const [added, setAdded] = useState<string | null>(null);
   const [serverResults, setServerResults] = useState<MenuItemView[] | null>(null);
+  const { added, quickAdd, selected, setSelected } = useQuickAdd();
   const railRef = useRef<HTMLDivElement>(null);
   const queryRef = useRef(query);
   queryRef.current = query;
@@ -59,7 +63,6 @@ export function MenuBrowser() {
     () => categories.flatMap((c) => c.items.filter((i) => i.available && i.tags.includes("bestseller"))),
     [categories],
   );
-  const categoryLabels = useMemo(() => Object.fromEntries(categories.map((c) => [c.id, c.label])), [categories]);
 
   const navEntries = useMemo(
     () => [
@@ -139,89 +142,65 @@ export function MenuBrowser() {
     if (window.location.hash) {
       document.getElementById(decodeURIComponent(window.location.hash.slice(1)))?.scrollIntoView();
     }
-  }, [loading, categories]);
+  }, [loading, categories, setSelected]);
 
   const jump = (id: string) => {
     setActive(id);
     document.getElementById(`cat-${id}`)?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
   };
 
-  // simple items (one price, no choices) add straight to the cart; anything
-  // with sizes or add-ons opens the full picker instead
-  const quickAdd = async (item: MenuItemView) => {
-    if (!item.available) return;
-    if (item.variants.length > 0 || item.modifierGroups.length > 0) {
-      setSelected(item);
-      return;
-    }
-    setAdded(item.id);
-    await api("/api/cart/lines", { method: "POST", body: JSON.stringify({ itemId: item.id, qty: 1 }) }).catch(() => {
-      setAdded((cur) => (cur === item.id ? null : cur));
-      toast.error("Couldn't add that — try again.");
-    });
-    setTimeout(() => setAdded((cur) => (cur === item.id ? null : cur)), 1300);
-  };
-
-  const grid = "grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3";
+  const grid = "grid grid-cols-1 gap-[var(--grid-gap)] sm:grid-cols-2 xl:grid-cols-3";
 
   return (
     <div className="pb-24 lg:pb-0">
-      {/* ── Page header: title + search ── */}
-      <header className="wrap pt-[calc(var(--bar-h)+2rem)]">
-        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-6">
-          <div>
-            <p className="f-eyebrow">Order online</p>
-            <h1 className="f-heading f-heading--xl">The Menu</h1>
-            <p className="f-lede">Pick a category, stack your order, and we&apos;ll smash it fresh.</p>
-          </div>
-          <label className="relative block w-full sm:w-80">
-            <span className="sr-only">Search the menu</span>
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-400">
-              <circle cx="8.5" cy="8.5" r="6" stroke="currentColor" strokeWidth="2.5" />
-              <path d="M13 13l5 5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-            </svg>
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search burgers, pizzas, shakes..."
-              className="f-input f-input--search"
-            />
-          </label>
-        </div>
+      {/* ── Red title band, then the white toolbar: search + the honest numbers ── */}
+      <PageTitleBand title="The Menu" tag="Order online" tag2="Made fresh" lede="Pick a category, stack your order, and we'll smash it fresh." />
 
-        {/* The honest numbers, before checkout ever asks for them. */}
-        <div className="mt-5 flex flex-wrap items-center gap-2">
-          <button onClick={() => setLocationModalOpen(true)} className="f-chip f-chip--sm">
-            <svg width="12" height="14" viewBox="0 0 12 14" fill="none" aria-hidden>
-              <path d="M6 13S1 8.6 1 5.4a5 5 0 1 1 10 0C11 8.6 6 13 6 13Z" stroke="currentColor" strokeWidth="1.5" />
-              <circle cx="6" cy="5.4" r="1.6" fill="currentColor" />
-            </svg>
-            {location ? `Delivering to ${location.block}, ${location.areaName}` : "Set delivery area for ETA and fee"}
-          </button>
-          {locArea && <span className="f-tag f-tag--muted">{deliveryEtaLabel(locArea.distanceKm)}</span>}
-          <span className="f-tag f-tag--muted">
-            {formatPKR(DELIVERY_FEE)} delivery · free over {formatPKR(FREE_DELIVERY_ABOVE)}
-          </span>
-        </div>
+      <div className="wrap mt-8 flex flex-wrap items-center gap-3">
+        <label className="relative block w-full sm:w-80">
+          <span className="sr-only">Search the menu</span>
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-400">
+            <circle cx="8.5" cy="8.5" r="6" stroke="currentColor" strokeWidth="2.5" />
+            <path d="M13 13l5 5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+          </svg>
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search burgers, pizzas, shakes..."
+            className="f-input f-input--pill f-input--search"
+          />
+        </label>
+
+        <button onClick={() => setLocationModalOpen(true)} className="f-btn f-btn--outline f-btn--sm">
+          <svg width="12" height="14" viewBox="0 0 12 14" fill="none" aria-hidden>
+            <path d="M6 13S1 8.6 1 5.4a5 5 0 1 1 10 0C11 8.6 6 13 6 13Z" stroke="currentColor" strokeWidth="1.5" />
+            <circle cx="6" cy="5.4" r="1.6" fill="currentColor" />
+          </svg>
+          {location ? `Delivering to ${location.block}, ${location.areaName}` : "Set delivery area for ETA and fee"}
+        </button>
+        {locArea && <span className="f-tag f-tag--muted">{deliveryEtaLabel(locArea.distanceKm)}</span>}
+        <span className="f-tag f-tag--muted">
+          {formatPKR(DELIVERY_FEE)} delivery · free over {formatPKR(FREE_DELIVERY_ABOVE)}
+        </span>
 
         {!kitchenOpen && (
-          <p className="f-notice f-notice--yellow mt-4">
-            Kitchen closed · {HOURS_LABEL}. Fill your cart now — ordering opens at 1:00 pm.
+          <p className="f-notice f-notice--yellow mt-4 w-full">
+            Kitchen closed · {HOURS_LABEL}. Fill your cart now — ordering opens at {OPENS_LABEL}.
           </p>
         )}
-      </header>
+      </div>
 
       {loading ? (
         <div className="wrap band pt-10" aria-busy="true" aria-label="Loading the menu">
-          <div className="flex gap-6 overflow-hidden pt-4">
+          <div className="flex gap-[var(--grid-gap)] overflow-hidden pt-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-96 w-72 shrink-0 animate-pulse rounded-card border border-rule bg-beige" />
+              <div key={i} className="h-96 w-72 shrink-0 animate-pulse rounded-[10px] bg-cream" />
             ))}
           </div>
           <div className={`mt-12 ${grid}`}>
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-80 animate-pulse rounded-card border border-rule bg-beige" />
+              <div key={i} className="h-80 animate-pulse rounded-[10px] bg-cream" />
             ))}
           </div>
         </div>
@@ -229,7 +208,7 @@ export function MenuBrowser() {
         <div className="wrap band">
           <div className="f-empty">
             <p className="f-empty__text">The menu could not load. Check your connection and try again.</p>
-            <button onClick={load} className="f-btn f-btn--primary f-btn--md">
+            <button onClick={load} className="f-btn f-btn--red f-btn--md">
               Reload the menu
             </button>
           </div>
@@ -237,7 +216,7 @@ export function MenuBrowser() {
       ) : results ? (
         /* ── Search results ── */
         <div className="wrap pb-24 pt-8">
-          <p className="text-sm font-bold uppercase tracking-[0.08em] text-ink-600" aria-live="polite">
+          <p className="text-sm font-medium text-ink-600" aria-live="polite">
             {results.length} {results.length === 1 ? "dish" : "dishes"} for &ldquo;{query.trim()}&rdquo;
           </p>
           {results.length === 0 ? (
@@ -257,8 +236,11 @@ export function MenuBrowser() {
         </div>
       ) : (
         <>
+          {/* ── White category strip (keeps the two red bands apart); jumps to a section ── */}
+          <CategoriesCarousel mode="jump" onJump={jump} className="band--tight" />
+
           {/* ── Sticky category rail (mobile / tablet) ── */}
-          <div className="sticky top-[var(--nav-h-scrolled)] z-30 mt-6 border-b border-rule bg-white/95 backdrop-blur-[10px] lg:hidden">
+          <div className="sticky top-[var(--nav-h-scrolled)] z-30 border-b border-rule bg-white/95 backdrop-blur-[10px] lg:hidden">
             <div className="wrap">
               <div ref={railRef} className="f-rail py-2">
                 {navEntries.map((c) => (
@@ -270,26 +252,25 @@ export function MenuBrowser() {
             </div>
           </div>
 
-          {/* ── Bestseller portfolio ── */}
+          {/* ── Best sellers: the one red band on the page ── */}
           {bestsellers.length > 0 && (
-            <section id={`cat-${BESTSELLERS_ID}`} data-menu-section className="mt-2 scroll-mt-[calc(var(--nav-h-scrolled)+3.5rem)] bg-[var(--bg-page-alt)] lg:mt-10 lg:scroll-mt-[calc(var(--nav-h-scrolled)+1rem)]">
-              <div className="wrap py-10 lg:py-12">
-                <div className="flex items-end justify-between gap-6">
-                  <div>
-                    <p className="f-eyebrow">The greatest hits</p>
-                    <h2 className="f-heading f-heading--lg">Best Sellers</h2>
-                  </div>
-                  <span className="f-tag f-tag--muted hidden sm:inline-flex">
-                    {String(bestsellers.length).padStart(2, "0")} on display
-                  </span>
+            <section
+              id={`cat-${BESTSELLERS_ID}`}
+              data-menu-section
+              className="on-red relative isolate mt-4 scroll-mt-[calc(var(--nav-h-scrolled)+3.5rem)] lg:mt-10 lg:scroll-mt-[calc(var(--nav-h-scrolled)+1rem)]"
+            >
+              <DoodleBackdrop />
+              <div className="wrap relative z-[1] py-12 lg:py-16">
+                <SectionHeader align="center" title="Best Sellers" highlight="Sellers" tag="Greatest hits" />
+                <div className="mt-10">
+                  <BestsellerShowcase items={bestsellers} onSelect={setSelected} onQuickAdd={quickAdd} addedId={added} />
                 </div>
-                <BestsellerShowcase items={bestsellers} onSelect={setSelected} categoryLabels={categoryLabels} />
               </div>
             </section>
           )}
 
           {/* ── Category sections + sticky sidebar ── */}
-          <div className="wrap pb-24 lg:grid lg:grid-cols-[14rem_1fr] lg:gap-12">
+          <div className="wrap pb-24 pt-4 lg:grid lg:grid-cols-[14rem_1fr] lg:gap-12">
             <aside className="hidden lg:block">
               <nav className="f-catnav sticky top-[calc(var(--nav-h-scrolled)+1.5rem)] max-h-[calc(100dvh-7rem)] overflow-y-auto" aria-label="Menu categories">
                 {navEntries.map((c) => (
@@ -303,12 +284,17 @@ export function MenuBrowser() {
 
             <div>
               {categories.map((c) => (
-                <section key={c.id} id={`cat-${c.id}`} data-menu-section className="scroll-mt-[calc(var(--nav-h-scrolled)+3.5rem)] pt-12 first:pt-10 lg:scroll-mt-[calc(var(--nav-h-scrolled)+1rem)] lg:first:pt-12">
+                <section
+                  key={c.id}
+                  id={`cat-${c.id}`}
+                  data-menu-section
+                  className="border-t border-rule pt-12 first:border-0 scroll-mt-[calc(var(--nav-h-scrolled)+3.5rem)] lg:scroll-mt-[calc(var(--nav-h-scrolled)+1rem)]"
+                >
                   <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
                     <h2 className="f-heading f-heading--md">{c.label}</h2>
-                    <p className="text-sm font-semibold text-ink-600">{c.blurb}</p>
+                    <p className="text-sm font-medium text-ink-600">{c.blurb}</p>
                   </div>
-                  <div className={`mt-6 ${grid}`}>
+                  <div className={`mt-8 ${grid}`}>
                     {c.items.map((item, i) => (
                       <ItemCard key={item.id} item={item} index={i} added={added === item.id} onOpen={setSelected} onQuickAdd={quickAdd} />
                     ))}

@@ -11,11 +11,14 @@ import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { BRAND, BRANCHES, HOURS_LABEL, LAHORE_AREAS, deliveryEtaLabel } from "@four/shared";
 import { useKitchenOpen } from "@/lib/useKitchenOpen";
+import { OPENS_LABEL } from "@/lib/hours";
 import { LocationModal } from "../LocationModal";
+import { SectionHeader } from "../ds/SectionHeader";
+import { PillCta } from "../ds/PillCta";
 
 const LocationsMap = dynamic(() => import("./LocationsMap"), {
   ssr: false,
-  loading: () => <div className="h-full w-full animate-pulse bg-beige" aria-hidden />,
+  loading: () => <div className="h-full w-full animate-pulse bg-cream" aria-hidden />,
 });
 
 export function LocationsExplorer() {
@@ -34,9 +37,9 @@ export function LocationsExplorer() {
 
   return (
     <>
-      <div className="wrap grid gap-10 pb-16 lg:grid-cols-[minmax(24rem,2fr)_3fr]">
+      <div className="wrap grid gap-10 py-12 lg:grid-cols-[minmax(24rem,2fr)_3fr]">
         {/* ── Branch cards ── */}
-        <div className="grid content-start gap-6">
+        <div className="grid content-start gap-5">
           {BRANCHES.map((b, i) => {
             const expanded = expandedAreas === b.id;
             const areas = b.areaIds.map((id) => areaById.get(id)).filter(Boolean);
@@ -46,7 +49,7 @@ export function LocationsExplorer() {
               <article
                 key={b.id}
                 onClick={() => select(b.id)}
-                className={`f-card f-card--pad cursor-pointer ${selected ? "is-selected" : ""}`}
+                className={`f-card f-card--flat f-card--sm f-card--pad cursor-pointer ${selected ? "is-selected" : ""}`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -61,12 +64,12 @@ export function LocationsExplorer() {
                     {kitchenOpen && <span className="f-dot__ping" />}
                     <span className="f-dot__core" />
                   </span>
-                  {kitchenOpen ? "Open now" : "Opens 1:00 pm"}
+                  {kitchenOpen ? "Open now" : `Opens ${OPENS_LABEL}`}
                   <span className="font-medium text-ink-600">· {HOURS_LABEL.replace("Open daily ", "")}</span>
                 </p>
 
                 <div className="mt-4">
-                  <span className="text-xs font-extrabold uppercase tracking-[0.16em] text-ink-600">Delivers to</span>
+                  <span className="text-xs font-bold uppercase tracking-[.16em] text-ink-600">Delivers to</span>
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {shown.map(
                       (a) =>
@@ -77,7 +80,7 @@ export function LocationsExplorer() {
                               e.stopPropagation();
                               setPicker({ initialAreaId: a.id });
                             }}
-                            className="f-chip f-chip--sm px-2.5 py-1 text-xs"
+                            className="f-chip f-chip--xs"
                             title={`Delivery in about ${deliveryEtaLabel(a.distanceKm)}`}
                           >
                             {a.name}
@@ -90,7 +93,7 @@ export function LocationsExplorer() {
                           e.stopPropagation();
                           setExpandedAreas(expanded ? null : b.id);
                         }}
-                        className="f-chip f-chip--sm f-chip--soft px-2.5 py-1 text-xs"
+                        className="f-chip f-chip--xs f-chip--soft"
                       >
                         {expanded ? "Show fewer" : `+${areas.length - 5} more`}
                       </button>
@@ -116,15 +119,11 @@ export function LocationsExplorer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
-                    className="f-btn f-btn--secondary f-btn--sm"
+                    className="f-btn f-btn--outline f-btn--sm"
                   >
                     Directions
                   </a>
-                  <a
-                    href={BRAND.phoneHref}
-                    onClick={(e) => e.stopPropagation()}
-                    className="f-btn f-btn--quiet f-btn--sm"
-                  >
+                  <a href={BRAND.phoneHref} onClick={(e) => e.stopPropagation()} className="f-btn f-btn--quiet">
                     {BRAND.phone}
                   </a>
                 </div>
@@ -135,7 +134,7 @@ export function LocationsExplorer() {
 
         {/* ── Sticky map ── */}
         <div className="lg:sticky lg:top-[calc(var(--nav-h-scrolled)+1.5rem)] lg:self-start">
-          <div className="aspect-[4/5] overflow-hidden rounded-card border border-rule sm:aspect-[16/10] lg:aspect-auto lg:h-[34rem]">
+          <div className="aspect-[4/5] overflow-hidden rounded-[20px] border border-rule sm:aspect-[16/10] lg:aspect-auto lg:h-[34rem]">
             <LocationsMap flyRequest={flyRequest} onSelect={(id) => select(id, false)} />
           </div>
           <p className="mt-2 text-xs text-ink-600">
@@ -144,20 +143,19 @@ export function LocationsExplorer() {
         </div>
       </div>
 
-      {/* ── Coverage chip cloud ── */}
-      <section className="bg-[var(--bg-page-alt)]">
+      {/* ── Coverage chip cloud (the page's cream band) ── */}
+      <section className="on-cream">
         <div className="wrap band">
-          <p className="f-eyebrow">Delivery coverage</p>
-          <h2 className="f-heading f-heading--lg">Is your block covered?</h2>
-          <p className="f-lede">
-            {LAHORE_AREAS.length} areas across Lahore. Tap yours to see the delivery time and start an order.
-          </p>
-          <div className="mt-8 grid gap-8">
+          <SectionHeader
+            title="Is your block covered?"
+            highlight="covered"
+            tag="Delivery coverage"
+            lede={`${LAHORE_AREAS.length} areas across Lahore. Tap yours to see the delivery time and start an order.`}
+          />
+          <div className="mt-10 grid gap-8">
             {BRANCHES.map((b) => (
               <div key={b.id}>
-                <h3 className="text-xs font-extrabold uppercase tracking-[0.16em] text-ink-600">
-                  From {b.shortName}
-                </h3>
+                <h3 className="text-xs font-bold uppercase tracking-[.16em] text-ink-600">From {b.shortName}</h3>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {b.areaIds.map((id) => {
                     const a = areaById.get(id);
@@ -165,9 +163,7 @@ export function LocationsExplorer() {
                       a && (
                         <button key={id} onClick={() => setPicker({ initialAreaId: id })} className="f-chip f-chip--sm">
                           {a.name}
-                          <span className="text-xs font-semibold text-ink-600">
-                            · {deliveryEtaLabel(a.distanceKm)}
-                          </span>
+                          <span className="text-xs font-semibold text-ink-600">· {deliveryEtaLabel(a.distanceKm)}</span>
                         </button>
                       )
                     );
@@ -176,9 +172,11 @@ export function LocationsExplorer() {
               </div>
             ))}
           </div>
-          <button onClick={() => setPicker({})} className="f-btn f-btn--primary f-btn--lg mt-10">
-            Check your block
-          </button>
+          <div className="mt-10">
+            <PillCta onClick={() => setPicker({})} size="lg" arrow={false}>
+              Check your block
+            </PillCta>
+          </div>
         </div>
       </section>
 

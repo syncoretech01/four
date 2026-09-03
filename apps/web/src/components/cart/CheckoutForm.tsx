@@ -96,7 +96,7 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
 
   return (
     <div className="f-drawer__body">
-      <button onClick={onBack} className="f-btn f-btn--quiet f-btn--sm mb-4 px-0">
+      <button onClick={onBack} className="f-btn f-btn--quiet mb-4">
         &larr; Back to cart
       </button>
 
@@ -277,7 +277,7 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
                 : "Cart is empty"}
         </button>
         {!open && (
-          <p className="mt-3 text-center text-sm font-semibold text-ink-600">
+          <p className="mt-3 text-center text-sm font-medium text-ink-600">
             We are closed right now. {HOURS_LABEL} - your cart will still be here.
           </p>
         )}

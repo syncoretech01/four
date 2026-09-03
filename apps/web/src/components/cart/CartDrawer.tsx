@@ -1,16 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { useReduceMotion } from "@/lib/useAnim";
 import { useDismissable } from "@/lib/useDismissable";
 import { useKitchenOpen } from "@/lib/useKitchenOpen";
+import { OPENS_LABEL } from "@/lib/hours";
 import { formatPKR, DELIVERY_FEE, FREE_DELIVERY_ABOVE } from "@four/shared";
 import { api, ApiError } from "@/lib/api";
 import { toast } from "@/lib/toast";
 import { useStore } from "@/lib/store";
 import { SmartImage } from "../SmartImage";
+import { PillCta } from "../ds/PillCta";
 import { CheckoutForm } from "./CheckoutForm";
 import { ItemModal, type ItemModalEdit, type MenuItemView } from "../menu/ItemModal";
 import { HAND_MARK } from "../hero/logoPaths";
@@ -28,6 +30,26 @@ export function CartDrawer() {
 
   const close = () => setOpen(false);
   useDismissable(open, close);
+
+  // focus lands on the close button when the drawer opens and goes back to
+  // whatever opened it (the nav cart button, the basket bar) when it closes -
+  // the same open -> closed rule MobileNav uses, without a ref from the opener
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
+  const wasOpen = useRef(false);
+  useEffect(() => {
+    if (open) {
+      const active = document.activeElement;
+      openerRef.current = active instanceof HTMLElement ? active : null;
+      closeRef.current?.focus();
+      wasOpen.current = true;
+    } else if (wasOpen.current) {
+      const opener = openerRef.current;
+      if (opener?.isConnected) opener.focus();
+      openerRef.current = null;
+      wasOpen.current = false;
+    }
+  }, [open]);
 
   // cart-line editing: fetch the full item, reopen the picker seeded from the line
   const [editing, setEditing] = useState<{ item: MenuItemView; edit: ItemModalEdit } | null>(null);
@@ -76,7 +98,7 @@ export function CartDrawer() {
     <>
       <AnimatePresence>
         {open && (
-        <motion.div className="fixed inset-0 z-50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <motion.div className="f-drawer__wrap" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
           <div className="f-scrim" onClick={close} aria-hidden />
           <motion.aside
             role="dialog"
@@ -93,6 +115,7 @@ export function CartDrawer() {
                 {checkoutOpen ? "Checkout" : "Your order"}
               </h2>
               <button
+                ref={closeRef}
                 onClick={close}
                 aria-label="Close cart"
                 className="f-iconbtn f-iconbtn--sm f-iconbtn--plain"
@@ -110,11 +133,15 @@ export function CartDrawer() {
                 <div className="f-drawer__body">
                   {cart.lines.length === 0 ? (
                     <div className="f-empty h-full">
-                      <svg viewBox="180 100 700 900" className="f-empty__glyph text-red" aria-hidden>
-                        <g transform={HAND_MARK.transform}>
-                          <path d={HAND_MARK.d} fill="currentColor" />
-                        </g>
-                      </svg>
+                      {/* red hand on a beige disc: the drawer is white, and
+                          red-on-white is not an approved lockup */}
+                      <span className="f-empty__disc">
+                        <svg viewBox="180 100 700 900" className="f-empty__glyph" aria-hidden>
+                          <g transform={HAND_MARK.transform}>
+                            <path d={HAND_MARK.d} fill="currentColor" />
+                          </g>
+                        </svg>
+                      </span>
                       <p className="f-empty__text">
                         Nothing here yet. Browse the menu, or tell the assistant what you&apos;re craving.
                       </p>
@@ -159,7 +186,7 @@ export function CartDrawer() {
                                   <button
                                     onClick={() => editLine(l)}
                                     aria-label={`Edit ${l.name}`}
-                                    className="f-btn f-btn--quiet f-btn--sm h-auto px-0 text-xs"
+                                    className="f-btn f-btn--quiet"
                                   >
                                     Edit
                                   </button>
@@ -195,16 +222,16 @@ export function CartDrawer() {
                   <footer className="f-drawer__foot">
                     {/* free-delivery progress: a genuine nudge, not decoration */}
                     <div className="mb-4">
-                      <p className="text-sm font-semibold text-ink-900">
+                      <p className="text-sm font-medium text-ink-900">
                         {freeIn === 0 ? (
-                          <span className="font-bold text-red">Free delivery unlocked.</span>
+                          <span className="font-semibold text-red">Free delivery unlocked.</span>
                         ) : (
                           <>
-                            <span className="font-bold text-red">{formatPKR(freeIn)}</span> away from free delivery
+                            <span className="font-semibold text-red">{formatPKR(freeIn)}</span> away from free delivery
                           </>
                         )}
                       </p>
-                      <div className="f-progress">
+                      <div className="f-progress mt-2">
                         <motion.div
                           className="f-progress__fill"
                           initial={false}
@@ -213,7 +240,8 @@ export function CartDrawer() {
                         />
                       </div>
                     </div>
-                    <dl className="f-summary mt-4">
+                    <p className="f-summary__title mt-4">Cart total</p>
+                    <dl className="f-summary">
                       <div className="f-summary__row is-total">
                         <dt>Subtotal</dt>
                         <dd>{formatPKR(cart.subtotal)}</dd>
@@ -224,15 +252,12 @@ export function CartDrawer() {
                         ? "Free delivery on this order · tax added at checkout."
                         : `Delivery ${formatPKR(DELIVERY_FEE)} (free over ${formatPKR(FREE_DELIVERY_ABOVE)}) · tax added at checkout.`}
                     </p>
-                    <button
-                      onClick={startCheckout}
-                      className="f-btn f-btn--primary f-btn--lg f-btn--block mt-4"
-                    >
+                    <PillCta onClick={startCheckout} size="lg" block className="mt-4">
                       Checkout · {cart.itemCount} item{cart.itemCount === 1 ? "" : "s"}
-                    </button>
+                    </PillCta>
                     {!kitchenOpen && (
-                      <p className="mt-3 text-center text-xs font-semibold text-ink-600">
-                        We open at 1:00 pm — you can build your order now and place it then.
+                      <p className="mt-3 text-center text-xs font-medium text-ink-600">
+                        We open at {OPENS_LABEL} — you can build your order now and place it then.
                       </p>
                     )}
                   </footer>

@@ -247,13 +247,13 @@ export function ChatDock() {
             exit={reduce ? { opacity: 0 } : { opacity: 0, y: 24, scale: 0.96 }}
             transition={{ type: "spring", stiffness: 320, damping: 28 }}
           >
-            <header className="f-dock__head flex items-center gap-3 px-5 py-4">
-              <span className="font-display flex h-9 w-9 items-center justify-center rounded-full bg-cream text-sm text-red">
+            <header className="f-dock__head on-red flex items-center gap-3 px-5 py-4">
+              <span className="f-tag f-tag--count h-9 w-9 text-sm" aria-hidden>
                 4
               </span>
               <div className="flex-1">
-                <p className="text-sm font-bold leading-tight">FOUR Assistant</p>
-                <p className="text-xs leading-tight opacity-80">
+                <p className="font-display text-base uppercase leading-tight">FOUR Assistant</p>
+                <p className="text-xs leading-tight text-white/80">
                   {mode === "voice"
                     ? voice.status === "live"
                       ? voice.listening
@@ -268,22 +268,26 @@ export function ChatDock() {
                 </p>
               </div>
               {voiceEnabled && (
-                <div className="flex rounded-full bg-red-press/60 p-1 text-xs font-semibold">
+                <div className="f-tabbar f-tabbar--on-red" role="group" aria-label="Assistant mode">
                   <button
+                    type="button"
                     onClick={() => {
                       setMode("chat");
                       voice.stop();
                     }}
-                    className={`rounded-full px-3 py-1 transition ${mode === "chat" ? "bg-cream text-red" : "text-white/80"}`}
+                    aria-pressed={mode === "chat"}
+                    className={`f-tab ${mode === "chat" ? "is-active" : ""}`}
                   >
                     Chat
                   </button>
                   <button
+                    type="button"
                     onClick={() => {
                       setMode("voice");
                       void voice.start();
                     }}
-                    className={`rounded-full px-3 py-1 transition ${mode === "voice" ? "bg-cream text-red" : "text-white/80"}`}
+                    aria-pressed={mode === "voice"}
+                    className={`f-tab ${mode === "voice" ? "is-active" : ""}`}
                   >
                     Voice
                   </button>
@@ -303,9 +307,7 @@ export function ChatDock() {
                           {t.tools.map((tool, i) => (
                             <span
                               key={i}
-                              className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${
-                                tool.state === "error" ? "bg-red/15 text-red" : "bg-beige-deep text-ink-600"
-                              }`}
+                              className={`f-toolchip ${tool.state === "error" ? "f-toolchip--error" : ""}`}
                             >
                               {tool.state === "running" ? `${tool.label}...` : tool.label}
                             </span>
@@ -314,9 +316,7 @@ export function ChatDock() {
                       )}
                       {(t.content || t.streaming) && (
                         <div
-                          className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
-                            t.role === "user" ? "rounded-br-md bg-red text-white" : "rounded-bl-md bg-beige-deep text-ink-900"
-                          }`}
+                          className={`f-bubble ${t.role === "user" ? "f-bubble--user" : "f-bubble--bot"}`}
                         >
                           {t.content}
                           {t.streaming && <span className="ml-0.5 inline-block h-3 w-1.5 animate-pulse bg-red align-middle" />}
@@ -332,9 +332,7 @@ export function ChatDock() {
                       type="button"
                       onClick={speech.status === "listening" ? speech.stopListening : speech.listen}
                       aria-label={speech.status === "listening" ? "Stop listening" : "Order by voice"}
-                      className={`relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition active:scale-90 ${
-                        speech.status === "listening" ? "bg-red text-white" : "bg-beige-deep text-ink-900 hover:text-red"
-                      }`}
+                      className={`f-iconbtn f-iconbtn--md relative ${speech.status === "listening" ? "" : "f-iconbtn--cream"}`}
                     >
                       {speech.status === "listening" && !reduce && (
                         <motion.span
@@ -354,12 +352,12 @@ export function ChatDock() {
                     onChange={(e) => setInput(e.target.value)}
                     placeholder={speech.status === "listening" ? (speech.interim || "Listening...") : "Type your order..."}
                     aria-label="Message the assistant"
-                    className="h-11 flex-1 rounded-full border border-rule bg-cream px-4 text-sm text-ink-900 outline-none transition focus:border-red focus:ring-2 focus:ring-red/30"
+                    className="f-input f-input--pill h-11 flex-1 text-sm"
                   />
                   <button
                     type="submit"
                     aria-label="Send"
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red text-white transition hover:bg-red-press active:scale-90"
+                    className="f-iconbtn f-iconbtn--md"
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
                       <path d="M3 12L21 3l-4 18-5.5-6.5L3 12Z" fill="currentColor" />
@@ -386,35 +384,33 @@ function VoicePanel({ voice }: { voice: ReturnType<typeof useRealtimeVoice> }) {
       <div className="flex items-center justify-center py-6">
         <div
           className={`relative flex h-24 w-24 items-center justify-center rounded-full transition-colors ${
-            voice.status === "live" ? "bg-red" : "bg-beige-deep"
+            voice.status === "live" ? "bg-red text-white" : "bg-cream text-red"
           }`}
           style={{ transform: `scale(${1 + voice.level * 0.25})` }}
         >
           {voice.status === "live" && (
             <span className="absolute inset-0 animate-ping rounded-full bg-red/30" aria-hidden />
           )}
-          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" className="relative text-white" aria-hidden>
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" className="relative" aria-hidden>
             <rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor" />
             <path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           </svg>
         </div>
       </div>
 
-      {voice.error && <p className="px-5 pb-2 text-center text-sm font-medium text-red">{voice.error}</p>}
+      {voice.error && <p className="px-5 pb-2 text-center text-sm font-medium text-error">{voice.error}</p>}
 
       <div ref={scrollRef} className="flex-1 space-y-2 overflow-y-auto px-4 pb-3">
         {voice.turns.map((t) => (
           <div
             key={t.id}
-            className={`max-w-[88%] rounded-2xl px-4 py-2 text-sm leading-relaxed ${
-              t.role === "user" ? "ml-auto rounded-br-md bg-red text-white" : "rounded-bl-md bg-beige-deep text-ink-900"
-            }`}
+            className={`f-bubble ${t.role === "user" ? "f-bubble--user" : "f-bubble--bot"}`}
           >
             {t.text}
           </div>
         ))}
         {voice.tools.slice(-3).map((t) => (
-          <span key={t.id} className="mr-1.5 inline-block rounded-full bg-beige-deep px-2.5 py-1 text-[11px] font-medium text-ink-600">
+          <span key={t.id} className="f-toolchip mr-1.5">
             {t.status === "running" ? `${t.label}...` : t.label}
           </span>
         ))}
@@ -424,14 +420,14 @@ function VoicePanel({ voice }: { voice: ReturnType<typeof useRealtimeVoice> }) {
         {voice.status === "live" || voice.status === "connecting" ? (
           <button
             onClick={voice.stop}
-            className="f-btn f-btn--outline f-btn--md"
+            className="f-btn f-btn--outline f-btn--sm"
           >
             End voice session
           </button>
         ) : (
           <button
             onClick={() => void voice.start()}
-            className="f-btn f-btn--primary f-btn--md"
+            className="f-btn f-btn--red f-btn--sm"
           >
             Start talking
           </button>

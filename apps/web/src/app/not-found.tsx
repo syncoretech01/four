@@ -1,27 +1,34 @@
 import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/sections/Footer";
-import { HAND_MARK } from "@/components/hero/logoPaths";
+import { StickerTag } from "@/components/ds/StickerTag";
+import { PillCta } from "@/components/ds/PillCta";
 
 export default function NotFound() {
   return (
     <>
       <Nav />
-      <main id="main" className="mx-auto flex min-h-[calc(100dvh-var(--bar-h))] max-w-7xl items-center justify-center px-4 pb-16 pt-[calc(var(--bar-h)+2rem)] sm:px-6">
+      <main id="main" className="flex min-h-[calc(100dvh-var(--bar-h))] items-center justify-center bg-white px-4 pb-16 pt-[var(--bar-h)] sm:px-6">
         <div className="f-empty max-w-xl">
-          <svg viewBox="180 100 700 900" className="f-empty__glyph text-red" aria-hidden>
-            <g transform={HAND_MARK.transform}>
-              <path d={HAND_MARK.d} fill="currentColor" />
-            </g>
-          </svg>
-          <h1 className="f-heading f-heading--lg">Lost the sauce</h1>
+          <div className="relative inline-block">
+            <StickerTag tilt="left" className="absolute -left-6 -top-3">
+              Oops
+            </StickerTag>
+            <p className="font-display text-[clamp(120px,22vw,220px)] leading-none text-red" aria-hidden>
+              4<span className="text-pink">0</span>4
+            </p>
+            <StickerTag tone="pink" tilt="right" className="absolute -right-8 bottom-2">
+              Lost the sauce
+            </StickerTag>
+          </div>
+          <h1 className="f-heading f-heading--sm">Page Not Found</h1>
           <p className="f-empty__text">That page doesn&apos;t exist — the food definitely does.</p>
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <Link href="/menu" className="f-btn f-btn--primary f-btn--md">
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <PillCta href="/" tone="red">
+              Back to home
+            </PillCta>
+            <Link href="/menu" className="f-btn f-btn--quiet">
               See the menu
-            </Link>
-            <Link href="/" className="f-btn f-btn--quiet f-btn--sm">
-              Back home
             </Link>
           </div>
         </div>

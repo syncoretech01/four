@@ -6,6 +6,7 @@ import { Footer } from "@/components/sections/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { ChatDock } from "@/components/chat/ChatDock";
 import { LocationGate } from "@/components/LocationModal";
+import { PageTitleBand } from "@/components/ds/PageTitleBand";
 
 export const metadata: Metadata = {
   title: "Locations & Delivery Areas",
@@ -45,14 +46,17 @@ export default function LocationsPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(branchesJsonLd) }} />
       <Nav />
       <main id="main">
-        <header className="wrap pb-12 pt-[calc(var(--bar-h)+2rem)]">
-          <p className="f-eyebrow">Find us</p>
-          <h1 className="f-heading f-heading--xl">Three Kitchens. One City.</h1>
-          <p className="f-lede">
-            FOUR cooks in three Lahore kitchens and delivers to {LAHORE_AREAS.length} areas across the city.{" "}
-            {HOURS_LABEL}, every branch.
-          </p>
-        </header>
+        <PageTitleBand
+          title="Locations"
+          tag="Find us"
+          tag2={`${LAHORE_AREAS.length} areas`}
+          lede={
+            <>
+              FOUR cooks in {BRANCHES.length} Lahore kitchens and delivers to {LAHORE_AREAS.length} areas across the city.{" "}
+              {HOURS_LABEL}, every branch.
+            </>
+          }
+        />
         <LocationsExplorer />
       </main>
       <Footer />

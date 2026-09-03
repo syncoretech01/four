@@ -18,6 +18,10 @@ import { Footer } from "@/components/sections/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { ChatDock } from "@/components/chat/ChatDock";
 import { LocationGate } from "@/components/LocationModal";
+import { PageTitleBand } from "@/components/ds/PageTitleBand";
+import { SectionHeader } from "@/components/ds/SectionHeader";
+import { PillCta } from "@/components/ds/PillCta";
+import { DoodleBackdrop } from "@/components/ds/DoodleBackdrop";
 
 export const metadata: Metadata = {
   title: "Support & FAQs",
@@ -131,40 +135,41 @@ export default function SupportPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <Nav />
       <main id="main">
-        {/* ── Hero ── */}
-        <header className="wrap pt-[calc(var(--bar-h)+2rem)]">
-          <p className="f-eyebrow">Support</p>
-          <h1 className="f-heading f-heading--xl">How Can We Help?</h1>
-          <p className="f-lede">Most answers are below. For anything about a live order, call us — it&apos;s faster.</p>
-        </header>
+        {/* ── Title band ── */}
+        <PageTitleBand
+          title="Support"
+          tag="FAQs"
+          tag2="Call us"
+          lede="Most answers are below. For anything about a live order, call us — it's faster."
+        />
 
         {/* ── Contact cards ── */}
-        <div className="wrap pt-10">
-          <div className="grid gap-6 sm:grid-cols-3">
+        <div className="wrap pt-12">
+          <div className="grid gap-5 sm:grid-cols-3">
             <div className="f-card f-card--pad">
-              <p className="f-eyebrow mb-2">Call us</p>
-              <a href={BRAND.phoneHref} className="font-display text-3xl text-red">
+              <p className="f-field__label">Call us</p>
+              <a href={BRAND.phoneHref} className="mt-3 block font-display text-3xl uppercase text-red hover:text-red-press">
                 {BRAND.phone}
               </a>
               <p className="mt-2 text-sm text-ink-600">{HOURS_LABEL}. For live orders, changes and cancellations.</p>
             </div>
             <div className="f-card f-card--pad">
-              <p className="f-eyebrow mb-2">DM us</p>
+              <p className="f-field__label">DM us</p>
               <a
                 href={BRAND.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-display text-3xl text-red"
+                className="mt-3 block break-all font-display text-3xl uppercase text-red hover:text-red-press"
               >
                 {BRAND.instagramHandle}
               </a>
               <p className="mt-2 text-sm text-ink-600">For everything that isn&apos;t a live order.</p>
             </div>
             <div className="f-card f-card--pad">
-              <p className="f-eyebrow mb-2">Walk in</p>
-              <p className="font-display text-3xl uppercase text-ink-900">{BRANCHES.length} branches</p>
+              <p className="f-field__label">Walk in</p>
+              <p className="mt-3 font-display text-3xl uppercase text-red">{BRANCHES.length} branches</p>
               <p className="mt-2 text-sm text-ink-600">Across Lahore, {HOURS_LABEL.toLowerCase()}.</p>
-              <Link href="/locations" className="f-btn f-btn--secondary f-btn--sm mt-4">
+              <Link href="/locations" className="f-btn f-btn--outline f-btn--sm mt-4">
                 Find a branch
               </Link>
             </div>
@@ -175,29 +180,22 @@ export default function SupportPage() {
         <div className="wrap band">
           <div className="grid gap-10 lg:grid-cols-[16rem_1fr]">
             <div>
-              <p className="f-eyebrow">FAQs</p>
-              <h2 className="f-heading f-heading--md">Quick answers</h2>
+              <SectionHeader as="h2" size="md" title="Quick Answers" highlight="Quick" tag="FAQs" />
             </div>
             <div className="grid gap-8">
               {FAQ_GROUPS.map((g) => (
                 <section key={g.group}>
-                  <h3 className="text-xs font-extrabold uppercase tracking-[0.16em] text-ink-600">{g.group}</h3>
+                  <h3 className="text-xs font-bold uppercase tracking-[.16em] text-ink-600">{g.group}</h3>
                   <div className="mt-3 grid gap-3">
                     {g.faqs.map((f) => (
-                      <details
-                        key={f.q}
-                        className="group rounded-card border border-rule bg-white"
-                      >
-                        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 font-bold text-ink-900 [&::-webkit-details-marker]:hidden">
+                      <details key={f.q} className="f-faq">
+                        <summary className="[&::-webkit-details-marker]:hidden">
                           {f.q}
-                          <span
-                            aria-hidden
-                            className="shrink-0 font-display text-2xl leading-none text-red transition-transform group-open:rotate-45"
-                          >
+                          <span aria-hidden className="f-faq__plus font-display text-2xl leading-none">
                             +
                           </span>
                         </summary>
-                        <p className="px-5 pb-5 text-sm leading-relaxed text-ink-600">{f.a}</p>
+                        <p className="f-faq__body">{f.a}</p>
                       </details>
                     ))}
                   </div>
@@ -209,16 +207,19 @@ export default function SupportPage() {
 
         {/* ── Closing strip ── */}
         <div className="wrap pb-24">
-          <div className="f-card f-card--accent f-card--pad-lg flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <p className="f-heading f-heading--md">Still stuck?</p>
-              <p className="mt-1 text-sm font-semibold">
-                {BRAND.phone} — {HOURS_LABEL.toLowerCase()}.
-              </p>
+          <div className="f-card f-card--inverse f-card--pad-lg relative isolate rounded-[20px]">
+            <DoodleBackdrop />
+            <div className="relative z-[1] flex flex-wrap items-center justify-between gap-6">
+              <div>
+                <p className="f-heading f-heading--md">Still stuck?</p>
+                <p className="mt-2 text-sm font-medium text-white/80">
+                  {BRAND.phone} — {HOURS_LABEL.toLowerCase()}.
+                </p>
+              </div>
+              <PillCta href={BRAND.phoneHref} external arrow={false}>
+                Call us now
+              </PillCta>
             </div>
-            <a href={BRAND.phoneHref} className="f-btn f-btn--cream f-btn--md">
-              Call us now
-            </a>
           </div>
         </div>
       </main>
