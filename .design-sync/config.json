@@ -22,17 +22,26 @@
     "RotatingSeal": "../../apps/web/src/components/hero/RotatingSeal.tsx",
     "CraftStory": "../../apps/web/src/components/sections/CraftStory.tsx",
     "WorldFlavours": "../../apps/web/src/components/sections/WorldFlavours.tsx",
-    "DealsBand": "../../apps/web/src/components/sections/DealsBand.tsx"
+    "DealsBand": "../../apps/web/src/components/sections/DealsBand.tsx",
+    "StickerTag": "../../apps/web/src/components/ds/StickerTag.tsx",
+    "SectionHeader": "../../apps/web/src/components/ds/SectionHeader.tsx",
+    "PillCta": "../../apps/web/src/components/ds/PillCta.tsx",
+    "PriceTag": "../../apps/web/src/components/ds/PriceTag.tsx",
+    "DoodleBackdrop": "../../apps/web/src/components/ds/DoodleBackdrop.tsx",
+    "PageTitleBand": "../../apps/web/src/components/ds/PageTitleBand.tsx",
+    "Ticker": "../../apps/web/src/components/ds/Ticker.tsx",
+    "Reveal": "../../apps/web/src/components/ds/Reveal.tsx",
+    "PhotoStrip": "../../apps/web/src/components/hero/PhotoStrip.tsx"
   },
   "buildCmd": "sh .design-sync/prepare.sh",
   "overrides": {
     "LogoHero": {
       "cardMode": "single",
-      "viewport": "1200x820"
+      "viewport": "1200x1400"
     },
     "Footer": {
       "cardMode": "single",
-      "viewport": "1200x400"
+      "viewport": "1200x900"
     },
     "Marquee": {
       "cardMode": "column"
@@ -48,6 +57,18 @@
     "DealsBand": {
       "cardMode": "single",
       "viewport": "1200x900"
+    },
+    "PageTitleBand": {
+      "cardMode": "single",
+      "viewport": "1200x520"
+    },
+    "PhotoStrip": {
+      "cardMode": "single",
+      "viewport": "1200x520"
+    },
+    "Ticker": {
+      "cardMode": "single",
+      "viewport": "1200x360"
     }
   },
   "readmeHeader": ".design-sync/conventions.md"

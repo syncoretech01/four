@@ -1,100 +1,141 @@
 ## Building with FOUR
 
-FOUR is a Lahore burger restaurant's storefront: a warm beige ground, one loud
-red accent, rounded Fredoka display type over Poppins body copy. Nine components
-ship. Six are whole page sections that take no props at all - `LogoHero`,
-`Marquee`, `Story`, `HypeBand`, `Visit`, `Footer`, in that order down the page.
-Three are brand primitives you compose with: `BrandLogo`, `SmartImage` and
-`RotatingSeal`.
+FOUR is a Lahore smash-burger and crown-crust-pizza storefront. Its v3 design
+language is the cloud-kitchen look with FOUR's brand: flat solid colour blocks
+(brand red, white, cream, beige) with two playful accents (yellow, pink), 1px
+rules at 14% red, 10px cards and 20px panels, yellow pill CTAs with a separate
+arrow circle, rotated sticker tags, Anton display caps over DM Sans body copy.
+Eighteen components ship: the composable primitives `StickerTag`,
+`SectionHeader` (with `Hi` for the highlighted word), `PillCta`, `PriceTag`,
+`DoodleBackdrop`, `PageTitleBand`, `Ticker`, `Reveal`, `BrandLogo`,
+`SmartImage`, `RotatingSeal`, `PhotoStrip`; and the storefront sections
+`LogoHero`, `CraftStory`, `WorldFlavours`, `DealsBand`, `Footer` (`Marquee`
+is an alias of `Ticker`).
 
 ### Setup
 
 There is no provider, no theme object and no context to wire — components are
 plain exports that style themselves from `styles.css`. Import it and render.
 
-The page ground is part of the design: `styles.css` sets `body` to
-`var(--color-beige)` in Poppins. Keep your own wrappers on `bg-beige` or
-`bg-cream` — the sections are built to sit on that ground, and several use
-translucent hairlines (`border-ink/10`) that only read against it. Add the
-`grain` class to a page wrapper for the storefront's fixed film-grain overlay.
+The page ground is white in DM Sans. Sections alternate white, cream
+(`on-cream`) and red (`on-red`) bands; every inner page opens with a red
+`PageTitleBand`. Never stack two red blocks - put a white or cream section
+between them.
+
+### Ground contexts
+
+Colour is set by the ground, never per element. Put one of these on a section
+or card and headings, the highlight word, body copy, rules and focus rings
+recolour themselves:
+
+| Class | Ground | Heading / highlight |
+|---|---|---|
+| (none) | white | red / pink |
+| `on-cream` | cream `#F7F2E6` | red / pink |
+| `on-red` | brand red `#9D1D20` | white / yellow |
+| `on-yellow` | yellow `#FFD23F` | red / red |
+| `on-beige` | brand beige `#E9DCC5` | red / pink |
+| `on-photo` | a photo under a red overlay (`<img>` first child) | white / yellow |
+
+A section with a `DoodleBackdrop` needs `relative isolate` and its content
+`relative z-[1]`.
 
 ### The styling idiom
 
-Tailwind v4 utilities against a custom theme. No CSS modules, no style props —
-only `BrandLogo` and `SmartImage` take a `className`, and for them it carries
-size and colour. Everything else you build with these families:
+Tailwind v4 utilities against a custom theme, plus the `f-*` component classes
+in `styles.css`. No CSS modules, no style props. Families you can use:
 
 | Family | Names |
 |---|---|
-| Colour | `beige` `beige-deep` `cream` `red` `red-deep` `ink` `ink-soft` |
-| Applied as | `bg-*` `text-*` `border-*`, each with alpha steps: `border-ink/10`, `bg-beige/85`, `text-cream/70`, `bg-red/40` |
-| Type | `font-display` (Fredoka) for headlines; body text inherits Poppins. `text-xs`…`text-7xl`, `font-normal`…`font-bold` |
-| Radius | `rounded-card` (1.25rem) for panels and image tiles, `rounded-full` for buttons |
-| Motion | `animate-marquee`, `animate-marquee-reverse`, `animate-spin-slow`, `animate-float` - pair with `motion-safe:` |
-| Layout | the usual spacing, `grid-cols-*`, `col-span-*`, flex and `max-w-*` utilities, with `sm:` `md:` `lg:` variants |
+| Colour | `white` `cream` `beige` `beige-deep` `red` `red-hover` `red-press` `yellow` `yellow-deep` `pink` `ink-900` `ink-600` `ink-400` `rule` `rule-white` |
+| Applied as | `bg-*` `text-*` `border-*`, each with alpha steps: `border-rule`, `bg-white/10`, `text-white/80` |
+| Type | `font-display` (Anton, one weight - never add `font-bold` to it) for headings, tags, prices, pills; body text inherits DM Sans. `text-xs`…`text-7xl`, `font-normal`…`font-bold` on body copy only |
+| Radius | `rounded-card` (10px) for cards, inputs and thumbs; `rounded-panel` / `rounded-[20px]` for panels, photo blocks and modals; `rounded-full` for pills and circles |
+| Rules | `border border-rule` on light grounds, `border border-rule-white` on red; nothing thicker than 1px, no outlines, no offset shadows |
+| Motion | `animate-marquee`, `animate-marquee-reverse`, `animate-spin-slow` - pair with `motion-safe:` |
+| Layout | `wrap` (1320px column), `band` (65-130px section padding), the usual spacing, `grid-cols-*`, flex and `max-w-*` utilities with `sm:` `md:` `lg:` variants |
 
-**These seven colours are the entire palette.** `bg-primary`, `bg-red-500` and
-the rest of Tailwind's default palette are not in this theme and resolve to
-nothing — a design that uses them renders unstyled, with no error. The same is
-true of any utility outside the families above: designs render as static CSS
-with no Tailwind at build time, so if it is not in `styles.css` it does nothing.
-When in doubt, grep the stylesheet before inventing a class.
+**These colours are the entire palette.** `bg-primary`, `bg-red-500` and the
+rest of Tailwind's default palette resolve to nothing - designs render as
+static CSS with no Tailwind at build time, so a class absent from `styles.css`
+does nothing. Grep the stylesheet before inventing a class.
 
-Two idioms worth copying verbatim. The primary button:
+Idioms worth copying verbatim:
 
-```
-rounded-full bg-red px-8 py-4 font-semibold text-cream transition hover:bg-red-deep active:scale-[0.98]
-```
+- Primary CTA: `<PillCta href="/menu">Order now</PillCta>` (or the raw classes
+  `f-btn f-btn--primary f-btn--md`). Red pills (`tone="red"`) are only for
+  transactional submits - place order, pay, verify a code.
+- Section header: `<SectionHeader title="What are you craving?" highlight="craving" tag="The menu" tag2="11 categories" lede="..." />`
+  - exactly one highlighted word, one yellow sticker top-left, one pink bottom-right.
+- Dish card anatomy: `f-item` > `f-item__media` (+ `f-tag f-tag--card`),
+  `f-item__body` (`f-item__name`, `f-item__desc`), `f-item__foot`
+  (`f-btn f-btn--secondary f-btn--sm` + `<PriceTag/>`).
 
-and every link: `transition hover:text-red`.
+### Brand rules
+
+The wordmark (`BrandLogo`) and the hand mark appear only as red on beige or
+white on red. Never on white, cream, yellow or pink; never stroked, rotated or
+recoloured; never redrawn. Pink is decorative only - stickers and the
+highlight word in display titles - and never carries information below 24px.
+Every number on the page (prices, hours, fees, counts) comes from
+`@four/shared`; nothing is typed in, and nothing fabricates reviews or counts.
 
 ### Where the truth is
 
 - **`styles.css`** (bound alongside this README, with its imports) — the
-  compiled theme, the `@font-face` rules for Fredoka and Poppins, and the
-  definitive list of every utility that exists. Read it before styling.
+  compiled theme, the `@font-face` rules for Anton and DM Sans, and the
+  definitive list of every utility and `f-*` class that exists.
 - **`components/<group>/<Name>/<Name>.prompt.md`** — per-component usage. Read
-  `LogoHero` and `Story` before using them: both reference storefront-owned
-  photography by absolute path, which will not resolve in a design.
+  `LogoHero`, `PhotoStrip` and `DoodleBackdrop` before using them: they
+  reference storefront-owned assets that will not resolve in a design and
+  degrade to beige tiles / solid bands by design.
 
 ### A page
 
 ```jsx
-<div className="grain min-h-screen bg-beige">
+<div className="min-h-screen bg-white">
   <LogoHero />
-  <Marquee />
-  <Story />
-  <HypeBand />
 
-  <section className="mx-auto max-w-7xl px-4 py-24">
-    <h2 className="font-display text-4xl font-semibold text-ink">Today's specials</h2>
-    <p className="mt-4 max-w-[52ch] text-lg leading-relaxed text-ink-soft">
-      Smashed to order, every batch from scratch.
-    </p>
-    <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-      {items.map((item) => (
-        <SmartImage
-          key={item.name}
-          src={item.photo}
-          alt={item.name}
-          fallbackLabel={item.name}
-          className="aspect-[3/4] w-full rounded-card object-cover"
-        />
-      ))}
+  <section className="band">
+    <div className="wrap">
+      <SectionHeader title="Today's specials" highlight="specials" tag="Best sellers" tag2="Order now" />
+      <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {items.map((item) => (
+          <article key={item.name} className="f-item">
+            <div className="f-item__media">
+              <SmartImage src={item.photo} alt={item.name} fallbackLabel={item.name} className="h-full w-full" />
+              <StickerTag card className="absolute left-5 top-5">Best seller</StickerTag>
+            </div>
+            <div className="f-item__body">
+              <h3 className="f-item__name">{item.name}</h3>
+              <p className="f-item__desc">{item.description}</p>
+            </div>
+            <div className="f-item__foot">
+              <span className="f-btn f-btn--secondary f-btn--sm">Order now</span>
+              <PriceTag price={item.price} />
+            </div>
+          </article>
+        ))}
+      </div>
     </div>
   </section>
 
-  <Visit />
+  <CraftStory />
+  <section className="on-red band relative isolate">
+    <DoodleBackdrop />
+    <div className="wrap relative z-[1]">
+      <SectionHeader align="center" title="The hits Lahore keeps reordering" highlight="reordering" tag="Best sellers" />
+    </div>
+  </section>
+  <DealsBand />
   <Footer />
 </div>
 ```
 
-`LogoHero`, `Marquee`, `Story`, `HypeBand`, `Visit` and `Footer` are the
-storefront's real sections in their real order — full-bleed, no props, no
-wrappers with horizontal padding. `Marquee` and `HypeBand` are both full-bleed
-red, so keep something on the beige ground between them or the page loses its
-rhythm.
+`LogoHero`, `CraftStory`, `WorldFlavours`, `DealsBand` and `Footer` are the
+storefront's real sections in their real order - full-bleed, no props (except
+`LogoHero`'s optional `onFindMe`), no wrappers with horizontal padding.
 
-Build anything new from `SmartImage`, `BrandLogo`, `RotatingSeal` and the
-utilities above, and prefer `SmartImage` over a bare `<img>` anywhere a photo
-might be missing: it degrades to a branded tile instead of a hole in the layout.
+Build anything new from the primitives and the utilities above, and prefer
+`SmartImage` over a bare `<img>` anywhere a photo might be missing: it degrades
+to a branded tile instead of a hole in the layout.

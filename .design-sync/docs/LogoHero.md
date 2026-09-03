@@ -4,47 +4,40 @@ category: Hero
 
 # LogoHero
 
-The storefront's signature hero. The FOUR wordmark assembles itself - each
-letter's outline draws in via `pathLength`, the red fill floods after it, and
-the settled mark stays cursor-reactive, springs tilting it in 3D while each
-letter parallaxes by its own depth. Around it: a soft colour-blocked red bloom
-so the ground is never a flat beige void, a live open/closed status pill, the
-hero food shot with a floating hand sticker and a `RotatingSeal`, and two
-magnetic call-to-action buttons that lean toward the pointer.
-
-Takes no props. It is a whole page section - full width,
-`min-h-[calc(100dvh-4rem)]`, with `pt-16` reserving space for the fixed
-storefront header. Place it first on a page, above `Marquee`, at full width.
+The storefront's v3 hero: a solid red type block, then the four-photo strip
+that hangs into the white section below. On the red: a proof row of real facts
+(kitchen count, live open/closed state, the free-delivery threshold), the Anton
+headline with one yellow highlighted word and two stickers, a one-line lede,
+and two pill CTAs - "Order now" and "Do you deliver to me?".
 
 ```jsx
 <LogoHero />
-<Marquee />
 ```
 
 ## What it renders
 
-A two-column grid (single column below `lg`): the status pill, animated
-wordmark, tagline and CTA pair on the left; the hero food photo with its sticker
-and seal on the right.
+A `section.f-hero.on-red` (full width, padding reserving space for the fixed
+promo strip + bar) followed by `PhotoStrip`. Everything centred; the strip is
+four rounded 4:5 tiles (2x2 below 768px) with the negative margin that makes it
+straddle the red/white edge.
 
-The pill reads its own state - it calls `isOpenAt()` from the shared package on
-mount, so it shows "Open now · delivering till 3am" or "Opens 1pm · order
-ahead" depending on when the page is viewed. Nothing to pass in, but note that
-the card and a live design can legitimately differ here.
+The proof row reads the clock (`useKitchenOpen()`), so it shows "Open now ·
+till 3am" or "Opens 1pm · order ahead" depending on when it is viewed; a card
+and a live design can legitimately differ there.
 
 ## Two things to know before using it
 
-**It hardcodes its photograph.** The hero image is a raw `<img>` pointing at
-`/gallery/gallery-3.jpg` - an asset owned by the storefront, not by this design
-system, and unlike `SmartImage` it has no fallback. Inside a design canvas that
-path does not resolve and the photo area comes up empty. Treat `LogoHero` as the
-real storefront hero rather than a reusable hero shell; for a hero with your own
-imagery, compose one from `BrandLogo`, `SmartImage` and `RotatingSeal`.
+**Its photographs are storefront assets.** The strip points `SmartImage` at
+`/hero/strip-*.jpg`, which does not resolve inside a design canvas, so each
+tile shows the beige fallback tile. That is the designed degradation, not a
+missing asset.
 
-**Its entrance is time-based.** The letter fills stay at `opacity: 0` for 1.6s
-before the mark settles. Under `prefers-reduced-motion: reduce` it skips
-straight to the settled state, which is what the preview card shows.
+**It stays store-free.** "Do you deliver to me?" clicks the storefront nav's
+`header [data-open-location]` pill instead of calling the app store, so it
+renders standalone. Pass `onFindMe` to wire it to your own handler.
 
 ## Props
 
-None.
+| Prop | Type | Default |
+|---|---|---|
+| `onFindMe` | `() => void` | clicks `header [data-open-location]` |

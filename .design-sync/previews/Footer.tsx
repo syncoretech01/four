@@ -1,8 +1,8 @@
 import { Footer } from "@four/ui";
 
-/** The page footer as it sits at the bottom of the storefront. */
+/** The page footer: link strip, the ticker, four widgets of real data, bottom bar. */
 export const Default = () => (
-  <div className="bg-beige pt-10">
+  <div className="bg-white pt-10">
     <Footer />
   </div>
 );

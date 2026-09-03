@@ -1,16 +1,16 @@
 import { LogoHero } from "@four/ui";
 
 /**
- * The whole storefront hero, at the width it is designed for. Shown in its
- * settled state - the preview provider forces reduced motion, so the letter
- * fills are at full opacity rather than mid-draw.
- *
- * The photo panel on the right is empty on purpose: LogoHero hardcodes
- * <img src="/gallery/gallery-3.jpg">, a storefront-owned asset with no
- * fallback, and that path does not resolve outside the app.
+ * The whole v3 hero: the red type block (proof row, Anton headline with the
+ * yellow highlight and two stickers, lede, pill CTAs) and the four-photo
+ * strip that hangs into the white section below. The strip's photos are
+ * storefront-owned /hero/strip-*.jpg paths that do not resolve inside a
+ * design, so each tile falls back to SmartImage's beige tile - the designed
+ * degradation, not a missing asset. Reduced motion is forced by the preview
+ * provider, so the staggered reveals are shown settled.
  */
 export const Default = () => (
-  <div className="bg-beige">
+  <div className="bg-white">
     <LogoHero />
   </div>
 );

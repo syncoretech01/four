@@ -9,8 +9,8 @@ const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 
 const FAMILIES = [
-  { family: "Fredoka", weights: [500, 600, 700] },
-  { family: "Poppins", weights: [400, 500, 600, 700] },
+  { family: "Anton", weights: [400] },
+  { family: "DM+Sans", weights: [400, 500, 600, 700] },
 ];
 
 const KEEP = new Set(["latin", "latin-ext"]);
@@ -40,7 +40,7 @@ for (const { family, weights } of FAMILIES) {
     const weight = /font-weight:\s*(\d+)/.exec(rule)?.[1] ?? "400";
     const src = /url\((https:[^)]+\.woff2)\)/.exec(rule)?.[1];
     if (!src) continue;
-    const name = `${family}-${weight}-${subset}.woff2`;
+    const name = `${family.replace(/\+/g, "")}-${weight}-${subset}.woff2`;
     const bin = await fetch(src, { headers: { "User-Agent": UA } });
     if (!bin.ok) throw new Error(`${name}: ${bin.status}`);
     await writeFile(join(OUT, name), Buffer.from(await bin.arrayBuffer()));
@@ -51,7 +51,7 @@ for (const { family, weights } of FAMILIES) {
 
 await writeFile(
   join(OUT, "brand-fonts.css"),
-  `/* FOUR brand faces - Fredoka (display) and Poppins (body), SIL OFL 1.1.\n` +
+  `/* FOUR brand faces - Anton (display) and DM Sans (body), SIL OFL 1.1.\n` +
     `   The app serves these through next/font; the DS bundle ships them so\n` +
     `   every design renders in the real brand type. */\n\n` +
     rules.join("\n\n") +

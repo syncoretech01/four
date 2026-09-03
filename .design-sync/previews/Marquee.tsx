@@ -1,25 +1,13 @@
 import { Marquee } from "@four/ui";
 
 /**
- * Full-bleed by design - no horizontal padding, no max-width. The strip below
- * is static in a screenshot; live it scrolls its two rendered rows on a 30s
- * linear loop, and collapses under prefers-reduced-motion.
+ * Marquee is now the giant footer ticker (an alias of Ticker): the real
+ * wordmark and hand mark in white, "LIVE, LOVE, EAT" outlined in yellow.
+ * Always on a red ground - both are invisible on white. Static in a card;
+ * live it loops on a 40s linear track and pauses on hover.
  */
 export const Default = () => (
-  <div className="bg-beige py-10">
+  <div className="on-red py-6">
     <Marquee />
-  </div>
-);
-
-/** How it actually sits on the page: a divider between two beige sections. */
-export const BetweenSections = () => (
-  <div className="bg-beige">
-    <div className="px-8 py-10 text-center">
-      <p className="font-display text-2xl font-semibold text-ink">Section above</p>
-    </div>
-    <Marquee />
-    <div className="px-8 py-10 text-center">
-      <p className="font-display text-2xl font-semibold text-ink">Section below</p>
-    </div>
   </div>
 );

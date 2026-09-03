@@ -10,17 +10,22 @@ build output is `next build`. So the sync is built around a small entry package
 at `.design-sync/ds-pkg/` that re-exports the presentation components from
 `apps/web/src/components`, and the converter bundles that.
 
-Nine components are in scope, chosen because they render standalone:
-`BrandLogo`, `SmartImage`, `RotatingSeal`, `LogoHero`, `Marquee`, `CraftStory`,
-`WorldFlavours`, `DealsBand`, `Footer`. (The chain-repositioning rebuild retired
-`Story`/`HypeBand`/`Visit`; `CraftStory`/`DealsBand` are their successors and
-`LocationsTeaser` replaced `Visit` but reads the zustand store, so it is out.)
+Eighteen components are in scope, chosen because they render standalone. The
+v3 primitives under `components/ds`: `StickerTag`, `SectionHeader` (+ `Hi`),
+`PillCta`, `PriceTag`, `DoodleBackdrop`, `PageTitleBand`, `Ticker`, `Reveal`;
+the brand primitives `BrandLogo`, `SmartImage`, `RotatingSeal`, `PhotoStrip`;
+and the sections `LogoHero`, `Marquee` (now an alias of `Ticker`), `CraftStory`,
+`WorldFlavours`, `DealsBand`, `Footer`. The v3 rebuild retired the video hero,
+`MenuPreview` and `LocationsTeaser`; their successors on the homepage
+(`CategoriesCarousel`, `PopularDishes`, `HowItWorks`, `DeliveryAreas`,
+`CtaBand`) read the store or the API, so they stay out.
 
 Deliberately excluded — each needs app infrastructure with no meaning inside a
 design: `Nav`/`MobileNav`, `LocationModal`, `CartDrawer` (zustand store), `CheckoutForm`
 (API + payment), `ChatDock` (OpenAI realtime voice), `FourMap` / `TrackMap`
-(maplibre + live GPS), `MenuBrowser`, `MenuPreview`, `BestsellerShowcase`, `ItemCard`,
-`ItemModal`, `LocationsTeaser`, `ToastStack` (toast store).
+(maplibre + live GPS), `MenuBrowser`, `PopularDishes`, `CategoriesCarousel`, `BestsellerShowcase`,
+`ItemCard`, `ItemModal`, `HowItWorks`, `DeliveryAreas`, `CtaBand` (store /
+API), `ToastStack` (toast store).
 
 To add one later: re-export it from `ds-pkg/index.ts` **and** pin its source
 path in `config.json`'s `componentSrcMap`. Doing only one of the two silently
@@ -91,10 +96,13 @@ obvious fixes are the ones that do not work.
 
 ## Known render warns — expected, already triaged
 
-- `[FONT_MISSING] "Trebuchet MS"` — this is the *fallback* in
-  `--font-display: var(--font-fredoka), "Trebuchet MS", sans-serif`, not a brand
-  face. The real faces (Fredoka, Poppins) **are** shipped, from
+- `[FONT_MISSING] "Impact"` / `"Arial Narrow"` — these are the *fallbacks* in
+  `--font-display: var(--font-anton), Impact, "Arial Narrow", sans-serif`, not
+  brand faces. The real faces (Anton, DM Sans) **are** shipped, from
   `.design-sync/fonts/` via `cfg.extraFonts`. Nothing to fix.
+- `DoodleBackdrop` masks `/doodles/sheet.png`, a storefront-owned asset the
+  design canvas cannot serve, so every red or cream band renders as solid
+  colour inside a design. A failed mask hides only the doodle layer.
 
 ## The storefront moves fast — re-check scope every sync
 
@@ -113,10 +121,13 @@ geolocation means out.
 
 Neither is a preview fault; both are documented in their `.prompt.md`:
 
-- `LogoHero` hardcodes `<img src="/gallery/gallery-3.jpg">` with no fallback, so
-  its photo panel is empty inside a design. Its card shows this honestly.
-- `Story` points `SmartImage` at `/gallery/*`, which lands on the branded
-  fallback tiles (F, O) — the designed degradation, and on-brand.
+- `LogoHero` / `PhotoStrip` point `SmartImage` at `/hero/strip-*.jpg`, so the
+  four tiles land on the beige fallback tiles inside a design — the designed
+  degradation. `CraftStory` does the same with `/home/craft-*.jpg`.
+- `LogoHero` stays store-free on purpose: "Do you deliver to me?" clicks the
+  nav's `header [data-open-location]` pill instead of calling the zustand
+  store. Do not "fix" it to `useStore` — `lib/store.ts` imports
+  `socket.io-client`, which would drag the socket into the design bundle.
 
 The gallery images were deliberately **not** uploaded to the project root. They
 would make the cards look better than reality: a design built by the agent
@@ -129,12 +140,11 @@ an honest one.
 - **`Footer` renders `new Date().getFullYear()`.** Its render hash changes at
   every new year with no source change. A single unexplained changed component
   on the first sync of a new year is this, not a regression.
-- **`LogoHero`'s status pill calls `isOpenAt()`** and so renders "Open now" or
+- **`LogoHero`'s proof row and `Footer` read the clock** (`useKitchenOpen()` / `new Date()`) and so renders "Open now" or
   "Opens 1pm" depending on the hour. Same class of nondeterminism; the pinned
   capture clock hides it in review sheets but not in a live card.
 - **Fonts are a fetched snapshot.** `.design-sync/fetch-fonts.mjs` pulled
-  Fredoka/Poppins woff2 from Google Fonts (SIL OFL 1.1) and deduped identical
-  variable-font files. It is a one-shot; re-run it only if the brand faces
+  Anton/DM Sans woff2 from Google Fonts (SIL OFL 1.1). It is a one-shot; re-run it only if the brand faces
   change. The app itself still serves these via `next/font` — the bundle ships
   them because it has no `next/font`.
 - **The theme has one source of truth: `apps/web/src/app/globals.css`.**

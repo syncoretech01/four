@@ -72,11 +72,15 @@ brand-assets/     Imported brand kit: logo vectors, menu sheet renders, 203 web-
 
 ### Storefront
 - **Exact brand**: logo vectors extracted from the brand-kit PDF (never
-  redrawn), official palette (beige `#E9DCC5`, red `#9D1D20`), real food
-  photography mapped to menu items, printed-menu lightbox.
-- **Hero**: the FOUR wordmark draws itself in (per-letter outline + fill)
-  and reacts to the cursor with spring physics; the hand mark floats as a
-  magnetic sticker on the hero photo.
+  redrawn), official palette (red `#9D1D20`, beige `#E9DCC5`, white) plus two
+  playful accents (yellow, pink), real food photography mapped to menu items.
+- **Look (v3)**: flat solid colour blocks in the style of a cloud-kitchen
+  storefront - a solid red type hero in Anton with sticker tags and a
+  four-photo strip that hangs into the white section below
+  (`apps/web/public/hero/strip-*.jpg`, recipe in `public/hero/README.md`),
+  circular category thumbs, cream dish cards on a red band, yellow pill CTAs
+  with an arrow circle, a footer with the giant wordmark ticker. Tokens and
+  the `f-*` component classes live under `apps/web/src/styles/ds`.
 - **Location popup**: Lahore areas (DHA 1-8, Gulberg, Model Town, Allama
   Iqbal Town, Johar Town, Bahria...) with block-level dropdowns;
   dismissible for free browsing.
@@ -168,8 +172,9 @@ account with a gateway.
 - Tax: 16% cash / 5% card by default (`TAX_RATE_COD`, `TAX_RATE_CARD`).
 - Delivery: Rs. 149, free above Rs. 2,500 (`packages/shared/src/constants.ts`).
 - Fonts: brand faces (Aminute, Aloevera Display) are commercial; the site
-  ships Fredoka + Poppins as stand-ins - swap the `@theme` font vars in
-  `apps/web/src/app/globals.css` when the licensed files arrive.
+  ships Anton + DM Sans as stand-ins (`app/layout.tsx` via next/font) - swap
+  the two faces there and the `--font-*` vars in
+  `apps/web/src/styles/ds/tokens/typography.css` when the licensed files arrive.
 - Item photos: mapped by eye from the brand shoot
   (`apps/web/public/menu-items/photo-map.json`); replace any file to
   update a card.

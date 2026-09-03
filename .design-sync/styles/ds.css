@@ -19,11 +19,11 @@
   next/font defines these two variables on <html> at runtime (see layout.tsx).
   The bundle has no next/font, so bind them to the real faces shipped via
   cfg.extraFonts - otherwise --font-display/--font-body silently fall through
-  to their Trebuchet/system fallbacks in every design.
+  to their Impact/system fallbacks in every design.
 */
 @theme {
-  --font-fredoka: "Fredoka";
-  --font-poppins: "Poppins";
+  --font-anton: "Anton";
+  --font-dm-sans: "DM Sans";
 }
 
 /*
@@ -36,7 +36,8 @@
   on alpha (border-ink/10, bg-beige/85, text-cream/70), so those steps have to
   exist for the whole palette, not just the handful already written down.
 */
-@source inline("{bg,text,border}-{beige,beige-deep,cream,red,red-deep,ink,ink-soft}{,/5,/10,/15,/20,/25,/30,/40,/50,/60,/70,/75,/80,/85,/90,/95}");
+@source inline("{bg,text,border}-{white,cream,beige,beige-deep,red,red-hover,red-press,yellow,yellow-deep,pink,ink-900,ink-600,ink-400,rule,rule-white}{,/5,/10,/15,/20,/25,/30,/40,/50,/60,/70,/75,/80,/85,/90,/95}");
+@source inline("{on-red,on-cream,on-beige,on-yellow,on-photo,wrap,wrap-narrow,band,band--tight,relative,isolate,z-[1]}");
 
 /*
   Safelist the layout and type vocabulary a design agent needs to compose new
@@ -53,18 +54,17 @@
 @source inline("text-{xs,sm,base,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl}");
 @source inline("{sm:,md:,lg:,}text-{center,left,right}");
 @source inline("font-{normal,medium,semibold,bold}");
-@source inline("rounded{,-sm,-md,-lg,-xl,-2xl,-3xl,-full}");
+@source inline("rounded{,-sm,-md,-lg,-xl,-2xl,-3xl,-full,-card,-panel,-[10px],-[20px]}");
 @source inline("max-w-{sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,full}");
 @source inline("{w,h}-{full,auto}");
 @source inline("min-h-{screen,full}");
 @source inline("leading-{tight,snug,normal,relaxed}");
-@source inline("shadow{,-sm,-md,-lg,-xl,-2xl}");
+@source inline("shadow-{soft,float,none}");
 @source inline("{mx-auto,overflow-hidden,relative,absolute,object-cover,object-contain,w-fit,not-italic,uppercase,truncate}");
 
 /*
-  The theme defines four animations but the storefront only ever uses two of
-  them as utility classes - Marquee drives its reverse row through the raw
-  var(--animate-marquee-reverse) in an inline style, and nothing uses float
-  yet. Emit all four so conventions.md can honestly offer them.
+  The theme defines three animations; emit them all so conventions.md can
+  honestly offer them (the footer ticker and the rotating seal animate through
+  the DS classes, not these utilities).
 */
-@source inline("{motion-safe:,}animate-{marquee,marquee-reverse,spin-slow,float,spin,pulse,ping}");
+@source inline("{motion-safe:,}animate-{marquee,marquee-reverse,spin-slow,spin,pulse,ping}");
