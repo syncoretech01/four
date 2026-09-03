@@ -35,13 +35,13 @@ export function DeliveryAreas() {
     <section id="visit" className="band">
       <div className="wrap">
         <div className="flex flex-wrap items-end justify-between gap-6 border-t border-rule pt-10">
-          <SectionHeader title="Three kitchens. Every block covered." highlight="Every block" tag="We deliver" tag2={`${LAHORE_AREAS.length} areas`} />
+          <SectionHeader title="Three kitchens. Every block covered." highlight="Every block" tag="We deliver" tag2="Citywide" />
           <PillCta tone="outline" onClick={() => setLocationModalOpen(true)}>
             Check my block
           </PillCta>
         </div>
 
-        <ul className="f-cards-rail mt-10 list-none p-0 sm:grid sm:grid-cols-2 sm:gap-[var(--grid-gap)] lg:grid-cols-4">
+        <ul role="list" className="f-cards-rail mt-10 sm:grid sm:grid-cols-2 sm:gap-[var(--grid-gap)] lg:grid-cols-4">
           {BRANCHES.map((b, i) => (
             <li key={b.id} className="f-loc">
               <Reveal delay={i * 0.08} className="flex h-full flex-col">
@@ -66,7 +66,7 @@ export function DeliveryAreas() {
               </Reveal>
             </li>
           ))}
-          <li className="f-loc on-cream">
+          <li className="f-loc bg-cream">
             <Reveal delay={0.24} className="flex h-full flex-col">
               <div className="f-loc__body flex flex-1 flex-col justify-between gap-6">
                 <div>

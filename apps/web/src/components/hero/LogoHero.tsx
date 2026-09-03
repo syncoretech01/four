@@ -36,7 +36,7 @@ export function LogoHero({ onFindMe = findMeDefault }: { onFindMe?: () => void }
       <section id="top" className="f-hero on-red">
         <DoodleBackdrop />
         <div className="wrap relative z-[1]">
-          <motion.ul {...rise(0.1)} className="f-hero__proof">
+          <motion.ul role="list" {...rise(0.1)} className="f-hero__proof">
             <li>{BRANCHES.length} kitchens · Lahore</li>
             <li>
               <span className={`f-dot f-dot--cream ${open ? "" : "f-dot--off"}`} aria-hidden>

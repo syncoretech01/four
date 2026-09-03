@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Anton, DM_Sans } from "next/font/google";
 import { ToastStack } from "@/components/ToastStack";
 import { ActiveOrderPill } from "@/components/ActiveOrderPill";
+import { MotionProvider } from "@/components/MotionProvider";
 import "./globals.css";
 
 // v3 type: Anton display caps (single weight) + DM Sans body, self-hosted through next/font.
@@ -52,9 +53,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a href="#main" className="skip-link">
           Skip to content
         </a>
-        {children}
-        <ToastStack />
-        <ActiveOrderPill />
+        <MotionProvider>
+          {children}
+          <ToastStack />
+          <ActiveOrderPill />
+        </MotionProvider>
       </body>
     </html>
   );

@@ -43,6 +43,7 @@ export function PopularDishes() {
   );
 
   return (
+    <>
     <section id="menu" className="on-red band relative isolate">
       <DoodleBackdrop />
       <div className="wrap relative z-[1]">
@@ -57,7 +58,7 @@ export function PopularDishes() {
 
         <div className="mt-12">
           {loading ? (
-            <div className="grid gap-[var(--grid-gap)] sm:grid-cols-2 lg:grid-cols-3" aria-busy="true" aria-label="Loading the best sellers">
+            <div className="grid gap-[var(--grid-gap)] sm:grid-cols-2 lg:grid-cols-3" role="status" aria-busy="true" aria-label="Loading the best sellers">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="h-[420px] animate-pulse rounded-[10px] bg-white/10" />
               ))}
@@ -79,8 +80,9 @@ export function PopularDishes() {
           <PillCta href="/menu">Explore menu</PillCta>
         </div>
       </div>
-
-      <ItemModal item={selected} onClose={() => setSelected(null)} />
     </section>
+    {/* outside the isolated band so the fixed z-50 picker sits above the z-40 chrome */}
+    <ItemModal item={selected} onClose={() => setSelected(null)} />
+    </>
   );
 }

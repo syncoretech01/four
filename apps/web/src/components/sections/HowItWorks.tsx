@@ -71,9 +71,9 @@ export function HowItWorks() {
   return (
     <section className="band">
       <div className="wrap">
-        <SectionHeader title="Three taps to a very good night" highlight="good" tag="How it works" tag2={`~${BASE_DELIVERY_MINUTES} min`} />
+        <SectionHeader title="Three taps to a very good night" highlight="good" tag="How it works" tag2="Easy" />
 
-        <ol className="mt-12 grid list-none gap-5 p-0 lg:grid-cols-3">
+        <ol role="list" className="mt-12 grid list-none gap-5 p-0 lg:grid-cols-3">
           {steps.map((s, i) => (
             <li key={s.no} className={s.offset}>
               <Reveal delay={i * 0.1}>
@@ -81,7 +81,7 @@ export function HowItWorks() {
                 <div className="mt-5 flex items-end justify-between gap-4">
                   <h3 className="f-heading f-heading--xs">
                     {s.action ? (
-                      <button type="button" onClick={s.action} className="text-left uppercase hover:text-pink">
+                      <button type="button" onClick={s.action} className="text-left uppercase transition-colors hover:text-red-press">
                         {s.title}
                       </button>
                     ) : (

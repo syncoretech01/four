@@ -62,7 +62,7 @@ export function Footer() {
         <div className="f-footer__widgets">
           <div>
             <h2 className="f-footer__title">Contact</h2>
-            <ul className="f-footer__list text-yellow">
+            <ul role="list" className="f-footer__list text-yellow">
               <li>
                 <a href={BRAND.phoneHref} className="f-footer__link text-yellow">
                   {BRAND.phone}
@@ -110,7 +110,7 @@ export function Footer() {
 
           <div className="f-footer__hours">
             <h2 className="f-footer__title">Opening hours</h2>
-            <ul className="f-footer__list text-sm">
+            <ul role="list" className="f-footer__list text-sm">
               <li>
                 <span className="block text-white/70">Every day</span>
                 <span className="block">{HOURS_LABEL.replace("Open daily ", "")}</span>

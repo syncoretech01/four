@@ -12,6 +12,8 @@ export const BRAND = {
   instagramHandle: "@fourpakistan_",
   /** Confirmed by operations. Shown wherever an order can fail. */
   phone: "0325 1231222",
+  /** International form for structured data (schema.org expects a country code). */
+  phoneIntl: "+92 325 1231222",
   phoneHref: "tel:+923251231222",
 } as const;
 

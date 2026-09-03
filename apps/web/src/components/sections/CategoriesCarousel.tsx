@@ -91,7 +91,7 @@ export function CategoriesCarousel({
     <section className={`band ${className}`.trim()} aria-label="Menu categories">
       <div className="wrap">
         <div className="flex flex-wrap items-end justify-between gap-6">
-          <SectionHeader title="What are you craving?" highlight="craving" tag="The menu" tag2={`${MENU_CATEGORIES.length} categories`} />
+          <SectionHeader title="What are you craving?" highlight="craving" tag="The menu" tag2="Dig in" />
           <div className="flex gap-1.5">
             <button type="button" onClick={() => page(-1)} aria-label="Previous categories" className="f-iconbtn f-iconbtn--lg">
               <Chevron dir="left" />
@@ -103,6 +103,7 @@ export function CategoriesCarousel({
         </div>
 
         <ul
+          role="list"
           ref={railRef}
           className="mt-10 flex snap-x snap-mandatory gap-6 overflow-x-auto p-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >

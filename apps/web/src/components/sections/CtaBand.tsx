@@ -20,7 +20,7 @@ export function CtaBand() {
           <img src="/about/burger-spread.jpg" alt="" loading="lazy" />
           <div className="relative z-[1] flex flex-col items-center">
             <SectionHeader as="p" align="center" title="It's never too late for a smash" highlight="late" tag="Hungry?" />
-            <p className="mt-5 text-base text-white/85">
+            <p className="mt-5 text-base text-white">
               {open ? `Open now — till ${CLOSES_LABEL}.` : `Opens ${OPENS_LABEL}. Build your order now and place it then.`}
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-5">

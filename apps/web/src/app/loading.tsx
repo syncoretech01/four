@@ -6,7 +6,7 @@ import { BrandLogo } from "@/components/BrandLogo";
  */
 export default function Loading() {
   return (
-    <div className="on-beige flex min-h-[100dvh] items-center justify-center" aria-busy="true" aria-label="Loading">
+    <div className="on-beige flex min-h-[100dvh] items-center justify-center" role="status" aria-busy="true" aria-label="Loading">
       <span className="animate-pulse text-red">
         <BrandLogo className="h-10" />
       </span>

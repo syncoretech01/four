@@ -65,7 +65,7 @@ export function CraftStory() {
               tag2="From scratch"
               lede="Every burger starts as a hand-rolled 110g ball of beef. It hits a screaming-hot plate, gets pressed once — hard — and comes off with an edge you can hear. We refuse to skip that step, so you get to taste it."
             />
-            <ul className="mt-8 grid list-none gap-3 border-t border-rule p-0 pt-8">
+            <ul role="list" className="mt-8 grid list-none gap-3 border-t border-rule p-0 pt-8">
               {METHOD.map((m) => (
                 <li key={m.name} className="flex gap-3 text-ink-900">
                   <Check />

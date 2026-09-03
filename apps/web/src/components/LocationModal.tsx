@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { useReduceMotion } from "@/lib/useAnim";
@@ -58,6 +58,24 @@ export function LocationModal({
   const area = useMemo(() => areas.find((a) => a.id === areaId), [areas, areaId]);
 
   useDismissable(open, onClose);
+  // focus lands on the close button when the dialog opens and returns to the
+  // element that opened it (the card, the nav pill) when it closes
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
+  const wasOpen = useRef(false);
+  useEffect(() => {
+    if (open) {
+      const active = document.activeElement;
+      openerRef.current = active instanceof HTMLElement ? active : null;
+      closeRef.current?.focus();
+      wasOpen.current = true;
+    } else if (wasOpen.current) {
+      const opener = openerRef.current;
+      if (opener?.isConnected) opener.focus();
+      openerRef.current = null;
+      wasOpen.current = false;
+    }
+  }, [open]);
 
   // a fresh initialAreaId (e.g. tapping a different area chip on /locations)
   // re-seeds the picker next time it opens
@@ -100,6 +118,7 @@ export function LocationModal({
             <button
               onClick={onClose}
               aria-label="Close and browse the website"
+              ref={closeRef}
               className="f-modal__close f-iconbtn f-iconbtn--sm f-iconbtn--plain"
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
@@ -107,8 +126,8 @@ export function LocationModal({
               </svg>
             </button>
 
-            <span className="text-red">
-              <BrandLogo className="h-8" />
+            <span className="inline-flex rounded-[10px] bg-beige px-4 py-2 text-red">
+              <BrandLogo className="h-7" />
             </span>
             <h2 id="location-title" className="f-heading f-heading--md mt-5">
               Where should we deliver?

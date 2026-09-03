@@ -64,6 +64,8 @@
   --shadow-float: 0 18px 44px rgba(31, 23, 21, 0.14);
 }
 
+/* Emitted only by the design-sync build (its ds.css safelists these utilities);
+   the app itself animates through the f-marquee / f-spin keyframes in components.css. */
 @theme {
   --animate-marquee: marquee 40s linear infinite;
   --animate-marquee-reverse: marquee-reverse 40s linear infinite;
@@ -92,9 +94,9 @@
   .on-cream { background: var(--cream); }
   .on-beige { background: var(--beige); }
   .on-yellow { background: var(--yellow); color: var(--red); --heading: var(--red); --hi: var(--red); --body: var(--red-press); --rule: rgba(157, 29, 32, .25); --focus-ring: var(--red); --link: var(--red); --link-hover: var(--red-press); }
-  .on-photo { position: relative; isolation: isolate; color: #fff; --heading: #fff; --hi: var(--yellow); --body: rgba(255, 255, 255, .85); --rule: var(--rule-white); --focus-ring: var(--yellow); --link: #fff; --link-hover: var(--yellow); }
+  .on-photo { position: relative; isolation: isolate; color: #fff; --heading: #fff; --hi: var(--yellow); --body: #fff; --rule: var(--rule-white); --focus-ring: var(--yellow); --link: #fff; --link-hover: var(--yellow); }
   .on-photo > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
-  .on-photo::before { content: ""; position: absolute; inset: 0; background: rgba(157, 29, 32, .55); z-index: -1; }
+  .on-photo::before { content: ""; position: absolute; inset: 0; background: rgba(157, 29, 32, .75); z-index: -1; }
 
   /* ── keyboard escape hatch past the fixed bar ── */
   .skip-link { position: fixed; top: .75rem; left: .75rem; z-index: 60; display: inline-flex; align-items: center; height: 2.5rem; padding: 0 1.125rem; border: 0; border-radius: var(--radius-pill); background: var(--yellow); color: var(--red); font-family: var(--font-display); font-size: .875rem; text-transform: uppercase; letter-spacing: var(--tracking-tag); text-decoration: none; transform: translateY(-200%); }
@@ -176,5 +178,5 @@
   .f-catnav__item { display: flex; align-items: center; justify-content: space-between; gap: .75rem; border: 0; border-radius: var(--radius-pill); background: none; padding: .5625rem 1rem; font-family: var(--font-body); font-size: .9375rem; font-weight: 500; text-align: left; color: var(--ink-600); cursor: pointer; transition: background-color var(--dur-fast) var(--ease-in-out), color var(--dur-fast) var(--ease-in-out); }
   .f-catnav__item:hover { color: var(--red); background: var(--cream); }
   .f-catnav__item.is-active { background: var(--red); color: #fff; }
-  .f-catnav__count { font-size: var(--text-2xs); font-weight: 600; opacity: .65; }
+  .f-catnav__count { font-size: var(--text-2xs); font-weight: 600; }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useReduceMotion } from "@/lib/useAnim";
 import { useDismissable } from "@/lib/useDismissable";
@@ -77,6 +77,25 @@ export function ItemModal({
   }, [item, edit]);
 
   useDismissable(Boolean(item), onClose);
+  const isOpen = item !== null;
+  // focus lands on the close button when the dialog opens and returns to the
+  // element that opened it (the card, the nav pill) when it closes
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
+  const wasOpen = useRef(false);
+  useEffect(() => {
+    if (isOpen) {
+      const active = document.activeElement;
+      openerRef.current = active instanceof HTMLElement ? active : null;
+      closeRef.current?.focus();
+      wasOpen.current = true;
+    } else if (wasOpen.current) {
+      const opener = openerRef.current;
+      if (opener?.isConnected) opener.focus();
+      openerRef.current = null;
+      wasOpen.current = false;
+    }
+  }, [isOpen]);
 
   const unitPrice = useMemo(() => {
     if (!item) return 0;
@@ -169,6 +188,7 @@ export function ItemModal({
               <TagStack tags={item.tags} className="absolute left-5 top-5" />
               <button
                 onClick={onClose}
+                ref={closeRef}
                 aria-label="Close"
                 className="f-modal__close f-iconbtn f-iconbtn--md f-iconbtn--cream"
               >

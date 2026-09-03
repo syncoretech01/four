@@ -114,7 +114,7 @@ export function AboutCraft() {
           </Reveal>
         </div>
 
-        <ul className="mt-14 grid list-none grid-cols-2 gap-8 border-t border-rule p-0 pt-10 lg:grid-cols-4">
+        <ul role="list" className="mt-14 grid list-none grid-cols-2 gap-8 border-t border-rule p-0 pt-10 lg:grid-cols-4">
           {STATS.map((s) => (
             <li key={s.label}>
               <span className="block font-display text-6xl uppercase leading-none text-red">
@@ -129,7 +129,7 @@ export function AboutCraft() {
 
       {/* ── 4 · Process beats ── */}
       <section className="wrap band--tight">
-        <ol className="grid list-none gap-5 p-0 lg:grid-cols-3 lg:[&>*:nth-child(2)]:mt-24 lg:[&>*:nth-child(3)]:mt-48">
+        <ol role="list" className="grid list-none gap-5 p-0 lg:grid-cols-3 lg:[&>*:nth-child(2)]:mt-24 lg:[&>*:nth-child(3)]:mt-48">
           {BEATS.map((b, i) => (
             <li key={b.no}>
               <Reveal delay={i * 0.1}>
@@ -185,7 +185,7 @@ export function AboutCraft() {
       <section className="on-cream">
         <div className="wrap band">
           <SectionHeader title="If it's on the menu, we make it" highlight="make" tag="House sauces" lede="No jars, no shortcuts. Every sauce and dip is mixed in our own kitchens — here is where each one lives." />
-          <ul className="mt-10 grid list-none gap-5 p-0 sm:grid-cols-2 lg:grid-cols-3" aria-label="House sauces">
+          <ul role="list" className="mt-10 grid list-none gap-5 p-0 sm:grid-cols-2 lg:grid-cols-3" aria-label="House sauces">
             {SCRATCH.map((s) => (
               <li key={s.sauce}>
                 <Link
@@ -221,14 +221,14 @@ export function AboutCraft() {
               <img src="/gallery/gallery-1.jpg" alt="" loading="lazy" />
               <div className="relative z-[1] flex flex-col items-center">
                 <SectionHeader as="p" align="center" title="Taste the difference." highlight="difference" />
-                <p className="mt-5 text-base text-white/85">
+                <p className="mt-5 text-base text-white">
                   From {formatPKR(Math.min(...MENU_ITEMS.map((i) => i.price)))}, delivered hot across Lahore.
                 </p>
                 <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
                   <PillCta href="/menu" size="lg">
                     Order now
                   </PillCta>
-                  <PillCta href="/deals" tone="on-red" arrow={false} size="lg">
+                  <PillCta href="/deals" arrow={false} size="lg">
                     Deals &amp; offers
                   </PillCta>
                 </div>

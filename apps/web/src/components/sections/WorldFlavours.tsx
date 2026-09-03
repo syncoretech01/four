@@ -36,13 +36,13 @@ export function WorldFlavours() {
 
   return (
     <section className="band">
-      <div className="wrap grid items-center gap-12 border-t border-rule pt-12 lg:grid-cols-2 lg:pt-16">
+      <div className="wrap grid items-center gap-12 lg:grid-cols-2">
         <div>
           <SectionHeader
             title="Big-city flavours. One Lahore address."
             highlight="Lahore"
             tag="The menu, mapped"
-            tag2={`${cells.length + 1} cities`}
+            tag2="One address"
             lede="Every burger on the board carries the city that inspired it. All of them are cooked here."
           />
           <div className="mt-8">
@@ -50,7 +50,7 @@ export function WorldFlavours() {
           </div>
         </div>
 
-        <ul className="m-0 grid list-none grid-cols-3 gap-1 p-0">
+        <ul role="list" className="m-0 grid list-none grid-cols-3 gap-1 p-0">
           {cells.map(({ city, item }, i) => (
             <li key={item.id}>
               <Reveal delay={Math.min(i * 0.05, 0.3)}>

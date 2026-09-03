@@ -26,7 +26,7 @@ const restaurantJsonLd = {
   "@type": "Restaurant",
   name: "FOUR",
   servesCuisine: ["Burgers", "Pizza", "Fast Food"],
-  telephone: BRAND.phone,
+  telephone: BRAND.phoneIntl,
   image: `${SITE_URL}/og.jpg`,
   address: {
     "@type": "PostalAddress",

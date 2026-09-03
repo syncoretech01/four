@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { BRANCHES, HOURS_LABEL, LAHORE_AREAS } from "@four/shared";
+import { BRAND, BRANCHES, HOURS_LABEL, LAHORE_AREAS } from "@four/shared";
 import { Nav } from "@/components/Nav";
 import { LocationsExplorer } from "@/components/locations/LocationsExplorer";
 import { Footer } from "@/components/sections/Footer";
@@ -27,7 +27,7 @@ const branchesJsonLd = {
     name: b.name,
     address: { "@type": "PostalAddress", streetAddress: b.address, addressLocality: "Lahore", addressCountry: "PK" },
     geo: { "@type": "GeoCoordinates", latitude: b.lat, longitude: b.lng },
-    telephone: "+92 325 1231222",
+    telephone: BRAND.phoneIntl,
     servesCuisine: ["Burgers", "Pizza", "Fast Food"],
     openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",

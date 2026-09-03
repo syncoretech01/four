@@ -192,7 +192,7 @@ export function MenuBrowser() {
       </div>
 
       {loading ? (
-        <div className="wrap band pt-10" aria-busy="true" aria-label="Loading the menu">
+        <div className="wrap band pt-10" role="status" aria-busy="true" aria-label="Loading the menu">
           <div className="flex gap-[var(--grid-gap)] overflow-hidden pt-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="h-96 w-72 shrink-0 animate-pulse rounded-[10px] bg-cream" />
@@ -288,7 +288,7 @@ export function MenuBrowser() {
                   key={c.id}
                   id={`cat-${c.id}`}
                   data-menu-section
-                  className="border-t border-rule pt-12 first:border-0 scroll-mt-[calc(var(--nav-h-scrolled)+3.5rem)] lg:scroll-mt-[calc(var(--nav-h-scrolled)+1rem)]"
+                  className="border-t border-rule pt-12 first:border-0 scroll-mt-10 lg:scroll-mt-0"
                 >
                   <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
                     <h2 className="f-heading f-heading--md">{c.label}</h2>
