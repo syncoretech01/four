@@ -46,7 +46,7 @@ export function BestsellerShowcase({
           >
             <div className="f-work__frame">
               <SmartImage src={item.image ?? `/menu-items/${item.id}.jpg`} alt={item.name} fallbackLabel={item.name} className="h-full w-full" />
-              <span className="f-work__no f-badge">No. {String(i + 1).padStart(2, "0")}</span>
+              <span className="f-work__no f-tag">No. {String(i + 1).padStart(2, "0")}</span>
             </div>
             <div className="f-work__plate">
               <div>

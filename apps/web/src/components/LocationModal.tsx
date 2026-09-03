@@ -80,7 +80,7 @@ export function LocationModal({
     <AnimatePresence>
       {open && (
         <motion.div
-          className="f-modal__wrap f-modal__wrap--sheet sm:!items-center sm:!p-6"
+          className="f-modal__wrap f-modal__wrap--sheet sm:items-center sm:p-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

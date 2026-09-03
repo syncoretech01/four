@@ -15,7 +15,7 @@ const COMPANY_LINKS = [
 ];
 
 const colHeading = "text-xs font-extrabold uppercase tracking-[0.16em] text-ink-600";
-const link = "font-bold uppercase tracking-[0.04em] !text-ink-900 transition hover:!text-red";
+const link = "font-bold uppercase tracking-[0.04em] text-ink-900 transition hover:text-red";
 
 /**
  * Chain-grade footer: an order-CTA band, four columns of real links and
@@ -24,9 +24,9 @@ const link = "font-bold uppercase tracking-[0.04em] !text-ink-900 transition hov
  */
 export function Footer() {
   return (
-    <footer className="border-t-2 border-ink-900 bg-paper-100">
+    <footer className="border-t border-rule bg-cream">
       {/* Row 0 - the order CTA band */}
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 border-b-2 border-paper-300 px-4 py-8 sm:px-6">
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 border-b border-rule px-4 py-8 sm:px-6">
         <div>
           <p className="f-heading f-heading--md">Hungry? We&apos;re on.</p>
           <p className="mt-1 text-sm font-semibold text-ink-600">{HOURS_LABEL}.</p>
@@ -39,7 +39,7 @@ export function Footer() {
       {/* Row 1 - four columns */}
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
         <div>
-          <span className="!text-red">
+          <span className="text-red">
             <BrandLogo className="h-8" />
           </span>
           <p className="mt-3 max-w-[40ch] text-sm text-ink-600">
@@ -49,7 +49,7 @@ export function Footer() {
             href={BRAND.instagram}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 inline-block text-sm font-bold !text-ink-900 transition hover:!text-red"
+            className="mt-4 inline-block text-sm font-bold text-ink-900 transition hover:text-red"
           >
             {BRAND.instagramHandle}
           </a>
@@ -84,11 +84,11 @@ export function Footer() {
         <div className="grid content-start gap-2 text-sm text-ink-600">
           <span className={colHeading}>Find us</span>
           {BRANCHES.map((b) => (
-            <Link key={b.id} href="/locations" className="!text-ink-600 transition hover:!text-red">
+            <Link key={b.id} href="/locations" className="text-ink-600 transition hover:text-red">
               <span className="font-extrabold text-ink-900">{b.shortName}</span> · {b.address.replace(", Lahore", "")}
             </Link>
           ))}
-          <a href={BRAND.phoneHref} className="mt-1 font-extrabold !text-ink-900 transition hover:!text-red">
+          <a href={BRAND.phoneHref} className="mt-1 font-extrabold text-ink-900 transition hover:text-red">
             {BRAND.phone}
           </a>
           <span>{HOURS_LABEL}</span>
@@ -96,7 +96,7 @@ export function Footer() {
       </div>
 
       {/* Row 2 - fact bar */}
-      <div className="border-t-2 border-paper-300">
+      <div className="border-t border-rule">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2 px-4 py-5 text-xs text-ink-600 sm:px-6">
           <span>&copy; {new Date().getFullYear()} FOUR · Lahore, Pakistan. All rights reserved.</span>
           <span>

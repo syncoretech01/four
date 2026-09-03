@@ -45,9 +45,9 @@ export default function LocationsPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(branchesJsonLd) }} />
       <Nav />
       <main id="main">
-        <header className="wrap pb-12 pt-28 sm:pt-32">
+        <header className="wrap pb-12 pt-[calc(var(--bar-h)+2rem)]">
           <p className="f-eyebrow">Find us</p>
-          <h1 className="f-heading f-heading--lg sm:text-7xl">Three Kitchens. One City.</h1>
+          <h1 className="f-heading f-heading--xl">Three Kitchens. One City.</h1>
           <p className="f-lede">
             FOUR cooks in three Lahore kitchens and delivers to {LAHORE_AREAS.length} areas across the city.{" "}
             {HOURS_LABEL}, every branch.

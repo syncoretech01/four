@@ -7,7 +7,7 @@ export default function NotFound() {
   return (
     <>
       <Nav />
-      <main id="main" className="mx-auto flex min-h-[calc(100dvh-4rem)] max-w-7xl items-center justify-center px-4 pb-16 pt-28 sm:px-6">
+      <main id="main" className="mx-auto flex min-h-[calc(100dvh-var(--bar-h))] max-w-7xl items-center justify-center px-4 pb-16 pt-[calc(var(--bar-h)+2rem)] sm:px-6">
         <div className="f-empty max-w-xl">
           <svg viewBox="180 100 700 900" className="f-empty__glyph text-red" aria-hidden>
             <g transform={HAND_MARK.transform}>

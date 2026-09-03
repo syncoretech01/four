@@ -64,7 +64,7 @@ export function MobileNav({
           role="dialog"
           aria-modal="true"
           aria-label="Menu"
-          className="fixed inset-0 z-50 flex flex-col bg-paper-100 md:hidden"
+          className="fixed inset-0 z-50 flex flex-col bg-cream md:hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -74,9 +74,9 @@ export function MobileNav({
             initial={reduce ? false : { y: -12, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="flex h-16 shrink-0 items-center justify-between border-b-2 border-ink-900 px-4"
+            className="flex h-16 shrink-0 items-center justify-between border-b border-rule px-4"
           >
-            <Link href="/" onClick={onClose} aria-label="FOUR home" className="!text-red">
+            <Link href="/" onClick={onClose} aria-label="FOUR home" className="text-red">
               <BrandLogo className="h-7" />
             </Link>
             <button ref={closeRef} onClick={onClose} aria-label="Close menu" className="f-iconbtn f-iconbtn--sm">
@@ -100,8 +100,8 @@ export function MobileNav({
                     href={l.href}
                     onClick={onClose}
                     aria-current={active ? "page" : undefined}
-                    className={`block border-b-2 border-ink-900/15 py-4 font-display text-4xl uppercase leading-[0.9] transition ${
-                      active ? "!text-red" : "!text-ink-900 hover:!text-red"
+                    className={`block border-b border-rule py-4 font-display text-4xl uppercase leading-[0.9] transition ${
+                      active ? "text-red" : "text-ink-900 hover:text-red"
                     }`}
                   >
                     {l.label}
@@ -115,7 +115,7 @@ export function MobileNav({
             initial={reduce ? false : { y: 16, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="grid shrink-0 gap-3 border-t-2 border-ink-900 bg-paper-0 px-5 py-5"
+            className="grid shrink-0 gap-3 border-t border-rule bg-white px-5 py-5"
           >
             <button
               onClick={() => {
@@ -142,7 +142,7 @@ export function MobileNav({
                 </span>
                 {kitchenOpen ? "Open now · till 3am" : "Opens 1pm"}
               </span>
-              <a href={BRAND.phoneHref} className="f-btn f-btn--outline-red f-btn--sm">
+              <a href={BRAND.phoneHref} className="f-btn f-btn--outline f-btn--sm">
                 Call {BRAND.phone}
               </a>
             </div>

@@ -167,11 +167,11 @@ export function MenuBrowser() {
   return (
     <div className="pb-24 lg:pb-0">
       {/* ── Page header: title + search ── */}
-      <header className="wrap pt-28 sm:pt-32">
+      <header className="wrap pt-[calc(var(--bar-h)+2rem)]">
         <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-6">
           <div>
             <p className="f-eyebrow">Order online</p>
-            <h1 className="f-heading f-heading--lg sm:text-7xl">The Menu</h1>
+            <h1 className="f-heading f-heading--xl">The Menu</h1>
             <p className="f-lede">Pick a category, stack your order, and we&apos;ll smash it fresh.</p>
           </div>
           <label className="relative block w-full sm:w-80">
@@ -185,7 +185,7 @@ export function MenuBrowser() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search burgers, pizzas, shakes..."
-              className="f-input !pl-11"
+              className="f-input f-input--search"
             />
           </label>
         </div>
@@ -199,14 +199,14 @@ export function MenuBrowser() {
             </svg>
             {location ? `Delivering to ${location.block}, ${location.areaName}` : "Set delivery area for ETA and fee"}
           </button>
-          {locArea && <span className="f-badge f-badge--sunken">{deliveryEtaLabel(locArea.distanceKm)}</span>}
-          <span className="f-badge f-badge--sunken">
+          {locArea && <span className="f-tag f-tag--muted">{deliveryEtaLabel(locArea.distanceKm)}</span>}
+          <span className="f-tag f-tag--muted">
             {formatPKR(DELIVERY_FEE)} delivery · free over {formatPKR(FREE_DELIVERY_ABOVE)}
           </span>
         </div>
 
         {!kitchenOpen && (
-          <p className="f-badge f-badge--warning mt-4 w-full justify-start !text-sm !normal-case !tracking-normal">
+          <p className="f-notice f-notice--yellow mt-4">
             Kitchen closed · {HOURS_LABEL}. Fill your cart now — ordering opens at 1:00 pm.
           </p>
         )}
@@ -216,12 +216,12 @@ export function MenuBrowser() {
         <div className="wrap band pt-10" aria-busy="true" aria-label="Loading the menu">
           <div className="flex gap-6 overflow-hidden pt-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-96 w-72 shrink-0 animate-pulse rounded-card border-2 border-ink-900/25 bg-paper-200" />
+              <div key={i} className="h-96 w-72 shrink-0 animate-pulse rounded-card border border-rule bg-beige" />
             ))}
           </div>
           <div className={`mt-12 ${grid}`}>
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-80 animate-pulse rounded-card border-2 border-ink-900/25 bg-paper-200" />
+              <div key={i} className="h-80 animate-pulse rounded-card border border-rule bg-beige" />
             ))}
           </div>
         </div>
@@ -243,7 +243,7 @@ export function MenuBrowser() {
           {results.length === 0 ? (
             <div className="f-empty mt-10">
               <p className="f-empty__text">Nothing matches. Try &ldquo;burger&rdquo;, &ldquo;crown crust&rdquo; or &ldquo;coke&rdquo;.</p>
-              <button onClick={() => setQuery("")} className="f-btn f-btn--outline-red f-btn--md">
+              <button onClick={() => setQuery("")} className="f-btn f-btn--outline f-btn--md">
                 Clear the search
               </button>
             </div>
@@ -258,9 +258,9 @@ export function MenuBrowser() {
       ) : (
         <>
           {/* ── Sticky category rail (mobile / tablet) ── */}
-          <div className="sticky top-14 z-30 mt-6 border-b-2 border-ink-900 bg-paper-100/95 backdrop-blur-[10px] lg:hidden">
+          <div className="sticky top-[var(--nav-h-scrolled)] z-30 mt-6 border-b border-rule bg-white/95 backdrop-blur-[10px] lg:hidden">
             <div className="wrap">
-              <div ref={railRef} className="f-rail !py-2">
+              <div ref={railRef} className="f-rail py-2">
                 {navEntries.map((c) => (
                   <button key={c.id} data-cat={c.id} onClick={() => jump(c.id)} className={`f-rail__item ${active === c.id ? "is-active" : ""}`}>
                     {c.label}
@@ -272,14 +272,14 @@ export function MenuBrowser() {
 
           {/* ── Bestseller portfolio ── */}
           {bestsellers.length > 0 && (
-            <section id={`cat-${BESTSELLERS_ID}`} data-menu-section className="mt-2 scroll-mt-36 bg-[var(--bg-page-alt)] lg:mt-10 lg:scroll-mt-24">
+            <section id={`cat-${BESTSELLERS_ID}`} data-menu-section className="mt-2 scroll-mt-[calc(var(--nav-h-scrolled)+3.5rem)] bg-[var(--bg-page-alt)] lg:mt-10 lg:scroll-mt-[calc(var(--nav-h-scrolled)+1rem)]">
               <div className="wrap py-10 lg:py-12">
                 <div className="flex items-end justify-between gap-6">
                   <div>
                     <p className="f-eyebrow">The greatest hits</p>
-                    <h2 className="f-heading f-heading--md sm:text-4xl">Best Sellers</h2>
+                    <h2 className="f-heading f-heading--lg">Best Sellers</h2>
                   </div>
-                  <span className="f-badge f-badge--sunken !hidden -rotate-2 sm:!inline-flex">
+                  <span className="f-tag f-tag--muted hidden sm:inline-flex">
                     {String(bestsellers.length).padStart(2, "0")} on display
                   </span>
                 </div>
@@ -291,7 +291,7 @@ export function MenuBrowser() {
           {/* ── Category sections + sticky sidebar ── */}
           <div className="wrap pb-24 lg:grid lg:grid-cols-[14rem_1fr] lg:gap-12">
             <aside className="hidden lg:block">
-              <nav className="f-catnav sticky top-24 max-h-[calc(100dvh-7rem)] overflow-y-auto" aria-label="Menu categories">
+              <nav className="f-catnav sticky top-[calc(var(--nav-h-scrolled)+1.5rem)] max-h-[calc(100dvh-7rem)] overflow-y-auto" aria-label="Menu categories">
                 {navEntries.map((c) => (
                   <button key={c.id} onClick={() => jump(c.id)} className={`f-catnav__item ${active === c.id ? "is-active" : ""}`}>
                     {c.label}
@@ -303,7 +303,7 @@ export function MenuBrowser() {
 
             <div>
               {categories.map((c) => (
-                <section key={c.id} id={`cat-${c.id}`} data-menu-section className="scroll-mt-36 pt-12 first:pt-10 lg:scroll-mt-24 lg:first:pt-12">
+                <section key={c.id} id={`cat-${c.id}`} data-menu-section className="scroll-mt-[calc(var(--nav-h-scrolled)+3.5rem)] pt-12 first:pt-10 lg:scroll-mt-[calc(var(--nav-h-scrolled)+1rem)] lg:first:pt-12">
                   <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
                     <h2 className="f-heading f-heading--md">{c.label}</h2>
                     <p className="text-sm font-semibold text-ink-600">{c.blurb}</p>
@@ -344,12 +344,12 @@ function BasketBar() {
           animate={{ y: 0 }}
           exit={{ y: 96 }}
           transition={{ type: "spring", stiffness: 320, damping: 30 }}
-          className="fixed inset-x-0 bottom-0 z-40 border-t-2 border-ink-900 bg-paper-0/95 px-4 py-3 backdrop-blur-[10px] [padding-bottom:max(0.75rem,env(safe-area-inset-bottom))] lg:hidden"
+          className="fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-white/95 px-4 py-3 backdrop-blur-[10px] [padding-bottom:max(0.75rem,env(safe-area-inset-bottom))] lg:hidden"
         >
-          <button onClick={() => setCartOpen(true)} className="f-btn f-btn--primary f-btn--lg f-btn--block !justify-between !px-5">
+          <button onClick={() => setCartOpen(true)} className="f-btn f-btn--primary f-btn--lg f-btn--block justify-between px-5">
             <span className="inline-flex items-center gap-2 whitespace-nowrap">
               View basket
-              <span className="f-badge f-badge--count">{cart.itemCount}</span>
+              <span className="f-tag f-tag--count">{cart.itemCount}</span>
             </span>
             <span className="whitespace-nowrap">{formatPKR(cart.subtotal)}</span>
           </button>

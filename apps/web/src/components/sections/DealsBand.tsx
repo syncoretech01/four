@@ -36,19 +36,19 @@ export function DealsBand() {
   const reduce = useReduceMotion();
 
   return (
-    <section className="bg-red text-cream">
+    <section className="on-red">
       <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
         <motion.h2
           initial={reduce ? false : { opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="f-heading max-w-[16ch] text-5xl !text-[var(--paper-0)] sm:text-7xl"
+          className="f-heading f-heading--lg max-w-[16ch]"
         >
           More smash for your cash.
         </motion.h2>
 
-        <div className="mt-14 grid grid-cols-1 gap-px overflow-hidden rounded-card border-2 border-paper-0 bg-paper-0/40 [box-shadow:var(--shadow-pop-red)] sm:grid-cols-3">
+        <div className="mt-14 grid grid-cols-1 gap-px overflow-hidden rounded-card border border-rule-white bg-rule-white sm:grid-cols-3">
           {CELLS.map((c, i) => (
             <motion.div
               key={c.title}
@@ -58,9 +58,9 @@ export function DealsBand() {
               transition={{ duration: 0.5, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
               className="bg-red p-8"
             >
-              <span className="font-display text-6xl font-bold text-cream/25">{String(i + 1).padStart(2, "0")}</span>
-              <h3 className="mt-4 font-display text-2xl font-bold uppercase">{c.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-cream/75">{c.copy}</p>
+              <span className="font-display text-6xl text-white/25">{String(i + 1).padStart(2, "0")}</span>
+              <h3 className="mt-4 font-display text-2xl uppercase">{c.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-white/75">{c.copy}</p>
             </motion.div>
           ))}
         </div>

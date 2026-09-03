@@ -96,7 +96,7 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
 
   return (
     <div className="f-drawer__body">
-      <button onClick={onBack} className="f-btn f-btn--quiet f-btn--sm mb-4 !px-0">
+      <button onClick={onBack} className="f-btn f-btn--quiet f-btn--sm mb-4 px-0">
         &larr; Back to cart
       </button>
 
@@ -237,7 +237,7 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
         </div>
 
         {errorMsg && (
-          <p role="alert" className="f-badge f-badge--error w-full justify-start !normal-case !tracking-normal !text-sm">
+          <p role="alert" className="f-notice f-notice--error">
             {errorMsg}
           </p>
         )}
@@ -266,7 +266,7 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
         <button
           onClick={place}
           disabled={stage === "placing" || !quote || !open}
-          className={`f-btn f-btn--primary f-btn--lg f-btn--block mt-1 ${stage === "placing" ? "is-loading" : ""}`}
+          className={`f-btn f-btn--red f-btn--lg f-btn--block mt-1 ${stage === "placing" ? "is-loading" : ""}`}
         >
           {!open
             ? "Kitchen closed"

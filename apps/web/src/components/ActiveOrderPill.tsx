@@ -83,10 +83,10 @@ export function ActiveOrderPill() {
           transition={{ type: "spring", stiffness: 300, damping: 28 }}
           className={`fixed left-4 z-40 ${barVisible ? "bottom-24 lg:bottom-5" : "bottom-5"}`}
         >
-          <span className="f-livepill !gap-2 !pr-1.5">
+          <span className="f-livepill gap-2 pr-1.5">
             <Link
               href={`/track/${order.orderNumber}`}
-              className="flex items-center gap-2.5 !text-ink-900"
+              className="flex items-center gap-2.5 text-ink-900"
               role="status"
             >
               <span className={`f-dot ${order.status === "OUT_FOR_DELIVERY" ? "" : "f-dot--off"}`} aria-hidden>
@@ -105,7 +105,7 @@ export function ActiveOrderPill() {
                 }
               }}
               aria-label="Dismiss order status"
-              className="f-iconbtn f-iconbtn--plain !h-6 !w-6"
+              className="f-iconbtn f-iconbtn--plain h-6 w-6"
             >
               <svg width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden>
                 <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />

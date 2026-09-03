@@ -48,11 +48,11 @@ export function CraftStory() {
   const yB = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [-40, 40]);
 
   return (
-    <section id="story" ref={ref} className="relative scroll-mt-20 overflow-hidden bg-[var(--bg-page-alt)] py-28">
+    <section id="story" ref={ref} className="relative overflow-hidden bg-[var(--bg-page-alt)] py-28">
       {/* oversized brand numeral bleeding off the left edge */}
       <span
         aria-hidden
-        className="pointer-events-none absolute -left-10 top-1/2 -translate-y-1/2 select-none font-display text-[26rem] font-bold leading-none text-red/[0.06] sm:text-[38rem]"
+        className="pointer-events-none absolute -left-10 top-1/2 -translate-y-1/2 select-none font-display text-[26rem] leading-none text-red/[0.06] sm:text-[38rem]"
       >
         4
       </span>
@@ -65,7 +65,7 @@ export function CraftStory() {
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         >
           <p className="f-eyebrow">The craft</p>
-          <h2 className="f-heading f-heading--lg sm:text-7xl">
+          <h2 className="f-heading f-heading--lg">
             The smash is
             <br />
             the <span className="text-red">recipe.</span>
@@ -85,11 +85,11 @@ export function CraftStory() {
                 transition={{ duration: 0.5, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
                 className="flex items-start gap-4"
               >
-                <span aria-hidden className="font-display text-4xl font-bold leading-none text-red/25">
+                <span aria-hidden className="font-display text-4xl leading-none text-red/25">
                   {m.no}
                 </span>
                 <div>
-                  <h3 className="font-display text-xl font-bold uppercase text-ink-900">{m.name}</h3>
+                  <h3 className="font-display text-xl uppercase text-ink-900">{m.name}</h3>
                   <p className="mt-1 max-w-[46ch] text-sm leading-relaxed text-ink-600">{m.copy}</p>
                 </div>
               </motion.div>
@@ -108,7 +108,7 @@ export function CraftStory() {
 
         <div className="relative grid grid-cols-2 gap-4 sm:gap-5">
           <motion.div style={{ y: yA }} className="relative mt-10">
-            <div className="f-photo aspect-[3/4] -rotate-2 [box-shadow:var(--shadow-pop-lg)]">
+            <div className="f-media aspect-[3/4]">
               <SmartImage
                 src="/home/craft-smash.jpg"
                 alt="A FOUR smash burger, the patty's lace-crisp edge in focus"
@@ -116,12 +116,12 @@ export function CraftStory() {
                 className="h-full w-full"
               />
             </div>
-            <span className="f-badge f-badge--accent absolute -left-2 top-5 -rotate-3 motion-safe:animate-float">
+            <span className="f-tag absolute -left-2 top-5 motion-safe:animate-float">
               Smashed to order
             </span>
           </motion.div>
           <motion.div style={{ y: yB }}>
-            <div className="f-photo f-photo--field-butter aspect-[4/5] rotate-2 [box-shadow:var(--shadow-pop-lg)]">
+            <div className="f-media aspect-[4/5]">
               <SmartImage
                 src="/home/craft-tray.jpg"
                 alt="Loaded fries in a FOUR tray"
@@ -137,7 +137,7 @@ export function CraftStory() {
             transition={{ duration: 0.55, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             className="absolute -bottom-8 left-1/2 hidden w-44 -translate-x-1/2 sm:block"
           >
-            <div className="f-photo aspect-square [box-shadow:var(--shadow-pop-lg)]">
+            <div className="f-media aspect-square">
               <SmartImage
                 src="/home/craft-crown.jpg"
                 alt="A hand-stuffed crown crust pizza"
@@ -156,11 +156,11 @@ export function CraftStory() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-20 grid grid-cols-2 gap-px overflow-hidden rounded-card border-2 border-ink-900 bg-ink-900/15 [box-shadow:var(--shadow-pop-lg)] sm:grid-cols-4"
+          className="mt-20 grid grid-cols-2 gap-px overflow-hidden rounded-card border border-rule bg-rule sm:grid-cols-4"
         >
           {STATS.map((s) => (
-            <div key={s.label} className="bg-paper-0 px-5 py-6">
-              <span className="block font-display text-4xl font-bold uppercase leading-none text-red sm:text-5xl">
+            <div key={s.label} className="bg-white px-5 py-6">
+              <span className="block font-display text-4xl uppercase leading-none text-red sm:text-5xl">
                 {s.value}
               </span>
               <span className="mt-1.5 block text-[11px] font-extrabold uppercase tracking-[0.08em] text-ink-600">

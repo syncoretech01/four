@@ -33,7 +33,7 @@ function Row({ words, reverse, dim }: { words: string[]; reverse?: boolean; dim?
     </div>
   );
   return (
-    <div className={`f-marquee__row ${reverse ? "f-marquee__row--rev" : ""} ${dim ? "f-marquee__row--dim" : ""}`}>
+    <div className={`f-marquee__row ${reverse ? "f-marquee__row--rev" : ""}`}>
       {strip}
       {strip}
     </div>

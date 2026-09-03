@@ -215,7 +215,7 @@ export function ChatDock() {
           }
         }}
         aria-label={open ? "Close assistant" : "Open ordering assistant"}
-        className={`fixed right-5 z-40 flex h-15 w-15 items-center justify-center rounded-full bg-red text-cream transition hover:bg-red-deep border-2 border-ink-900 [box-shadow:var(--shadow-pop)] ${
+        className={`f-fab fixed right-5 z-40 ${
           barVisible ? "bottom-24 lg:bottom-5" : "bottom-5"
         }`}
         whileTap={reduce ? undefined : { scale: 0.92 }}
@@ -239,7 +239,7 @@ export function ChatDock() {
           <motion.section
             role="dialog"
             aria-label="FOUR ordering assistant"
-            className={`fixed right-5 z-40 flex h-[min(36rem,74dvh)] w-[min(25rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-card bg-cream border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)] ${
+            className={`fixed right-5 z-40 flex h-[min(36rem,74dvh)] w-[min(25rem,calc(100vw-2.5rem))] flex-col overflow-hidden f-dock ${
               barVisible ? "bottom-[10.5rem] lg:bottom-24" : "bottom-24"
             }`}
             initial={reduce ? { opacity: 0 } : { opacity: 0, y: 24, scale: 0.96 }}
@@ -247,8 +247,8 @@ export function ChatDock() {
             exit={reduce ? { opacity: 0 } : { opacity: 0, y: 24, scale: 0.96 }}
             transition={{ type: "spring", stiffness: 320, damping: 28 }}
           >
-            <header className="flex items-center gap-3 bg-red px-5 py-4 text-cream">
-              <span className="font-display flex h-9 w-9 items-center justify-center rounded-full bg-cream text-sm font-bold text-red border-2 border-red-press [box-shadow:var(--shadow-pop-red)]">
+            <header className="f-dock__head flex items-center gap-3 px-5 py-4">
+              <span className="font-display flex h-9 w-9 items-center justify-center rounded-full bg-cream text-sm text-red">
                 4
               </span>
               <div className="flex-1">
@@ -268,13 +268,13 @@ export function ChatDock() {
                 </p>
               </div>
               {voiceEnabled && (
-                <div className="flex rounded-full bg-red-deep/60 p-1 text-xs font-semibold">
+                <div className="flex rounded-full bg-red-press/60 p-1 text-xs font-semibold">
                   <button
                     onClick={() => {
                       setMode("chat");
                       voice.stop();
                     }}
-                    className={`rounded-full px-3 py-1 transition ${mode === "chat" ? "bg-cream text-red" : "text-cream/80"}`}
+                    className={`rounded-full px-3 py-1 transition ${mode === "chat" ? "bg-cream text-red" : "text-white/80"}`}
                   >
                     Chat
                   </button>
@@ -283,7 +283,7 @@ export function ChatDock() {
                       setMode("voice");
                       void voice.start();
                     }}
-                    className={`rounded-full px-3 py-1 transition ${mode === "voice" ? "bg-cream text-red" : "text-cream/80"}`}
+                    className={`rounded-full px-3 py-1 transition ${mode === "voice" ? "bg-cream text-red" : "text-white/80"}`}
                   >
                     Voice
                   </button>
@@ -304,7 +304,7 @@ export function ChatDock() {
                             <span
                               key={i}
                               className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${
-                                tool.state === "error" ? "bg-red/15 text-red" : "bg-beige-deep text-ink-soft"
+                                tool.state === "error" ? "bg-red/15 text-red" : "bg-beige-deep text-ink-600"
                               }`}
                             >
                               {tool.state === "running" ? `${tool.label}...` : tool.label}
@@ -315,7 +315,7 @@ export function ChatDock() {
                       {(t.content || t.streaming) && (
                         <div
                           className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
-                            t.role === "user" ? "rounded-br-md bg-red text-cream" : "rounded-bl-md bg-beige-deep text-ink"
+                            t.role === "user" ? "rounded-br-md bg-red text-white" : "rounded-bl-md bg-beige-deep text-ink-900"
                           }`}
                         >
                           {t.content}
@@ -326,19 +326,19 @@ export function ChatDock() {
                   ))}
                 </div>
 
-                <form onSubmit={send} className="flex items-center gap-2 border-t border-ink-900/20 p-3">
+                <form onSubmit={send} className="flex items-center gap-2 border-t border-rule p-3">
                   {!voiceEnabled && speech.supported && (
                     <button
                       type="button"
                       onClick={speech.status === "listening" ? speech.stopListening : speech.listen}
                       aria-label={speech.status === "listening" ? "Stop listening" : "Order by voice"}
                       className={`relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition active:scale-90 ${
-                        speech.status === "listening" ? "bg-red text-cream" : "bg-beige-deep text-ink hover:text-red"
+                        speech.status === "listening" ? "bg-red text-white" : "bg-beige-deep text-ink-900 hover:text-red"
                       }`}
                     >
                       {speech.status === "listening" && !reduce && (
                         <motion.span
-                          className="absolute inset-0 rounded-full bg-red border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
+                          className="absolute inset-0 rounded-full bg-red"
                           animate={{ scale: [1, 1.35], opacity: [0.5, 0] }}
                           transition={{ duration: 1.2, repeat: Infinity, ease: "easeOut" }}
                         />
@@ -354,12 +354,12 @@ export function ChatDock() {
                     onChange={(e) => setInput(e.target.value)}
                     placeholder={speech.status === "listening" ? (speech.interim || "Listening...") : "Type your order..."}
                     aria-label="Message the assistant"
-                    className="h-11 flex-1 rounded-full border-2 border-ink-900/25 bg-cream px-4 text-sm text-ink outline-none transition focus:border-red focus:ring-2 focus:ring-red/30 [box-shadow:var(--shadow-pop-red)]"
+                    className="h-11 flex-1 rounded-full border border-rule bg-cream px-4 text-sm text-ink-900 outline-none transition focus:border-red focus:ring-2 focus:ring-red/30"
                   />
                   <button
                     type="submit"
                     aria-label="Send"
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red text-cream transition hover:bg-red-deep active:scale-90 border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red text-white transition hover:bg-red-press active:scale-90"
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
                       <path d="M3 12L21 3l-4 18-5.5-6.5L3 12Z" fill="currentColor" />
@@ -393,7 +393,7 @@ function VoicePanel({ voice }: { voice: ReturnType<typeof useRealtimeVoice> }) {
           {voice.status === "live" && (
             <span className="absolute inset-0 animate-ping rounded-full bg-red/30" aria-hidden />
           )}
-          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" className="relative text-cream" aria-hidden>
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" className="relative text-white" aria-hidden>
             <rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor" />
             <path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           </svg>
@@ -407,31 +407,31 @@ function VoicePanel({ voice }: { voice: ReturnType<typeof useRealtimeVoice> }) {
           <div
             key={t.id}
             className={`max-w-[88%] rounded-2xl px-4 py-2 text-sm leading-relaxed ${
-              t.role === "user" ? "ml-auto rounded-br-md bg-red text-cream" : "rounded-bl-md bg-beige-deep text-ink"
+              t.role === "user" ? "ml-auto rounded-br-md bg-red text-white" : "rounded-bl-md bg-beige-deep text-ink-900"
             }`}
           >
             {t.text}
           </div>
         ))}
         {voice.tools.slice(-3).map((t) => (
-          <span key={t.id} className="mr-1.5 inline-block rounded-full bg-beige-deep px-2.5 py-1 text-[11px] font-medium text-ink-soft">
+          <span key={t.id} className="mr-1.5 inline-block rounded-full bg-beige-deep px-2.5 py-1 text-[11px] font-medium text-ink-600">
             {t.status === "running" ? `${t.label}...` : t.label}
           </span>
         ))}
       </div>
 
-      <div className="border-t border-ink-900/20 p-3 text-center">
+      <div className="border-t border-rule p-3 text-center">
         {voice.status === "live" || voice.status === "connecting" ? (
           <button
             onClick={voice.stop}
-            className="rounded-full border-2 border-red px-6 py-2.5 text-sm font-semibold text-red transition hover:bg-red hover:text-cream"
+            className="f-btn f-btn--outline f-btn--md"
           >
             End voice session
           </button>
         ) : (
           <button
             onClick={() => void voice.start()}
-            className="rounded-full bg-red px-6 py-2.5 text-sm font-semibold text-cream transition hover:bg-red-deep border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
+            className="f-btn f-btn--primary f-btn--md"
           >
             Start talking
           </button>

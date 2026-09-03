@@ -15,7 +15,7 @@ import { LocationModal } from "../LocationModal";
 
 const LocationsMap = dynamic(() => import("./LocationsMap"), {
   ssr: false,
-  loading: () => <div className="h-full w-full animate-pulse bg-paper-200" aria-hidden />,
+  loading: () => <div className="h-full w-full animate-pulse bg-beige" aria-hidden />,
 });
 
 export function LocationsExplorer() {
@@ -46,13 +46,11 @@ export function LocationsExplorer() {
               <article
                 key={b.id}
                 onClick={() => select(b.id)}
-                className={`f-card f-card--pad cursor-pointer transition-shadow ${
-                  selected ? "!border-red [box-shadow:6px_6px_0_var(--red-press)]" : ""
-                }`}
+                className={`f-card f-card--pad cursor-pointer ${selected ? "is-selected" : ""}`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <span className="f-badge f-badge--sunken">0{i + 1}</span>
+                    <span className="f-tag f-tag--muted">0{i + 1}</span>
                     <h2 className="f-heading f-heading--sm mt-3">{b.name}</h2>
                     <p className="mt-1 text-sm text-ink-600">{b.address}</p>
                   </div>
@@ -79,7 +77,7 @@ export function LocationsExplorer() {
                               e.stopPropagation();
                               setPicker({ initialAreaId: a.id });
                             }}
-                            className="f-chip f-chip--sm !px-2.5 !py-1 !text-xs"
+                            className="f-chip f-chip--sm px-2.5 py-1 text-xs"
                             title={`Delivery in about ${deliveryEtaLabel(a.distanceKm)}`}
                           >
                             {a.name}
@@ -92,7 +90,7 @@ export function LocationsExplorer() {
                           e.stopPropagation();
                           setExpandedAreas(expanded ? null : b.id);
                         }}
-                        className="f-chip f-chip--sm f-chip--soft !px-2.5 !py-1 !text-xs"
+                        className="f-chip f-chip--sm f-chip--soft px-2.5 py-1 text-xs"
                       >
                         {expanded ? "Show fewer" : `+${areas.length - 5} more`}
                       </button>
@@ -136,8 +134,8 @@ export function LocationsExplorer() {
         </div>
 
         {/* ── Sticky map ── */}
-        <div className="lg:sticky lg:top-24 lg:self-start">
-          <div className="aspect-[4/5] overflow-hidden rounded-card border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)] sm:aspect-[16/10] lg:aspect-auto lg:h-[34rem]">
+        <div className="lg:sticky lg:top-[calc(var(--nav-h-scrolled)+1.5rem)] lg:self-start">
+          <div className="aspect-[4/5] overflow-hidden rounded-card border border-rule sm:aspect-[16/10] lg:aspect-auto lg:h-[34rem]">
             <LocationsMap flyRequest={flyRequest} onSelect={(id) => select(id, false)} />
           </div>
           <p className="mt-2 text-xs text-ink-600">
@@ -150,7 +148,7 @@ export function LocationsExplorer() {
       <section className="bg-[var(--bg-page-alt)]">
         <div className="wrap band">
           <p className="f-eyebrow">Delivery coverage</p>
-          <h2 className="f-heading f-heading--lg sm:text-5xl">Is your block covered?</h2>
+          <h2 className="f-heading f-heading--lg">Is your block covered?</h2>
           <p className="f-lede">
             {LAHORE_AREAS.length} areas across Lahore. Tap yours to see the delivery time and start an order.
           </p>

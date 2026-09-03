@@ -159,7 +159,7 @@ export function CartDrawer() {
                                   <button
                                     onClick={() => editLine(l)}
                                     aria-label={`Edit ${l.name}`}
-                                    className="f-btn f-btn--quiet f-btn--sm !h-auto !px-0 !text-xs"
+                                    className="f-btn f-btn--quiet f-btn--sm h-auto px-0 text-xs"
                                   >
                                     Edit
                                   </button>

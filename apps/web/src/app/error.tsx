@@ -8,11 +8,11 @@ import { BRAND } from "@four/shared";
  */
 export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
-    <main id="main" className="flex min-h-[100dvh] items-center justify-center bg-paper-100 px-4">
+    <main id="main" className="flex min-h-[100dvh] items-center justify-center bg-cream px-4">
       <div className="f-card f-card--pad-lg f-empty max-w-lg">
         <h1 className="f-heading f-heading--md">Something burned in the kitchen</h1>
         <p className="f-empty__text">An unexpected error stopped this page. Your cart is safe.</p>
-        <button onClick={reset} className="f-btn f-btn--primary f-btn--md">
+        <button onClick={reset} className="f-btn f-btn--red f-btn--md">
           Try again
         </button>
         <p className="text-sm text-ink-600">

@@ -39,12 +39,12 @@ export function MenuPreview() {
   const categoryLabels = useMemo(() => Object.fromEntries(categories.map((c) => [c.id, c.label])), [categories]);
 
   return (
-    <section id="menu" className="band scroll-mt-20">
+    <section id="menu" className="band">
       <div className="wrap">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
             <p className="f-eyebrow">Order in</p>
-            <h2 className="f-heading f-heading--lg sm:text-6xl">The Greatest Hits</h2>
+            <h2 className="f-heading f-heading--lg">The Greatest Hits</h2>
             <p className="f-lede">The dishes Lahore reorders. Tap one to start an order, or browse the whole board.</p>
           </div>
           <Link href="/menu" className="f-btn f-btn--primary f-btn--md">
@@ -55,11 +55,11 @@ export function MenuPreview() {
         {loading ? (
           <div className="mt-6 flex gap-6 overflow-hidden" aria-busy="true" aria-label="Loading the best sellers">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-96 w-72 shrink-0 animate-pulse rounded-card border-2 border-ink-900/25 bg-paper-200" />
+              <div key={i} className="h-96 w-72 shrink-0 animate-pulse rounded-card border border-rule bg-beige" />
             ))}
           </div>
         ) : offline ? (
-          <p className="f-badge f-badge--sunken mt-8 w-fit justify-start !text-sm !normal-case !tracking-normal">
+          <p className="f-notice f-notice--yellow mt-8 w-fit">
             The kitchen board is offline — the category links below still work.
           </p>
         ) : (

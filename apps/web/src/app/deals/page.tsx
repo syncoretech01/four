@@ -40,9 +40,9 @@ export default function DealsPage() {
       <Nav />
       <main id="main">
         {/* ── Hero ── */}
-        <header className="wrap pt-28 sm:pt-32">
+        <header className="wrap pt-[calc(var(--bar-h)+2rem)]">
           <p className="f-eyebrow">Deals &amp; offers</p>
-          <h1 className="f-heading f-heading--lg sm:text-7xl">Make It a Meal</h1>
+          <h1 className="f-heading f-heading--xl">Make It a Meal</h1>
           <p className="f-lede">
             Add fries and a drink to any burger from {formatPKR(MEAL_DEAL_FROM)} — here&apos;s exactly what the math
             saves you.
@@ -52,19 +52,19 @@ export default function DealsPage() {
         {/* ── Deal grid ── */}
         <div className="wrap pb-24 pt-10">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-            {deals.map((d, i) => (
+            {deals.map((d) => (
               <article key={d.id} className="f-item flex h-full flex-col">
                 <Link href={d.href} className="flex h-full flex-col" aria-label={`${d.name}, ${formatPKR(d.dealPrice)} - build this meal`}>
                   <div className="f-item__media">
                     <SmartImage src={`/menu-items/${d.itemId}.jpg`} alt={d.name} fallbackLabel={d.name} className="h-full w-full" />
-                    <span className={`f-item__flag f-badge f-badge--accent ${i % 2 ? "!rotate-2" : ""}`}>{d.badge}</span>
+                    <span className="f-item__flag f-tag">{d.badge}</span>
                   </div>
                   <div className="flex flex-1 flex-col gap-2 p-5">
                     <h2 className="f-item__name">{d.name}</h2>
                     <p className="text-sm font-semibold text-ink-600">{d.composition}</p>
                     <div className="mt-auto flex items-baseline gap-3 pt-2">
-                      <span className="font-display text-3xl font-bold text-red">{formatPKR(d.dealPrice)}</span>
-                      {d.strikePrice && <span className="f-badge f-badge--struck">{formatPKR(d.strikePrice)}</span>}
+                      <span className="font-display text-3xl text-red">{formatPKR(d.dealPrice)}</span>
+                      {d.strikePrice && <span className="f-tag f-tag--struck">{formatPKR(d.strikePrice)}</span>}
                     </div>
                     <p className="text-xs font-medium text-ink-600">{d.note}</p>
                     <span className="f-btn f-btn--primary f-btn--sm f-btn--block mt-2">Build this meal</span>
@@ -82,12 +82,12 @@ export default function DealsPage() {
         </div>
 
         {/* ── The one red band: free delivery ── */}
-        <section className="bg-red text-cream">
+        <section className="on-red">
           <div className="wrap py-24">
-            <h2 className="f-heading max-w-[16ch] text-5xl !text-[var(--paper-0)] sm:text-7xl">
+            <h2 className="f-heading f-heading--lg max-w-[16ch]">
               Over {formatPKR(FREE_DELIVERY_ABOVE)}? It rides free.
             </h2>
-            <p className="mt-4 max-w-[52ch] text-lg font-medium text-cream/85">
+            <p className="mt-4 max-w-[52ch] text-lg font-medium text-white/85">
               Standard delivery is a flat {formatPKR(DELIVERY_FEE)}, anywhere we ride. Clear{" "}
               {formatPKR(FREE_DELIVERY_ABOVE)} and we cover it.
             </p>

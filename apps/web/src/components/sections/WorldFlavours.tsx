@@ -28,8 +28,8 @@ const CITY_ITEMS: { city: string; itemId: string }[] = [
 const HOME_ITEM_ID = "lahori-fries";
 
 function tagBadge(item: MenuItemData) {
-  if (item.tags?.includes("signature")) return { label: "Signature", cls: "f-badge" };
-  if (item.tags?.includes("spicy")) return { label: "Spicy", cls: "f-badge f-badge--soft" };
+  if (item.tags?.includes("signature")) return { label: "Signature", cls: "f-tag" };
+  if (item.tags?.includes("spicy")) return { label: "Spicy", cls: "f-tag f-tag--red" };
   return null;
 }
 
@@ -44,7 +44,7 @@ export function WorldFlavours() {
     <section className="wrap band">
       <div className="max-w-3xl">
         <p className="f-eyebrow">The menu, mapped</p>
-        <h2 className="f-heading f-heading--lg sm:text-6xl">
+        <h2 className="f-heading f-heading--lg">
           Big-city flavours.
           <br />
           One Lahore <span className="text-red">address.</span>
@@ -70,15 +70,15 @@ export function WorldFlavours() {
                 className="f-card f-card--interactive flex h-full flex-col justify-between gap-6 p-5 sm:p-6"
                 aria-label={`${item.name}, ${formatPKR(item.price)} - order it`}
               >
-                <span className="font-display text-3xl font-bold uppercase leading-[0.9] text-ink-900 sm:text-4xl lg:text-5xl">
+                <span className="font-display text-3xl uppercase leading-[0.9] text-ink-900 sm:text-4xl lg:text-5xl">
                   {city}
                 </span>
                 <span className="flex items-end justify-between gap-2">
                   <span className="min-w-0">
                     <span className="block truncate text-sm font-bold text-ink-900">{item.name}</span>
-                    <span className="block font-display text-lg font-bold text-red">{formatPKR(item.price)}</span>
+                    <span className="block font-display text-lg text-red">{formatPKR(item.price)}</span>
                   </span>
-                  {badge && <span className={`${badge.cls} shrink-0 -rotate-2`}>{badge.label}</span>}
+                  {badge && <span className={`${badge.cls} shrink-0`}>{badge.label}</span>}
                 </span>
               </Link>
             </motion.div>
@@ -98,15 +98,15 @@ export function WorldFlavours() {
               className="f-card f-card--accent f-card--interactive flex h-full flex-col justify-between gap-6 p-5 sm:p-6"
               aria-label={`${home.name}, ${formatPKR(home.price)} - order it`}
             >
-              <span className="font-display text-3xl font-bold uppercase leading-[0.9] !text-[var(--paper-0)] sm:text-4xl lg:text-5xl">
+              <span className="font-display text-3xl uppercase leading-[0.9] sm:text-4xl lg:text-5xl">
                 Lahore
               </span>
               <span className="flex items-end justify-between gap-2">
                 <span className="min-w-0">
-                  <span className="block truncate text-sm font-bold !text-[var(--paper-0)]">{home.name}</span>
-                  <span className="block font-display text-lg font-bold text-cream/85">{formatPKR(home.price)}</span>
+                  <span className="block truncate text-sm font-bold">{home.name}</span>
+                  <span className="block font-display text-lg">{formatPKR(home.price)}</span>
                 </span>
-                <span className="shrink-0 text-xs font-extrabold uppercase tracking-[0.1em] text-cream/85">
+                <span className="shrink-0 text-xs font-extrabold uppercase tracking-[0.1em]">
                   ...and home
                 </span>
               </span>

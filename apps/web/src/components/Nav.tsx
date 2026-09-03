@@ -46,14 +46,14 @@ export function Nav({ overlay = false }: { overlay?: boolean } = {}) {
 
   return (
     <>
-      {/* Past 24px the bar lands: paper ground, 10px blur, the 2px ink rule. */}
+      {/* Past 24px the bar lands: white ground, 10px blur, the 1px rule. */}
       <header
-        className={`fixed inset-x-0 top-0 z-40 border-b-2 transition-all duration-[250ms] ${
+        className={`fixed inset-x-0 top-0 z-40 border-b transition-all duration-[250ms] ${
           scrolled
-            ? "border-ink-900 bg-paper-100/90 backdrop-blur-[10px]"
+            ? "border-rule bg-white/95 backdrop-blur-[10px]"
             : onDark
               ? "border-transparent bg-transparent"
-              : "border-transparent bg-paper-100/40 backdrop-blur-sm"
+              : "border-transparent bg-cream/40 backdrop-blur-sm"
         }`}
       >
         <nav
@@ -62,9 +62,7 @@ export function Nav({ overlay = false }: { overlay?: boolean } = {}) {
             scrolled ? "h-14" : "h-16"
           }`}
         >
-          {/* `!` because the DS ships an unlayered `a { color: var(--link) }`,
-              which outranks Tailwind's layered colour utilities. */}
-          <Link href="/" aria-label="FOUR home" className={`shrink-0 transition-colors ${onDark ? "!text-paper-0" : "!text-red"}`}>
+          <Link href="/" aria-label="FOUR home" className={`shrink-0 transition-colors ${onDark ? "text-white" : "text-red"}`}>
             <BrandLogo className="h-7" />
           </Link>
 
@@ -80,12 +78,12 @@ export function Nav({ overlay = false }: { overlay?: boolean } = {}) {
                   key={l.href}
                   href={l.href}
                   aria-current={active ? "page" : undefined}
-                  className={`border-b-2 pb-0.5 transition ${
+                  className={`border-b pb-0.5 transition ${
                     onDark
-                      ? `!text-paper-0 hover:!text-paper-0/70 ${active ? "border-paper-0" : "border-transparent"}`
+                      ? `text-white hover:text-white/70 ${active ? "border-rule-white" : "border-transparent"}`
                       : active
-                        ? "border-ink-900 !text-red"
-                        : "border-transparent !text-ink-900 hover:!text-red"
+                        ? "border-rule text-red"
+                        : "border-transparent text-ink-900 hover:text-red"
                   }`}
                 >
                   {l.label}
@@ -98,7 +96,7 @@ export function Nav({ overlay = false }: { overlay?: boolean } = {}) {
             <button
               onClick={() => setLocOpen(true)}
               data-open-location
-              className="f-chip f-chip--sm !hidden max-w-52 sm:!inline-flex"
+              className="f-chip f-chip--sm hidden max-w-52 sm:inline-flex"
             >
               <svg width="12" height="14" viewBox="0 0 12 14" fill="none" aria-hidden>
                 <path d="M6 13S1 8.6 1 5.4a5 5 0 1 1 10 0C11 8.6 6 13 6 13Z" stroke="currentColor" strokeWidth="1.5" />
@@ -113,7 +111,7 @@ export function Nav({ overlay = false }: { overlay?: boolean } = {}) {
               className="f-btn f-btn--primary f-btn--sm"
             >
               Cart
-              {cart.itemCount > 0 && <span className="f-badge f-badge--count">{cart.itemCount}</span>}
+              {cart.itemCount > 0 && <span className="f-tag f-tag--count">{cart.itemCount}</span>}
             </button>
 
             <button
@@ -122,7 +120,7 @@ export function Nav({ overlay = false }: { overlay?: boolean } = {}) {
               aria-label="Open menu"
               aria-expanded={mobileOpen}
               aria-controls="mobile-nav"
-              className="f-iconbtn f-iconbtn--sm md:!hidden"
+              className="f-iconbtn f-iconbtn--sm md:hidden"
             >
               <svg width="16" height="14" viewBox="0 0 16 14" fill="none" aria-hidden>
                 <path d="M1 1h14M1 7h14M1 13h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />

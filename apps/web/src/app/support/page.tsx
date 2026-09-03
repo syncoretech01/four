@@ -132,9 +132,9 @@ export default function SupportPage() {
       <Nav />
       <main id="main">
         {/* ── Hero ── */}
-        <header className="wrap pt-28 sm:pt-32">
+        <header className="wrap pt-[calc(var(--bar-h)+2rem)]">
           <p className="f-eyebrow">Support</p>
-          <h1 className="f-heading f-heading--lg sm:text-7xl">How Can We Help?</h1>
+          <h1 className="f-heading f-heading--xl">How Can We Help?</h1>
           <p className="f-lede">Most answers are below. For anything about a live order, call us — it&apos;s faster.</p>
         </header>
 
@@ -142,27 +142,27 @@ export default function SupportPage() {
         <div className="wrap pt-10">
           <div className="grid gap-6 sm:grid-cols-3">
             <div className="f-card f-card--pad">
-              <p className="f-eyebrow !mb-2">Call us</p>
-              <a href={BRAND.phoneHref} className="font-display text-3xl font-bold !text-red">
+              <p className="f-eyebrow mb-2">Call us</p>
+              <a href={BRAND.phoneHref} className="font-display text-3xl text-red">
                 {BRAND.phone}
               </a>
               <p className="mt-2 text-sm text-ink-600">{HOURS_LABEL}. For live orders, changes and cancellations.</p>
             </div>
             <div className="f-card f-card--pad">
-              <p className="f-eyebrow !mb-2">DM us</p>
+              <p className="f-eyebrow mb-2">DM us</p>
               <a
                 href={BRAND.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-display text-3xl font-bold !text-red"
+                className="font-display text-3xl text-red"
               >
                 {BRAND.instagramHandle}
               </a>
               <p className="mt-2 text-sm text-ink-600">For everything that isn&apos;t a live order.</p>
             </div>
             <div className="f-card f-card--pad">
-              <p className="f-eyebrow !mb-2">Walk in</p>
-              <p className="font-display text-3xl font-bold uppercase text-ink-900">{BRANCHES.length} branches</p>
+              <p className="f-eyebrow mb-2">Walk in</p>
+              <p className="font-display text-3xl uppercase text-ink-900">{BRANCHES.length} branches</p>
               <p className="mt-2 text-sm text-ink-600">Across Lahore, {HOURS_LABEL.toLowerCase()}.</p>
               <Link href="/locations" className="f-btn f-btn--secondary f-btn--sm mt-4">
                 Find a branch
@@ -186,7 +186,7 @@ export default function SupportPage() {
                     {g.faqs.map((f) => (
                       <details
                         key={f.q}
-                        className="group rounded-card border-2 border-ink-900 bg-paper-0 [box-shadow:var(--shadow-pop-sm)]"
+                        className="group rounded-card border border-rule bg-white"
                       >
                         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 font-bold text-ink-900 [&::-webkit-details-marker]:hidden">
                           {f.q}
@@ -211,8 +211,8 @@ export default function SupportPage() {
         <div className="wrap pb-24">
           <div className="f-card f-card--accent f-card--pad-lg flex flex-wrap items-center justify-between gap-4">
             <div>
-              <p className="f-heading f-heading--md !text-[var(--paper-0)]">Still stuck?</p>
-              <p className="mt-1 text-sm font-semibold text-cream/85">
+              <p className="f-heading f-heading--md">Still stuck?</p>
+              <p className="mt-1 text-sm font-semibold">
                 {BRAND.phone} — {HOURS_LABEL.toLowerCase()}.
               </p>
             </div>

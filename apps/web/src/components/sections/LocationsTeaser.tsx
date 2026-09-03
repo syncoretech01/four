@@ -36,7 +36,7 @@ export function LocationsTeaser() {
   const setLocationModalOpen = useStore((s) => s.setLocationModalOpen);
 
   return (
-    <section id="visit" className="mx-auto max-w-7xl scroll-mt-20 px-4 py-24 sm:px-6">
+    <section id="visit" className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
       <motion.div
         initial={reduce ? false : { opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -46,19 +46,19 @@ export function LocationsTeaser() {
       >
         <div className="grid grid-cols-1 gap-10 p-10 sm:p-14 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <h2 className="f-heading f-heading--lg !text-[var(--paper-0)] sm:text-5xl">
+            <h2 className="f-heading f-heading--lg">
               Three kitchens. Every block covered.
             </h2>
 
             <div className="mt-8 grid gap-5">
               {BRANCHES.map((b, i) => (
                 <div key={b.id} className="flex items-start gap-4">
-                  <span aria-hidden className="font-display text-3xl font-bold leading-none text-cream/25">
+                  <span aria-hidden className="font-display text-3xl leading-none text-white/25">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <div>
-                    <h3 className="font-display text-xl font-bold uppercase text-cream">{b.shortName}</h3>
-                    <p className="text-sm text-cream/70">{b.address}</p>
+                    <h3 className="font-display text-xl uppercase text-white">{b.shortName}</h3>
+                    <p className="text-sm text-white/70">{b.address}</p>
                   </div>
                 </div>
               ))}
@@ -72,7 +72,7 @@ export function LocationsTeaser() {
               {BRANCHES.map((b, i) => (
                 <span key={b.id} className="f-pin" style={pinPos(b)}>
                   {i === 0 && <span className="f-pin__ping" />}
-                  <span className="font-display text-sm font-bold">{i + 1}</span>
+                  <span className="font-display text-sm">{i + 1}</span>
                   <span className="f-pin__label">{b.shortName}</span>
                 </span>
               ))}
@@ -80,8 +80,8 @@ export function LocationsTeaser() {
           </div>
 
           <div>
-            <h3 className="text-xs font-extrabold uppercase tracking-[0.16em] text-paper-0/60">Delivery, decoded</h3>
-            <ul className="mt-4 grid gap-3 text-sm leading-relaxed text-cream/90">
+            <h3 className="text-xs font-extrabold uppercase tracking-[0.16em] text-white/60">Delivery, decoded</h3>
+            <ul className="mt-4 grid gap-3 text-sm leading-relaxed text-white/90">
               <li className="flex items-center gap-2.5">
                 <span className={`f-dot f-dot--cream ${kitchenOpen ? "" : "f-dot--off"}`} aria-hidden>
                   {kitchenOpen && <span className="f-dot__ping" />}
@@ -97,7 +97,7 @@ export function LocationsTeaser() {
               <li>
                 <a
                   href={BRAND.phoneHref}
-                  className="font-semibold !text-[var(--paper-0)] underline-offset-4 transition hover:underline"
+                  className="font-semibold underline-offset-4 transition hover:underline"
                 >
                   {BRAND.phone}
                 </a>
@@ -106,14 +106,14 @@ export function LocationsTeaser() {
                   href={BRAND.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-semibold !text-[var(--paper-0)] underline-offset-4 transition hover:underline"
+                  className="font-semibold underline-offset-4 transition hover:underline"
                 >
                   {BRAND.instagramHandle}
                 </a>
               </li>
             </ul>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link href="/locations" className="f-btn f-btn--primary f-btn--md !border-[var(--paper-0)]">
+              <Link href="/locations" className="f-btn f-btn--primary f-btn--md">
                 All locations &amp; hours
               </Link>
               <button onClick={() => setLocationModalOpen(true)} className="f-btn f-btn--on-red f-btn--md">

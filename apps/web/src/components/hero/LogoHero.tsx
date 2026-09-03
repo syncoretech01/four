@@ -72,7 +72,7 @@ export function LogoHero() {
   return (
     <section
       id="top"
-      className="relative isolate min-h-[100svh] w-full overflow-hidden bg-ink-900 text-paper-0"
+      className="on-red relative isolate min-h-[100svh] w-full overflow-hidden"
     >
       <HeroVideo />
 
@@ -87,7 +87,7 @@ export function LogoHero() {
           mx.set(0);
           my.set(0);
         }}
-        className="relative z-10 mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-between gap-8 px-4 pb-14 pt-24 sm:px-6 sm:pb-16 sm:pt-28"
+        className="relative z-10 mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-between gap-8 px-4 pb-14 pt-[calc(var(--bar-h)+2rem)] sm:px-6 sm:pb-16"
       >
         <div className="flex items-start justify-between gap-6">
           <div>
@@ -101,7 +101,7 @@ export function LogoHero() {
                 {open && (
                   <span className="absolute inline-flex h-full w-full rounded-full bg-red opacity-60 motion-safe:animate-ping" />
                 )}
-                <span className={`relative inline-flex h-2.5 w-2.5 rounded-full ${open ? "bg-red" : "bg-ink/30"}`} />
+                <span className={`relative inline-flex h-2.5 w-2.5 rounded-full ${open ? "bg-red" : "bg-ink-900/30"}`} />
               </span>
               {open ? "Open now · delivering till 3am" : "Opens 1pm · order ahead"}
             </motion.div>
@@ -113,7 +113,7 @@ export function LogoHero() {
             >
               <svg
                 viewBox="95 340 890 340"
-                className="w-full max-w-[13rem] [filter:drop-shadow(0_8px_22px_rgba(34,25,19,0.6))] sm:max-w-[15rem] lg:max-w-[17rem]"
+                className="w-full max-w-[13rem] sm:max-w-[15rem] lg:max-w-[17rem]"
               >
                 {LETTERS.map(({ path, depth }, i) => (
                   <HeroLetter key={i} path={path} depth={depth} index={i} sx={sx} sy={sy} drawn={drawn} reduce={!!reduce} />
@@ -138,12 +138,12 @@ export function LogoHero() {
               initial={reduce ? false : { opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.9, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              className="f-heading block text-4xl !text-[var(--paper-0)] [text-shadow:0_2px_18px_rgba(34,25,19,0.7)] sm:text-5xl lg:text-6xl"
+              className="f-heading f-heading--xl block [text-shadow:0_2px_18px_rgba(34,25,19,0.7)]"
             >
               Smashed to order.
               <br />
               At your door in{" "}
-              <span className="inline-block -rotate-2 rounded-[10px] bg-red px-3 pb-1.5 pt-0.5 text-paper-0 [box-shadow:var(--shadow-pop)] [text-shadow:none]">
+              <span className="inline-block rounded-[10px] bg-red px-3 pb-1.5 pt-0.5 text-white [text-shadow:none]">
                 {BASE_DELIVERY_MINUTES}
               </span>{" "}
               min.
@@ -155,7 +155,7 @@ export function LogoHero() {
             initial={reduce ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.05, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-4 max-w-[52ch] text-base font-medium leading-relaxed text-paper-0/90 [text-shadow:0_1px_10px_rgba(34,25,19,0.8)] sm:text-lg"
+            className="mt-4 max-w-[52ch] text-base font-medium leading-relaxed text-white/90 [text-shadow:0_1px_10px_rgba(34,25,19,0.8)] sm:text-lg"
           >
             110g patties pressed to a lace-edged crisp. Crown crusts stuffed by hand every morning.
             Sauces from scratch, in three Lahore kitchens.
@@ -345,7 +345,7 @@ function HeroSeal({ reduce }: { reduce: boolean }) {
       initial={reduce ? false : { opacity: 0, scale: 0.85, rotate: -12 }}
       animate={{ opacity: 1, scale: 1, rotate: 0 }}
       transition={{ duration: 0.7, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
-      className="hidden h-24 w-24 shrink-0 rounded-full border-2 border-ink-900 bg-paper-0 p-2 [box-shadow:var(--shadow-pop-lg)] sm:block lg:h-28 lg:w-28"
+      className="hidden h-24 w-24 shrink-0 rounded-full border border-rule-white bg-white p-2 sm:block lg:h-28 lg:w-28"
     >
       <RotatingSeal />
     </motion.div>

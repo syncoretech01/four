@@ -17,7 +17,7 @@ export function ToastStack() {
   const reduce = useReduceMotion();
 
   return (
-    <div className={`f-toast-stack ${lifted ? "!bottom-[6.5rem] lg:!bottom-6" : ""}`}>
+    <div className={`f-toast-stack ${lifted ? "bottom-[6.5rem] lg:bottom-6" : ""}`}>
       <AnimatePresence mode="popLayout">
         {toasts.map((t) => {
           const action = t.action;

@@ -142,7 +142,7 @@ export function ItemModal({
     <AnimatePresence>
       {item && (
         <motion.div
-          className="f-modal__wrap f-modal__wrap--sheet sm:!items-center sm:!p-6"
+          className="f-modal__wrap f-modal__wrap--sheet sm:items-center sm:p-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -159,12 +159,12 @@ export function ItemModal({
             transition={{ type: "spring", stiffness: 280, damping: 28 }}
           >
             <span className="f-sheet__grab sm:hidden" aria-hidden />
-            <div className="relative aspect-[16/9] overflow-hidden border-b-2 border-ink-900">
+            <div className="relative aspect-[16/9] overflow-hidden border-b border-rule">
               <SmartImage
                 src={item.image ?? `/menu-items/${item.id}.jpg`}
                 alt={item.name}
                 fallbackLabel={item.name}
-                className="h-full w-full object-cover [filter:saturate(1.12)_contrast(1.06)_sepia(.06)]"
+                className="h-full w-full object-cover"
               />
               <TagStack tags={item.tags} className="absolute left-5 top-5" />
               <button
@@ -181,7 +181,7 @@ export function ItemModal({
             <div className="p-7 pt-6">
               <div className="flex items-start justify-between gap-4">
                 <h3 className="f-heading f-heading--md">{item.name}</h3>
-                <span className="shrink-0 font-display text-2xl font-bold text-red">{formatPKR(unitPrice)}</span>
+                <span className="shrink-0 font-display text-2xl text-red">{formatPKR(unitPrice)}</span>
               </div>
               <p className="mt-2 leading-relaxed text-ink-600">{item.description}</p>
 
@@ -234,7 +234,7 @@ export function ItemModal({
               ))}
 
               {error && (
-                <p role="alert" className="f-badge f-badge--error mt-4 w-full justify-start !normal-case !tracking-normal !text-sm">
+                <p role="alert" className="f-notice f-notice--error mt-4">
                   {error}
                 </p>
               )}

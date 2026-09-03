@@ -56,9 +56,9 @@ function SignIn({ onSignedIn }: { onSignedIn: () => void }) {
   };
 
   return (
-    <div className="rounded-card bg-cream p-8 border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
-      <h2 className="font-display text-xl font-semibold text-ink">Ordered from another device?</h2>
-      <p className="mt-1 text-sm text-ink-soft">
+    <div className="rounded-card bg-cream p-8 border border-rule">
+      <h2 className="font-display text-xl text-ink-900">Ordered from another device?</h2>
+      <p className="mt-1 text-sm text-ink-600">
         Sign in with your mobile number and we&apos;ll send a one-time code to pull up your order history.
       </p>
 
@@ -73,20 +73,20 @@ function SignIn({ onSignedIn }: { onSignedIn: () => void }) {
               inputMode="tel"
               autoComplete="tel"
               aria-label="Mobile number"
-              className="h-12 w-full rounded-xl border-2 border-ink-900/25 bg-beige/40 px-4 text-ink outline-none transition focus:border-red focus:ring-2 focus:ring-red/30"
+              className="h-12 w-full rounded-xl border border-rule bg-beige/40 px-4 text-ink-900 outline-none transition focus:border-red focus:ring-2 focus:ring-red/30"
             />
             <button
               onClick={request}
               disabled={stage === "busy" || phone.replace(/\D/g, "").length < 11}
-              className="rounded-full bg-red py-3 text-sm font-semibold text-cream transition hover:bg-red-deep disabled:opacity-50 border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
+              className="f-btn f-btn--red f-btn--md"
             >
               {stage === "busy" ? "Sending..." : "Send code"}
             </button>
           </>
         ) : (
           <>
-            <p className="text-sm text-ink-soft">
-              Code sent to <span className="font-semibold text-ink">{phone}</span>.
+            <p className="text-sm text-ink-600">
+              Code sent to <span className="font-semibold text-ink-900">{phone}</span>.
               {devCode && (
                 <span className="mt-1 block rounded-lg bg-beige/60 px-3 py-2 font-mono text-xs">
                   Dev mode - your code is {devCode}
@@ -100,22 +100,22 @@ function SignIn({ onSignedIn }: { onSignedIn: () => void }) {
               inputMode="numeric"
               autoComplete="one-time-code"
               aria-label="One-time code"
-              className="h-12 w-full rounded-xl border-2 border-ink-900/25 bg-beige/40 px-4 text-center font-mono text-lg tracking-[0.4em] text-ink outline-none transition focus:border-red focus:ring-2 focus:ring-red/30"
+              className="h-12 w-full rounded-xl border border-rule bg-beige/40 px-4 text-center font-mono text-lg tracking-[0.4em] text-ink-900 outline-none transition focus:border-red focus:ring-2 focus:ring-red/30"
             />
             <button
               onClick={verify}
               disabled={code.length !== 6}
-              className="rounded-full bg-red py-3 text-sm font-semibold text-cream transition hover:bg-red-deep disabled:opacity-50 border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
+              className="f-btn f-btn--red f-btn--md"
             >
               Verify &amp; show my orders
             </button>
-            <button onClick={() => setStage("phone")} className="text-xs font-medium text-ink-soft hover:text-ink">
+            <button onClick={() => setStage("phone")} className="text-xs font-medium text-ink-600 hover:text-ink-900">
               Use a different number
             </button>
           </>
         )}
         {message && (
-          <p role="alert" className="rounded-xl bg-red/10 px-4 py-3 text-sm font-medium text-red">
+          <p role="alert" className="f-notice f-notice--error">
             {message}
           </p>
         )}
@@ -134,7 +134,7 @@ function ReorderButton({ order }: { order: OrderView }) {
         setBusy(false);
       }}
       disabled={busy}
-      className={`f-btn f-btn--outline-red f-btn--sm ${busy ? "is-loading" : ""}`}
+      className={`f-btn f-btn--outline f-btn--sm ${busy ? "is-loading" : ""}`}
     >
       Order it again
     </button>
@@ -164,15 +164,15 @@ export default function OrdersPage() {
   return (
     <>
       <Nav />
-      <main id="main" className="mx-auto min-h-[calc(100dvh-4rem)] max-w-3xl px-4 pb-24 pt-28 sm:px-6">
+      <main id="main" className="mx-auto min-h-[calc(100dvh-var(--bar-h))] max-w-3xl px-4 pb-24 pt-[calc(var(--bar-h)+2rem)] sm:px-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h1 className="font-display text-4xl font-semibold text-ink">Your orders</h1>
-            <p className="mt-2 text-ink-soft">Everything you have ordered from this device or phone number.</p>
+            <h1 className="font-display text-4xl text-ink-900">Your orders</h1>
+            <p className="mt-2 text-ink-600">Everything you have ordered from this device or phone number.</p>
           </div>
           {customer && (
-            <p className="text-sm text-ink-soft">
-              Signed in as <span className="font-semibold text-ink">{customer.phone}</span>{" "}
+            <p className="text-sm text-ink-600">
+              Signed in as <span className="font-semibold text-ink-900">{customer.phone}</span>{" "}
               <button onClick={signOut} className="ml-2 font-medium text-red hover:underline">
                 Sign out
               </button>
@@ -181,25 +181,25 @@ export default function OrdersPage() {
         </div>
 
         <div className="mt-8 grid gap-4">
-          {orders === null && <div className="h-40 animate-pulse rounded-card bg-beige-deep/60 border-2 border-ink-900/25" />}
+          {orders === null && <div className="h-40 animate-pulse rounded-card bg-beige-deep/60 border border-rule" />}
           {orders?.length === 0 && (
-            <div className="rounded-card bg-cream p-10 text-center border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
-              <p className="text-ink-soft">No orders on this device yet. Your first one is a scroll away.</p>
+            <div className="rounded-card bg-cream p-10 text-center border border-rule">
+              <p className="text-ink-600">No orders on this device yet. Your first one is a scroll away.</p>
               <Link
                 href="/menu"
-                className="mt-4 inline-block rounded-full bg-red px-6 py-3 text-sm font-semibold text-cream transition hover:bg-red-deep border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
+                className="f-btn f-btn--primary f-btn--md mt-4"
               >
                 See the menu
               </Link>
             </div>
           )}
           {orders?.map((o) => (
-            <article key={o.orderNumber} className="rounded-card bg-cream border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
+            <article key={o.orderNumber} className="rounded-card bg-cream border border-rule">
               <Link href={`/track/${o.orderNumber}`} className="group block p-6 pb-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
-                    <p className="font-display text-xl font-semibold text-ink group-hover:text-red">{o.orderNumber}</p>
-                    <p className="text-sm text-ink-soft">
+                    <p className="font-display text-xl text-ink-900 group-hover:text-red">{o.orderNumber}</p>
+                    <p className="text-sm text-ink-600">
                       {new Date(o.placedAt).toLocaleDateString("en-PK", { day: "numeric", month: "short" })} ·{" "}
                       {o.lines.reduce((n, l) => n + l.qty, 0)} items · {o.branchName ?? "FOUR"}
                     </p>
@@ -207,21 +207,21 @@ export default function OrdersPage() {
                   <div className="flex items-center gap-3">
                     <span
                       className={`rounded-full px-3 py-1.5 text-xs font-bold ${
-                        o.status === "CANCELLED" ? "bg-ink/10 text-ink-soft" : o.status === "DELIVERED" ? "bg-ink/10 text-ink" : "bg-red text-cream"
+                        o.status === "CANCELLED" ? "bg-ink-900/10 text-ink-600" : o.status === "DELIVERED" ? "bg-ink-900/10 text-ink-900" : "bg-red text-white"
                       }`}
                     >
                       {ORDER_STATUS_LABELS[o.status as OrderStatusName] ?? o.status}
                     </span>
-                    <span className="font-bold text-ink">{formatPKR(o.total)}</span>
+                    <span className="font-bold text-ink-900">{formatPKR(o.total)}</span>
                   </div>
                 </div>
-                <p className="mt-3 truncate text-sm text-ink-soft">
+                <p className="mt-3 truncate text-sm text-ink-600">
                   {o.lines.map((l) => `${l.qty}x ${l.name}`).join(", ")}
                 </p>
               </Link>
-              <div className="flex items-center gap-3 border-t-2 border-paper-300 px-6 py-3">
+              <div className="flex items-center gap-3 border-t border-rule px-6 py-3">
                 <ReorderButton order={o} />
-                <Link href={`/track/${o.orderNumber}`} className="f-btn f-btn--quiet f-btn--sm !px-0">
+                <Link href={`/track/${o.orderNumber}`} className="f-btn f-btn--quiet f-btn--sm px-0">
                   Track →
                 </Link>
               </div>

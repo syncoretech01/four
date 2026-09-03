@@ -49,58 +49,58 @@ export default function PayPage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-beige px-4">
-      <div className="w-full max-w-md rounded-3xl bg-cream p-8 border-2 border-ink-900 [box-shadow:var(--shadow-pop-lg)]">
+      <div className="w-full max-w-md rounded-[20px] bg-cream p-8 border border-rule">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-red">Demo payment gateway</p>
-        <h1 className="mt-2 text-2xl font-bold text-ink">Complete your payment</h1>
+        <h1 className="mt-2 text-2xl font-bold text-ink-900">Complete your payment</h1>
 
-        {state === "loading" && <p className="mt-6 text-ink-soft">Loading order...</p>}
+        {state === "loading" && <p className="mt-6 text-ink-600">Loading order...</p>}
 
         {state === "error" && (
-          <p role="alert" className="mt-6 rounded-xl bg-red/10 px-4 py-3 text-sm font-medium text-red">
+          <p role="alert" className="f-notice f-notice--error mt-6">
             {message}
           </p>
         )}
 
         {order && state !== "loading" && state !== "error" && (
           <>
-            <dl className="mt-6 grid gap-2 rounded-2xl bg-beige/60 p-4 text-sm">
-              <div className="flex justify-between text-ink-soft">
+            <dl className="mt-6 grid gap-2 rounded-[20px] bg-beige/60 p-4 text-sm">
+              <div className="flex justify-between text-ink-600">
                 <dt>Order</dt>
-                <dd className="font-semibold text-ink">{order.orderNumber}</dd>
+                <dd className="font-semibold text-ink-900">{order.orderNumber}</dd>
               </div>
-              <div className="flex justify-between text-ink-soft">
+              <div className="flex justify-between text-ink-600">
                 <dt>Deliver to</dt>
                 <dd>
                   {order.block}, {order.areaName}
                 </dd>
               </div>
-              <div className="flex justify-between text-base font-bold text-ink">
+              <div className="flex justify-between text-base font-bold text-ink-900">
                 <dt>Amount</dt>
                 <dd>{formatPKR(order.total)}</dd>
               </div>
             </dl>
 
             {message && state === "ready" && (
-              <p role="alert" className="mt-4 rounded-xl bg-red/10 px-4 py-3 text-sm font-medium text-red">
+              <p role="alert" className="f-notice f-notice--error mt-4">
                 {message}
               </p>
             )}
 
             {state === "done" ? (
-              <div className="mt-6 rounded-xl bg-green-700/10 px-4 py-3 text-sm font-semibold text-green-800">
+              <div className="f-notice f-notice--success mt-6">
                 Payment received - your order is with the kitchen. Taking you to live tracking...
               </div>
             ) : (
               <button
                 onClick={pay}
                 disabled={state === "paying" || !token}
-                className="mt-6 w-full rounded-full bg-red py-4 text-base font-semibold text-cream transition hover:bg-red-deep active:scale-[0.98] disabled:opacity-50 border-2 border-ink-900 [box-shadow:var(--shadow-pop)]"
+                className="f-btn f-btn--red f-btn--md f-btn--block mt-6"
               >
                 {state === "paying" ? "Processing..." : `Pay ${formatPKR(order.total)} (demo)`}
               </button>
             )}
 
-            <p className="mt-4 text-center text-xs text-ink-soft">
+            <p className="mt-4 text-center text-xs text-ink-600">
               This is FOUR&apos;s built-in demonstration gateway - no real money moves. A live Safepay or PayFast
               checkout takes this page&apos;s place at launch.
             </p>
