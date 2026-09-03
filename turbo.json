@@ -24,8 +24,6 @@
         "WEB_ORIGIN",
         "NEXT_PUBLIC_API_URL",
         "NEXT_PUBLIC_SITE_URL",
-        "NEXT_PUBLIC_HERO_VIDEO_URL",
-        "NEXT_PUBLIC_HERO_POSTER_URL",
         "OPENAI_API_KEY",
         "OPENAI_MODEL",
         "OPENAI_REALTIME_MODEL",

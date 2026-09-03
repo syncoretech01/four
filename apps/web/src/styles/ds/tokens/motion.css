@@ -14,11 +14,4 @@
 
   --hover-scale: 1.1;  /* card photo on hover */
   --press-scale: 0.98; /* pill on :active */
-
-  /* WP2 deletes: read by the v2 components.css until the chrome is replaced */
-  --press-travel: 2px;
-  --press-scale-icon: 0.92;
-  --hover-lift: -4px;
-  --float-cycle: 4s;
-  --wobble-cycle: 5s;
 }

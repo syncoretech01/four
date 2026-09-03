@@ -9,10 +9,12 @@ import { useReduceMotion } from "@/lib/useAnim";
 import { useDismissable } from "@/lib/useDismissable";
 import { useKitchenOpen } from "@/lib/useKitchenOpen";
 import { useStore } from "@/lib/store";
+import { CLOSES_LABEL, OPENS_LABEL } from "@/lib/hours";
 import { BrandLogo } from "../BrandLogo";
+import { DoodleBackdrop } from "../ds/DoodleBackdrop";
 
 /**
- * Mobile navigation: a full-screen paper takeover, not a drawer - the
+ * Mobile navigation: a full-screen red takeover, not a drawer - the
  * right-edge drawer is the cart's signature move, and the loud display type
  * wants the whole canvas. Closes on route change, Escape, or the X; focus
  * lands on the close button and returns to the hamburger.
@@ -64,29 +66,30 @@ export function MobileNav({
           role="dialog"
           aria-modal="true"
           aria-label="Menu"
-          className="fixed inset-0 z-50 flex flex-col bg-cream md:hidden"
+          className="f-mobilenav fixed inset-0 z-50 flex flex-col md:hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
         >
+          <DoodleBackdrop />
           <motion.div
             initial={reduce ? false : { y: -12, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="flex h-16 shrink-0 items-center justify-between border-b border-rule px-4"
+            className="relative z-[1] flex h-[var(--nav-h)] shrink-0 items-center justify-between border-b border-rule-white px-4"
           >
-            <Link href="/" onClick={onClose} aria-label="FOUR home" className="text-red">
+            <Link href="/" onClick={onClose} aria-label="FOUR home" className="text-white">
               <BrandLogo className="h-7" />
             </Link>
-            <button ref={closeRef} onClick={onClose} aria-label="Close menu" className="f-iconbtn f-iconbtn--sm">
+            <button ref={closeRef} onClick={onClose} aria-label="Close menu" className="f-iconbtn f-iconbtn--md f-iconbtn--on-red">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
                 <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
               </svg>
             </button>
           </motion.div>
 
-          <nav aria-label="Mobile" className="flex-1 overflow-y-auto px-5 pt-3">
+          <nav aria-label="Mobile" className="relative z-[1] flex-1 overflow-y-auto px-5 pt-3">
             {links.map((l, i) => {
               const active = pathname === l.href;
               return (
@@ -96,14 +99,7 @@ export function MobileNav({
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.05 + i * 0.045, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <Link
-                    href={l.href}
-                    onClick={onClose}
-                    aria-current={active ? "page" : undefined}
-                    className={`block border-b border-rule py-4 font-display text-4xl uppercase leading-[0.9] transition ${
-                      active ? "text-red" : "text-ink-900 hover:text-red"
-                    }`}
-                  >
+                  <Link href={l.href} onClick={onClose} aria-current={active ? "page" : undefined} className="f-mobilenav__link">
                     {l.label}
                   </Link>
                 </motion.div>
@@ -115,14 +111,14 @@ export function MobileNav({
             initial={reduce ? false : { y: 16, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="grid shrink-0 gap-3 border-t border-rule bg-white px-5 py-5"
+            className="relative z-[1] grid shrink-0 gap-3 border-t border-rule-white bg-red-press px-5 py-5"
           >
             <button
               onClick={() => {
                 onClose();
                 setLocationModalOpen(true);
               }}
-              className="f-chip w-full justify-between"
+              className="f-btn f-btn--on-red f-btn--md f-btn--block justify-between"
             >
               <span className="flex min-w-0 items-center gap-2">
                 <svg width="12" height="14" viewBox="0 0 12 14" fill="none" aria-hidden className="shrink-0">
@@ -131,21 +127,24 @@ export function MobileNav({
                 </svg>
                 <span className="truncate">{location ? `${location.block}, ${location.areaName}` : "Set delivery area"}</span>
               </span>
-              <span className="shrink-0 text-xs font-extrabold uppercase tracking-[0.08em] text-red">Change</span>
+              <span className="shrink-0 text-yellow">Change</span>
             </button>
 
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <span className="f-livepill">
-                <span className={`f-dot ${kitchenOpen ? "" : "f-dot--off"}`} aria-hidden>
+              <span className="f-livepill f-livepill--on-red">
+                <span className={`f-dot f-dot--cream ${kitchenOpen ? "" : "f-dot--off"}`} aria-hidden>
                   {kitchenOpen && <span className="f-dot__ping" />}
                   <span className="f-dot__core" />
                 </span>
-                {kitchenOpen ? "Open now · till 3am" : "Opens 1pm"}
+                {kitchenOpen ? `Open now · till ${CLOSES_LABEL}` : `Opens ${OPENS_LABEL}`}
               </span>
-              <a href={BRAND.phoneHref} className="f-btn f-btn--outline f-btn--sm">
+              <a href={BRAND.phoneHref} className="f-btn f-btn--primary f-btn--sm">
                 Call {BRAND.phone}
               </a>
             </div>
+            <a href={BRAND.instagram} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-yellow">
+              {BRAND.instagramHandle}
+            </a>
           </motion.div>
         </motion.div>
       )}

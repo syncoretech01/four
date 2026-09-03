@@ -1,16 +1,20 @@
-import { MENU_ITEMS, formatPKR } from "@four/shared";
+import { BRAND, MENU_ITEMS, formatPKR } from "@four/shared";
 import { Nav } from "@/components/Nav";
 import { LogoHero } from "@/components/hero/LogoHero";
-import { Marquee } from "@/components/sections/Marquee";
-import { MenuPreview } from "@/components/sections/MenuPreview";
+import { CategoriesCarousel } from "@/components/sections/CategoriesCarousel";
 import { CraftStory } from "@/components/sections/CraftStory";
+import { PopularDishes } from "@/components/sections/PopularDishes";
+import { HowItWorks } from "@/components/sections/HowItWorks";
 import { WorldFlavours } from "@/components/sections/WorldFlavours";
 import { DealsBand } from "@/components/sections/DealsBand";
-import { LocationsTeaser } from "@/components/sections/LocationsTeaser";
+import { DeliveryAreas } from "@/components/sections/DeliveryAreas";
+import { CtaBand } from "@/components/sections/CtaBand";
 import { Footer } from "@/components/sections/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { ChatDock } from "@/components/chat/ChatDock";
 import { LocationGate } from "@/components/LocationModal";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 // Price range is computed from the live menu data so it can never drift from
 // what /menu actually charges. Variants count: a pizza's "large" price is the
@@ -22,14 +26,16 @@ const restaurantJsonLd = {
   "@type": "Restaurant",
   name: "FOUR",
   servesCuisine: ["Burgers", "Pizza", "Fast Food"],
+  telephone: BRAND.phone,
+  image: `${SITE_URL}/og.jpg`,
   address: {
     "@type": "PostalAddress",
-    streetAddress: "Fairways Commercial, Sector M, DHA Phase 6",
+    streetAddress: BRAND.address,
     addressLocality: "Lahore",
     addressCountry: "PK",
   },
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-  sameAs: ["https://www.instagram.com/fourpakistan_/"],
+  url: SITE_URL,
+  sameAs: [BRAND.instagram],
   priceRange: `${formatPKR(Math.min(...allPrices))} - ${formatPKR(Math.max(...allPrices))}`,
   openingHoursSpecification: {
     "@type": "OpeningHoursSpecification",
@@ -37,23 +43,25 @@ const restaurantJsonLd = {
     opens: "13:00",
     closes: "03:00",
   },
-  hasMenu: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/menu`,
+  hasMenu: `${SITE_URL}/menu`,
+  potentialAction: { "@type": "OrderAction", target: `${SITE_URL}/menu` },
 };
 
 export default function Home() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(restaurantJsonLd) }} />
-      {/* the hero is a dark full-bleed video, so the bar starts transparent */}
-      <Nav overlay />
+      <Nav />
       <main id="main">
         <LogoHero />
-        <Marquee />
-        <MenuPreview />
+        <CategoriesCarousel mode="link" />
         <CraftStory />
+        <PopularDishes />
+        <HowItWorks />
         <WorldFlavours />
         <DealsBand />
-        <LocationsTeaser />
+        <DeliveryAreas />
+        <CtaBand />
       </main>
       <Footer />
       <CartDrawer />

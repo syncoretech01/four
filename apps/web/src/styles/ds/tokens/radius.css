@@ -12,8 +12,4 @@
   --radius-tag: 10px 0;  /* sticker tags */
   --radius-round: 50%;
   --border-w: 1px;
-
-  /* WP2 deletes: read by the v2 components.css until the chrome is replaced */
-  --border-w-strong: 2px;
-  --border-w-frame: 4px;
 }

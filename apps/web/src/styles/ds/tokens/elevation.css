@@ -6,18 +6,9 @@
   --shadow-overlay: var(--shadow-float);
   --blur-scrim: 0px;
 
-  /* WP2 deletes: read by the v2 components.css / TSX until the chrome is replaced */
-  --shadow-pop-sm: 2px 2px 0 var(--ink-900);
-  --shadow-pop: 3px 3px 0 var(--ink-900);
-  --shadow-pop-lg: 6px 6px 0 var(--ink-900);
-  --shadow-pop-red: 3px 3px 0 var(--red-press);
-  --shadow-sticker: 4px 6px 0 rgba(31, 23, 21, 0.9);
-  --shadow-card: 0 1px 2px 0 var(--ink-a08);
-  --shadow-card-hover: var(--shadow-pop-lg);
-  --shadow-badge: var(--shadow-pop-sm);
-  --shadow-cta: var(--shadow-pop);
-  --shadow-cta-cream: var(--shadow-pop);
-  --shadow-overlay-heavy: var(--shadow-float);
-  --blur-nav: 10px;
-  --grain-opacity: 0.05;
+  /* still referenced by admin/rider arbitrary classes; resolve to nothing so they go flat */
+  --shadow-pop-sm: none;
+  --shadow-pop: none;
+  --shadow-pop-lg: none;
+  --shadow-pop-red: none;
 }

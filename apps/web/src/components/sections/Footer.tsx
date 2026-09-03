@@ -1,11 +1,13 @@
 import Link from "next/link";
-import { BRAND, BRANCHES, HOURS_LABEL, DELIVERY_FEE, FREE_DELIVERY_ABOVE, formatPKR } from "@four/shared";
-import { BrandLogo } from "../BrandLogo";
+import { BRAND, BRANCHES, DELIVERY_FEE, FREE_DELIVERY_ABOVE, HOURS_LABEL, formatPKR } from "@four/shared";
+import { DoodleBackdrop } from "../ds/DoodleBackdrop";
+import { Ticker } from "../ds/Ticker";
 
 const ORDER_LINKS = [
   { href: "/menu", label: "Menu" },
   { href: "/deals", label: "Deals" },
   { href: "/orders", label: "My Orders" },
+  { href: "/orders", label: "Track an order" },
 ];
 
 const COMPANY_LINKS = [
@@ -14,93 +16,129 @@ const COMPANY_LINKS = [
   { href: "/support", label: "Support" },
 ];
 
-const colHeading = "text-xs font-extrabold uppercase tracking-[0.16em] text-ink-600";
-const link = "font-bold uppercase tracking-[0.04em] text-ink-900 transition hover:text-red";
+const FOODPANDA = "https://www.foodpanda.pk/restaurant/lmmc/four";
+
+function Arrow() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 /**
- * Chain-grade footer: an order-CTA band, four columns of real links and
- * facts, and a fact bar. Stays a server component - every value renders
- * from @four/shared, nothing here is live.
+ * Dinevo's footer on FOUR red: a four-cell link strip, the giant ticker of
+ * the real wordmark, four widgets of real data, and the bottom bar. Stays a
+ * server component - every value renders from @four/shared, nothing is live.
  */
 export function Footer() {
   return (
-    <footer className="border-t border-rule bg-cream">
-      {/* Row 0 - the order CTA band */}
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 border-b border-rule px-4 py-8 sm:px-6">
-        <div>
-          <p className="f-heading f-heading--md">Hungry? We&apos;re on.</p>
-          <p className="mt-1 text-sm font-semibold text-ink-600">{HOURS_LABEL}.</p>
-        </div>
-        <Link href="/menu" className="f-btn f-btn--primary f-btn--md">
-          Order now
-        </Link>
-      </div>
-
-      {/* Row 1 - four columns */}
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
-        <div>
-          <span className="text-red">
-            <BrandLogo className="h-8" />
-          </span>
-          <p className="mt-3 max-w-[40ch] text-sm text-ink-600">
-            Smash burgers, crown crust pizzas and shakes, made fresh in three Lahore kitchens.
-          </p>
-          <a
-            href={BRAND.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-4 inline-block text-sm font-bold text-ink-900 transition hover:text-red"
-          >
+    <footer className="f-footer on-red">
+      <DoodleBackdrop />
+      <div className="wrap relative z-[1]">
+        <div className="f-footer__strip">
+          <a href={BRAND.instagram} target="_blank" rel="noopener noreferrer">
             {BRAND.instagramHandle}
+            <Arrow />
           </a>
-        </div>
-
-        <nav aria-label="Order" className="grid content-start gap-2 text-sm">
-          <span className={colHeading}>Order</span>
-          {ORDER_LINKS.map((l) => (
-            <Link key={l.href} href={l.href} className={link}>
-              {l.label}
-            </Link>
-          ))}
-          <a
-            href="https://www.foodpanda.pk/restaurant/lmmc/four"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={link}
-          >
+          <a href={BRAND.phoneHref}>
+            Call {BRAND.phone}
+            <Arrow />
+          </a>
+          <a href={FOODPANDA} target="_blank" rel="noopener noreferrer">
             foodpanda
+            <Arrow />
           </a>
-        </nav>
-
-        <nav aria-label="FOUR" className="grid content-start gap-2 text-sm">
-          <span className={colHeading}>FOUR</span>
-          {COMPANY_LINKS.map((l) => (
-            <Link key={l.href} href={l.href} className={link}>
-              {l.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="grid content-start gap-2 text-sm text-ink-600">
-          <span className={colHeading}>Find us</span>
-          {BRANCHES.map((b) => (
-            <Link key={b.id} href="/locations" className="text-ink-600 transition hover:text-red">
-              <span className="font-extrabold text-ink-900">{b.shortName}</span> · {b.address.replace(", Lahore", "")}
-            </Link>
-          ))}
-          <a href={BRAND.phoneHref} className="mt-1 font-extrabold text-ink-900 transition hover:text-red">
-            {BRAND.phone}
-          </a>
-          <span>{HOURS_LABEL}</span>
+          <Link href="/menu">
+            Order online
+            <Arrow />
+          </Link>
         </div>
       </div>
 
-      {/* Row 2 - fact bar */}
-      <div className="border-t border-rule">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2 px-4 py-5 text-xs text-ink-600 sm:px-6">
+      <Ticker />
+
+      <div className="wrap relative z-[1]">
+        <div className="f-footer__widgets">
+          <div>
+            <h2 className="f-footer__title">Contact</h2>
+            <ul className="f-footer__list text-yellow">
+              <li>
+                <a href={BRAND.phoneHref} className="f-footer__link text-yellow">
+                  {BRAND.phone}
+                </a>
+              </li>
+              <li>
+                <a href={BRAND.instagram} target="_blank" rel="noopener noreferrer" className="f-footer__link text-yellow">
+                  {BRAND.instagramHandle}
+                </a>
+              </li>
+              <li className="text-sm leading-relaxed">{BRAND.address}</li>
+            </ul>
+          </div>
+
+          <nav aria-label="Order">
+            <h2 className="f-footer__title">Order</h2>
+            <ul className="f-footer__list">
+              {ORDER_LINKS.map((l) => (
+                <li key={l.label}>
+                  <Link href={l.href} className="f-footer__link">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <a href={FOODPANDA} target="_blank" rel="noopener noreferrer" className="f-footer__link">
+                  foodpanda
+                </a>
+              </li>
+            </ul>
+          </nav>
+
+          <nav aria-label="FOUR">
+            <h2 className="f-footer__title">FOUR</h2>
+            <ul className="f-footer__list">
+              {COMPANY_LINKS.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} className="f-footer__link">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="f-footer__hours">
+            <h2 className="f-footer__title">Opening hours</h2>
+            <ul className="f-footer__list text-sm">
+              <li>
+                <span className="block text-white/70">Every day</span>
+                <span className="block">{HOURS_LABEL.replace("Open daily ", "")}</span>
+              </li>
+              <li>
+                Delivery {formatPKR(DELIVERY_FEE)}, free over {formatPKR(FREE_DELIVERY_ABOVE)}
+              </li>
+              <li className="text-white/70">Prices exclusive of tax</li>
+              {BRANCHES.map((b) => (
+                <li key={b.id}>
+                  <Link href="/locations" className="f-footer__link text-sm">
+                    <span className="text-yellow">{b.shortName}</span> · {b.address.replace(", Lahore", "")}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div className="f-footer__bottom">
           <span>&copy; {new Date().getFullYear()} FOUR · Lahore, Pakistan. All rights reserved.</span>
-          <span>
-            All prices exclusive of tax · Delivery {formatPKR(DELIVERY_FEE)}, free over {formatPKR(FREE_DELIVERY_ABOVE)}
+          <span className="flex gap-6">
+            <Link href="/support" className="f-footer__link text-sm">
+              Support
+            </Link>
+            <Link href="/locations" className="f-footer__link text-sm">
+              Locations
+            </Link>
           </span>
         </div>
       </div>

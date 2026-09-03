@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useScroll, useMotionValueEvent } from "motion/react";
+import { FREE_DELIVERY_ABOVE, HOURS_LABEL, formatPKR } from "@four/shared";
 import { useStore, wireCart } from "@/lib/store";
 import { BrandLogo } from "./BrandLogo";
 import { LocationModal } from "./LocationModal";
@@ -21,13 +22,31 @@ const NAV_LINKS = [
 // chain pattern; six crowds the bar.
 const MOBILE_LINKS = [...NAV_LINKS, { href: "/orders", label: "My Orders" }];
 
+function BagIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M5 8h14l-1 12H6L5 8Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      <path d="M9 8V6a3 3 0 0 1 6 0v2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function PinIcon() {
+  return (
+    <svg width="12" height="14" viewBox="0 0 12 14" fill="none" aria-hidden className="shrink-0">
+      <path d="M6 13S1 8.6 1 5.4a5 5 0 1 1 10 0C11 8.6 6 13 6 13Z" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="6" cy="5.4" r="1.6" fill="currentColor" />
+    </svg>
+  );
+}
+
 /**
- * `overlay` is for pages whose first section is a dark full-bleed hero (the
- * home video). Before the bar lands it goes fully transparent with cream
- * marks, so the footage runs clean to the top edge instead of under a pale
- * translucent band.
+ * The fixed chrome on every route: a yellow promo strip of real facts that
+ * collapses on scroll, then the red bar - white wordmark, yellow links, the
+ * delivery-area pill, the cart, the hamburger. Every page opens with a red
+ * band, so the bar is always on red; there is no overlay or translucent state.
  */
-export function Nav({ overlay = false }: { overlay?: boolean } = {}) {
+export function Nav() {
   const pathname = usePathname();
   const location = useStore((s) => s.location);
   const cart = useStore((s) => s.cart);
@@ -42,90 +61,64 @@ export function Nav({ overlay = false }: { overlay?: boolean } = {}) {
 
   useEffect(() => wireCart(), []);
 
-  const onDark = overlay && !scrolled;
+  const cartLabel = `Open cart, ${cart.itemCount} items`;
+  const count = cart.itemCount > 0 && <span className="f-tag f-tag--count f-nav__count">{cart.itemCount}</span>;
 
   return (
     <>
-      {/* Past 24px the bar lands: white ground, 10px blur, the 1px rule. */}
-      <header
-        className={`fixed inset-x-0 top-0 z-40 border-b transition-all duration-[250ms] ${
-          scrolled
-            ? "border-rule bg-white/95 backdrop-blur-[10px]"
-            : onDark
-              ? "border-transparent bg-transparent"
-              : "border-transparent bg-cream/40 backdrop-blur-sm"
-        }`}
-      >
-        <nav
-          aria-label="Primary"
-          className={`mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 transition-all duration-[250ms] sm:px-6 ${
-            scrolled ? "h-14" : "h-16"
-          }`}
-        >
-          <Link href="/" aria-label="FOUR home" className={`shrink-0 transition-colors ${onDark ? "text-white" : "text-red"}`}>
-            <BrandLogo className="h-7" />
-          </Link>
+      <header className="fixed inset-x-0 top-0 z-40">
+        <p className={`f-promo ${scrolled ? "is-collapsed" : ""}`} aria-hidden={scrolled || undefined}>
+          Free delivery over {formatPKR(FREE_DELIVERY_ABOVE)} · {HOURS_LABEL}
+        </p>
+        <nav aria-label="Primary" className={`f-nav ${scrolled ? "is-scrolled" : ""}`}>
+          <div className="wrap grid h-full grid-cols-[1fr_auto_1fr] items-center gap-4 md:flex md:justify-between">
+            {/* phones: cart left, wordmark centred, hamburger right */}
+            <div className="flex items-center md:hidden">
+              <button onClick={() => setCartOpen(true)} aria-label={cartLabel} className="f-iconbtn f-iconbtn--md f-iconbtn--on-red relative">
+                <BagIcon />
+                {count}
+              </button>
+            </div>
 
-          <div
-            className={`hidden items-center gap-6 text-sm font-bold uppercase tracking-[0.04em] md:flex lg:gap-7 ${
-              onDark ? "[text-shadow:0_1px_10px_rgba(34,25,19,0.7)]" : ""
-            }`}
-          >
-            {NAV_LINKS.map((l) => {
-              const active = pathname === l.href || pathname.startsWith(`${l.href}/`);
-              return (
-                <Link
-                  key={l.href}
-                  href={l.href}
-                  aria-current={active ? "page" : undefined}
-                  className={`border-b pb-0.5 transition ${
-                    onDark
-                      ? `text-white hover:text-white/70 ${active ? "border-rule-white" : "border-transparent"}`
-                      : active
-                        ? "border-rule text-red"
-                        : "border-transparent text-ink-900 hover:text-red"
-                  }`}
-                >
-                  {l.label}
-                </Link>
-              );
-            })}
-          </div>
+            <Link href="/" aria-label="FOUR home" className="justify-self-center text-white md:justify-self-start">
+              <BrandLogo className="h-7" />
+            </Link>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setLocOpen(true)}
-              data-open-location
-              className="f-chip f-chip--sm hidden max-w-52 sm:inline-flex"
-            >
-              <svg width="12" height="14" viewBox="0 0 12 14" fill="none" aria-hidden>
-                <path d="M6 13S1 8.6 1 5.4a5 5 0 1 1 10 0C11 8.6 6 13 6 13Z" stroke="currentColor" strokeWidth="1.5" />
-                <circle cx="6" cy="5.4" r="1.6" fill="currentColor" />
-              </svg>
-              <span className="truncate">{location ? `${location.block}, ${location.areaName}` : "Set delivery area"}</span>
-            </button>
+            <div className="hidden items-center gap-7 md:flex lg:gap-10">
+              {NAV_LINKS.map((l) => {
+                const active = pathname === l.href || pathname.startsWith(`${l.href}/`);
+                return (
+                  <Link key={l.href} href={l.href} aria-current={active ? "page" : undefined} className="f-nav__link">
+                    {l.label}
+                  </Link>
+                );
+              })}
+            </div>
 
-            <button
-              onClick={() => setCartOpen(true)}
-              aria-label={`Open cart, ${cart.itemCount} items`}
-              className="f-btn f-btn--primary f-btn--sm"
-            >
-              Cart
-              {cart.itemCount > 0 && <span className="f-tag f-tag--count">{cart.itemCount}</span>}
-            </button>
+            <div className="flex items-center justify-end gap-2">
+              <button onClick={() => setLocOpen(true)} data-open-location className="f-btn f-btn--on-red f-btn--sm hidden max-w-52 sm:inline-flex">
+                <PinIcon />
+                <span className="truncate">{location ? `${location.block}, ${location.areaName}` : "Set delivery area"}</span>
+              </button>
 
-            <button
-              ref={burgerRef}
-              onClick={() => setMobileOpen(true)}
-              aria-label="Open menu"
-              aria-expanded={mobileOpen}
-              aria-controls="mobile-nav"
-              className="f-iconbtn f-iconbtn--sm md:hidden"
-            >
-              <svg width="16" height="14" viewBox="0 0 16 14" fill="none" aria-hidden>
-                <path d="M1 1h14M1 7h14M1 13h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              </svg>
-            </button>
+              <button onClick={() => setCartOpen(true)} aria-label={cartLabel} className="f-iconbtn f-iconbtn--md f-iconbtn--on-red relative hidden md:inline-flex">
+                <BagIcon />
+                {count}
+              </button>
+
+              <button
+                ref={burgerRef}
+                onClick={() => setMobileOpen(true)}
+                aria-label="Open menu"
+                aria-expanded={mobileOpen}
+                aria-controls="mobile-nav"
+                className="f-iconbtn f-iconbtn--md f-iconbtn--on-red md:hidden"
+              >
+                <svg width="16" height="14" viewBox="0 0 16 14" fill="none" aria-hidden>
+                  <path d="M1 1h14M1 7h14M1 13h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
           </div>
         </nav>
       </header>

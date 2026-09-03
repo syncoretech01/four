@@ -1,19 +1,18 @@
 "use client";
 
 /**
- * The menu's global-city naming system, surfaced as a typographic stamp
- * grid - the honest version of a chain's "everywhere" claim: the MENU is
- * the world tour, the address is Lahore, stated proudly in the ninth cell.
- * Deliberately photo-free so it reads as a campaign beat between the two
- * photo-heavy sections around it.
+ * The menu's global-city naming system as Dinevo's tile grid: nine cream
+ * tiles, one per city, the ninth on red for Lahore. Photo-free on purpose -
+ * a typographic beat between two photo-heavy sections.
  */
 import Link from "next/link";
-import { motion } from "motion/react";
-import { useReduceMotion } from "@/lib/useAnim";
 import { MENU_ITEMS, formatPKR, type MenuItemData } from "@four/shared";
+import { SectionHeader } from "../ds/SectionHeader";
+import { PillCta } from "../ds/PillCta";
+import { Reveal } from "../ds/Reveal";
 
 // Fixed id list: city name -> the dish that carries it. A missing id renders
-// nothing rather than lying, but items() below throws in dev via the filter.
+// nothing rather than lying.
 const CITY_ITEMS: { city: string; itemId: string }[] = [
   { city: "New York", itemId: "classic-new-york" },
   { city: "London", itemId: "london-bbq" },
@@ -27,92 +26,58 @@ const CITY_ITEMS: { city: string; itemId: string }[] = [
 
 const HOME_ITEM_ID = "lahori-fries";
 
-function tagBadge(item: MenuItemData) {
-  if (item.tags?.includes("signature")) return { label: "Signature", cls: "f-tag" };
-  if (item.tags?.includes("spicy")) return { label: "Spicy", cls: "f-tag f-tag--red" };
-  return null;
-}
+const tile = "flex aspect-square flex-col justify-between rounded-[20px] p-4 transition-colors sm:p-5";
 
 export function WorldFlavours() {
-  const reduce = useReduceMotion();
   const cells = CITY_ITEMS.map((c) => ({ ...c, item: MENU_ITEMS.find((i) => i.id === c.itemId) })).filter(
     (c): c is typeof c & { item: MenuItemData } => Boolean(c.item),
   );
   const home = MENU_ITEMS.find((i) => i.id === HOME_ITEM_ID);
 
   return (
-    <section className="wrap band">
-      <div className="max-w-3xl">
-        <p className="f-eyebrow">The menu, mapped</p>
-        <h2 className="f-heading f-heading--lg">
-          Big-city flavours.
-          <br />
-          One Lahore <span className="text-red">address.</span>
-        </h2>
-        <p className="f-lede">
-          Every burger on the board carries the city that inspired it. All of them are cooked here.
-        </p>
-      </div>
+    <section className="band">
+      <div className="wrap grid items-center gap-12 border-t border-rule pt-12 lg:grid-cols-2 lg:pt-16">
+        <div>
+          <SectionHeader
+            title="Big-city flavours. One Lahore address."
+            highlight="Lahore"
+            tag="The menu, mapped"
+            tag2={`${cells.length + 1} cities`}
+            lede="Every burger on the board carries the city that inspired it. All of them are cooked here."
+          />
+          <div className="mt-8">
+            <PillCta href="/menu#cat-smash-burgers">Explore all burgers</PillCta>
+          </div>
+        </div>
 
-      <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3">
-        {cells.map(({ city, item }, i) => {
-          const badge = tagBadge(item);
-          return (
-            <motion.div
-              key={item.id}
-              initial={reduce ? false : { opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.5, delay: Math.min(i * 0.05, 0.3), ease: [0.16, 1, 0.3, 1] }}
-            >
-              <Link
-                href={`/menu?item=${item.id}`}
-                className="f-card f-card--interactive flex h-full flex-col justify-between gap-6 p-5 sm:p-6"
-                aria-label={`${item.name}, ${formatPKR(item.price)} - order it`}
-              >
-                <span className="font-display text-3xl uppercase leading-[0.9] text-ink-900 sm:text-4xl lg:text-5xl">
-                  {city}
-                </span>
-                <span className="flex items-end justify-between gap-2">
+        <ul className="m-0 grid list-none grid-cols-3 gap-1 p-0">
+          {cells.map(({ city, item }, i) => (
+            <li key={item.id}>
+              <Reveal delay={Math.min(i * 0.05, 0.3)}>
+                <Link href={`/menu?item=${item.id}`} aria-label={`${item.name}, ${formatPKR(item.price)} - order it`} className={`${tile} bg-cream hover:bg-yellow`}>
+                  <span className="font-display text-xl uppercase leading-none text-red sm:text-[1.75rem]">{city}</span>
                   <span className="min-w-0">
-                    <span className="block truncate text-sm font-bold text-ink-900">{item.name}</span>
-                    <span className="block font-display text-lg text-red">{formatPKR(item.price)}</span>
+                    <span className="block truncate text-xs text-ink-600 sm:text-sm">{item.name}</span>
+                    <span className="block font-display text-base text-red">{formatPKR(item.price)}</span>
                   </span>
-                  {badge && <span className={`${badge.cls} shrink-0`}>{badge.label}</span>}
-                </span>
-              </Link>
-            </motion.div>
-          );
-        })}
-
-        {home && (
-          <motion.div
-            initial={reduce ? false : { opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.5, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="col-span-2 md:col-span-1"
-          >
-            <Link
-              href={`/menu?item=${home.id}`}
-              className="f-card f-card--accent f-card--interactive flex h-full flex-col justify-between gap-6 p-5 sm:p-6"
-              aria-label={`${home.name}, ${formatPKR(home.price)} - order it`}
-            >
-              <span className="font-display text-3xl uppercase leading-[0.9] sm:text-4xl lg:text-5xl">
-                Lahore
-              </span>
-              <span className="flex items-end justify-between gap-2">
-                <span className="min-w-0">
-                  <span className="block truncate text-sm font-bold">{home.name}</span>
-                  <span className="block font-display text-lg">{formatPKR(home.price)}</span>
-                </span>
-                <span className="shrink-0 text-xs font-extrabold uppercase tracking-[0.1em]">
-                  ...and home
-                </span>
-              </span>
-            </Link>
-          </motion.div>
-        )}
+                </Link>
+              </Reveal>
+            </li>
+          ))}
+          {home && (
+            <li>
+              <Reveal delay={0.35}>
+                <Link href={`/menu?item=${home.id}`} aria-label={`${home.name}, ${formatPKR(home.price)} - order it`} className={`${tile} on-red hover:bg-red-hover`}>
+                  <span className="font-display text-xl uppercase leading-none text-white sm:text-[1.75rem]">Lahore</span>
+                  <span className="min-w-0">
+                    <span className="block truncate text-xs text-white/80 sm:text-sm">{home.name}</span>
+                    <span className="block font-display text-base text-yellow">{formatPKR(home.price)}</span>
+                  </span>
+                </Link>
+              </Reveal>
+            </li>
+          )}
+        </ul>
       </div>
     </section>
   );

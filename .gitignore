@@ -16,5 +16,5 @@ ds-bundle/
 .design-sync/learnings/
 .design-sync/node_modules
 
-# raw hero master - serve hero.webm/hero.mp4; the 14MB source stays local (see public/hero/README.md)
-apps/web/public/hero/fourhero.mp4
+# retired hero video master (14 MB, local only; see apps/web/public/hero/README.md)
+brand-assets/video/

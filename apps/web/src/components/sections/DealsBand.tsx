@@ -1,84 +1,71 @@
 "use client";
 
 /**
- * Full-bleed red value band - HypeBand's chassis (bordered hairline grid,
- * ghost numerals, cream/on-red CTAs, identical reveal timings) now selling
- * value instead of branches. Every number is a shared-constant import; the
- * branch cards moved to LocationsTeaser.
+ * Dinevo's "meal deals" band on cream: three of the six real deals from
+ * lib/deals.ts as yellow cards in the staggered grid. Every price is derived;
+ * a renamed menu item fails the build instead of shipping a wrong number.
  */
 import Link from "next/link";
-import { motion } from "motion/react";
-import { useReduceMotion } from "@/lib/useAnim";
-import { DELIVERY_FEE, FREE_DELIVERY_ABOVE, HOURS_LABEL, MODIFIER_GROUPS, formatPKR } from "@four/shared";
+import { formatPKR } from "@four/shared";
+import { buildDeals, MEAL_DEAL_FROM } from "@/lib/deals";
+import { SmartImage } from "../SmartImage";
+import { SectionHeader } from "../ds/SectionHeader";
+import { PillCta } from "../ds/PillCta";
+import { PriceTag } from "../ds/PriceTag";
+import { DoodleBackdrop } from "../ds/DoodleBackdrop";
+import { Reveal } from "../ds/Reveal";
 
-const mealFrom = Math.min(
-  ...(MODIFIER_GROUPS.find((g) => g.id === "meal-deal")?.options ?? []).map((o) =>
-    typeof o.price === "number" ? o.price : Infinity,
-  ),
-);
-
-const CELLS = [
-  {
-    title: "Make it a meal",
-    copy: `Fries and a drink on any burger, from ${formatPKR(mealFrom)}. Cheaper than ordering them apart.`,
-  },
-  {
-    title: "Free delivery",
-    copy: `Orders over ${formatPKR(FREE_DELIVERY_ABOVE)} ride free. Under that, a flat ${formatPKR(DELIVERY_FEE)}.`,
-  },
-  {
-    title: "Open late",
-    copy: `${HOURS_LABEL}. The 2am order is a Lahore tradition — we honour it.`,
-  },
-];
+const FEATURED = ["new-york-meal", "pizza-night", "squad-order"];
+const DEALS = buildDeals().filter((d) => FEATURED.includes(d.id));
 
 export function DealsBand() {
-  const reduce = useReduceMotion();
-
   return (
-    <section className="on-red">
-      <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
-        <motion.h2
-          initial={reduce ? false : { opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="f-heading f-heading--lg max-w-[16ch]"
-        >
-          More smash for your cash.
-        </motion.h2>
+    <section className="on-cream band relative isolate">
+      <DoodleBackdrop tone="red" edges />
+      <div className="wrap relative z-[1]">
+        <SectionHeader
+          align="center"
+          title="More smash for your cash"
+          highlight="smash"
+          tag="Meal deals"
+          tag2="Save"
+          lede={`Fries and a drink on any burger from ${formatPKR(MEAL_DEAL_FROM)}. Cheaper than ordering them apart — we checked.`}
+        />
 
-        <div className="mt-14 grid grid-cols-1 gap-px overflow-hidden rounded-card border border-rule-white bg-rule-white sm:grid-cols-3">
-          {CELLS.map((c, i) => (
-            <motion.div
-              key={c.title}
-              initial={reduce ? false : { opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.5, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-              className="bg-red p-8"
-            >
-              <span className="font-display text-6xl text-white/25">{String(i + 1).padStart(2, "0")}</span>
-              <h3 className="mt-4 font-display text-2xl uppercase">{c.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-white/75">{c.copy}</p>
-            </motion.div>
+        <div className="mt-12 grid gap-[var(--grid-gap)] sm:grid-cols-2 xl:grid-cols-3 xl:[&>*:nth-child(3n)]:my-[140px] xl:[&>*:nth-child(3n+2)]:mt-[120px]">
+          {DEALS.map((d, i) => (
+            <Reveal key={d.id} delay={i * 0.08}>
+              <article className="f-item f-item--deal h-full">
+                <Link href={d.href} className="block" aria-label={`${d.name}, ${formatPKR(d.dealPrice)} - build this meal`}>
+                  <div className="f-item__media">
+                    <SmartImage src={`/menu-items/${d.itemId}.jpg`} alt="" fallbackLabel={d.name} className="h-full w-full" />
+                    <span className="f-tag f-tag--red f-tag--card absolute left-5 top-5">{d.badge}</span>
+                  </div>
+                  <div className="f-item__body">
+                    <h3 className="f-item__name">{d.name}</h3>
+                    <p className="f-item__desc">{d.composition}</p>
+                    <p className="mt-2 text-sm text-red-press">{d.note}</p>
+                  </div>
+                </Link>
+                <div className="f-item__foot">
+                  <Link href={d.href} className="f-btn f-btn--secondary f-btn--sm">
+                    Build this meal
+                  </Link>
+                  <span className="flex items-center gap-2">
+                    {d.strikePrice && <span className="f-tag f-tag--struck">{formatPKR(d.strikePrice)}</span>}
+                    <PriceTag price={d.dealPrice} />
+                  </span>
+                </div>
+              </article>
+            </Reveal>
           ))}
         </div>
 
-        <motion.div
-          initial={reduce ? false : { opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-12 flex flex-wrap items-center gap-4"
-        >
-          <Link href="/deals" className="f-btn f-btn--cream f-btn--lg">
-            See today&apos;s deals
-          </Link>
-          <Link href="/menu" className="f-btn f-btn--on-red f-btn--lg">
-            Start an order
-          </Link>
-        </motion.div>
+        <div className="mt-12 flex justify-center">
+          <PillCta href="/deals" tone="outline">
+            All deals
+          </PillCta>
+        </div>
       </div>
     </section>
   );
