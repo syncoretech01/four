@@ -1,27 +1,24 @@
-/* v2 ground: warm paper, 5% grain, red selection, loud focus. */
-html { color-scheme: light; scroll-behavior: smooth; }
+/* v3 ground: white page, DM Sans body, yellow selection, one global focus ring. */
+html {
+  color-scheme: light;
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-h-scrolled) + 1rem);
+}
 body {
   margin: 0;
   background: var(--bg-page);
   color: var(--text-body);
   font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  font-synthesis: none; /* Anton ships one weight — never fake a bold */
   -webkit-font-smoothing: antialiased;
 }
-::selection { background: var(--red); color: var(--paper-0); }
-a { color: var(--link); text-decoration: none; }
+::selection { background: var(--yellow); color: var(--red); }
+a { color: var(--link); text-decoration: none; transition: color var(--dur-fast) var(--ease-in-out); }
 a:hover { color: var(--link-hover); }
-.font-display { font-family: var(--font-display); }
-
-/* fixed + pointer-events-none: never repaints on scroll */
-.grain::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 70;
-  pointer-events: none;
-  opacity: var(--grain-opacity);
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
+:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+img, video { display: block; max-width: 100%; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

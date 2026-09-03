@@ -1,5 +1,5 @@
-/* 4px spacing rail (Tailwind steps) plus the layout constants the product
-   repeats: 80rem content column, 96–112px section rhythm. */
+/* 4px spacing rail plus the v3 layout constants: 1320px container, 130/65px
+   section rhythm, the fixed promo strip + nav bar, the hero strip overlap. */
 :root {
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -16,18 +16,26 @@
   --space-24: 6rem;
   --space-28: 7rem;
 
-  --container-max: 80rem;      /* max-w-7xl — every page section */
-  --container-narrow: 48rem;   /* max-w-3xl — tracking page */
-  --gutter: 1rem;              /* px-4 */
-  --gutter-lg: 1.5rem;         /* sm:px-6 */
-  --section-y: 6rem;           /* py-24 */
-  --section-y-lg: 7rem;        /* py-28 — story band */
-  --card-pad: 1.5rem;          /* p-6 */
-  --card-pad-lg: 1.75rem;      /* p-7 — item modal body */
-  --nav-h: 4rem;               /* 64px, shrinks to 56px on scroll */
-  --nav-h-scrolled: 3.5rem;
+  --container-max: 82.5rem;    /* 1320px — every page section */
+  --container-narrow: 48rem;   /* orders / tracking column */
+  --gutter: 1rem;
+  --gutter-lg: 1.5rem;
+  --section-y: 8.125rem;       /* 130px desktop band */
+  --section-y-sm: 4.0625rem;   /* 65px mobile band */
+  --section-y-lg: var(--section-y);
+  --card-pad: 1.875rem;        /* 30px */
+  --card-pad-lg: 2.5rem;       /* 40px */
+  --grid-gap: 1.25rem;         /* 20px card grids */
+
+  --promo-h: 2.5rem;           /* 40px yellow promo strip */
+  --nav-h: 4.5rem;             /* 72px red bar at rest */
+  --nav-h-scrolled: 3.75rem;   /* 60px once the promo strip collapses */
+  --bar-h: calc(var(--promo-h) + var(--nav-h)); /* 112px: every fixed-bar offset reads this */
+  --strip-overlap: clamp(9rem, 14vw, 13rem);    /* how far the hero photo strip hangs into the next section */
+
   --control-h: 3rem;           /* 48px inputs / size chips */
-  --control-h-sm: 2.75rem;     /* 44px — minimum touch target */
-  --measure: 50ch;             /* body copy max width */
-  --measure-tight: 34ch;       /* hero lede */
+  --control-h-sm: 2.75rem;     /* 44px minimum touch target */
+  --measure: 50ch;
+  --measure-tight: 34ch;
+  --measure-hero: 25.75rem;    /* 412px hero lede */
 }

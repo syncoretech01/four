@@ -16,19 +16,6 @@
 @import "../styles/ds/tokens/base.css";
 @import "../styles/ds/components/components.css";
 
-/*
-  next/font loads Passion One + Archivo and exposes them as --font-passion /
-  --font-archivo (see app/layout.tsx). The DS declares the family names
-  directly, so re-point its two type tokens at the self-hosted faces - this
-  keeps the DS files untouched and avoids the render-blocking Google CDN
-  import that ships in the design system's own styles.css.
-*/
-:root {
-  --font-display: var(--font-passion), "Trebuchet MS", sans-serif;
-  --font-body: var(--font-archivo), system-ui, sans-serif;
-  --font-condensed: var(--font-passion), sans-serif;
-}
-
 @theme {
   /* v2 warm-paper ramp. The legacy names are kept and re-pointed so existing
      markup (bg-beige, text-ink-soft, ...) moves to the new palette in place. */
@@ -60,8 +47,8 @@
   --color-ink: #221913;
   --color-ink-soft: #6b5d4d;
 
-  --font-display: var(--font-passion), "Trebuchet MS", sans-serif;
-  --font-body: var(--font-archivo), system-ui, sans-serif;
+  --font-display: var(--font-anton), Impact, "Arial Narrow", sans-serif;
+  --font-body: var(--font-dm-sans), system-ui, sans-serif;
 
   --radius-card: 18px;
   --radius-hero: 28px;

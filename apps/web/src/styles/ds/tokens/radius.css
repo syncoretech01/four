@@ -1,12 +1,19 @@
-/* v2 shape — chunky, playful, outlined. Pills for actions, 18px sticker cards. */
+/* v3 shape — flat and rounded: 10px cards, 20px panels, 100px pills, the
+   `10px 0` sticker-tag corner. Only 1px rules, never outlines. */
 :root {
-  --radius-sm: 8px;
-  --radius-md: 12px;    /* inputs, small tiles */
-  --radius-lg: 16px;    /* chat bubbles */
-  --radius-card: 18px;  /* THE card radius */
-  --radius-hero: 28px;  /* hero photo frames */
-  --radius-pill: 9999px;/* buttons, chips, badges, steppers */
+  --radius-xs: 4px;      /* cart count square */
+  --radius-sm: 6px;
+  --radius-md: 10px;     /* inputs, thumbs */
+  --radius-card: 10px;   /* THE card radius */
+  --radius-lg: 20px;     /* photo blocks, tiles, chat bubbles */
+  --radius-panel: 20px;  /* modals, drawers, page panels */
+  --radius-hero: 20px;   /* hero strip tiles */
+  --radius-pill: 9999px; /* buttons, chips, pills */
+  --radius-tag: 10px 0;  /* sticker tags */
+  --radius-round: 50%;
   --border-w: 1px;
-  --border-w-strong: 2px; /* the sticker outline — cards, buttons, chips */
-  --border-w-frame: 4px;  /* milk frame around cut-out photo fields */
+
+  /* WP2 deletes: read by the v2 components.css until the chrome is replaced */
+  --border-w-strong: 2px;
+  --border-w-frame: 4px;
 }

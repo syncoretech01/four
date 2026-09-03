@@ -1,20 +1,24 @@
-/* v2 motion — snappy and physical. Press = travel into the shadow. */
+/* v3 motion — calm and physical: fades and short slides on reveal, image zoom
+   on hover, a press scale on pills, a slow ticker. */
 :root {
-  --ease-brand: cubic-bezier(0.16, 1, 0.3, 1); /* @kind other */
-  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1); /* @kind other */
+  --ease-brand: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
-  --dur-fast: 120ms; /* @kind other */   /* hover colour, press travel */
-  --dur-base: 250ms; /* @kind other */   /* nav, scrim, card hover */
-  --dur-slow: 450ms; /* @kind other */   /* photo zoom */
-  --dur-reveal: 600ms; /* @kind other */ /* scroll-in headline */
+  --dur-fast: 150ms;   /* hover colour */
+  --dur-base: 300ms;   /* nav, scrim, promo collapse */
+  --dur-slow: 500ms;   /* photo zoom */
+  --dur-reveal: 600ms; /* scroll-in */
 
-  --marquee-duration: 26s; /* @kind other */
-  --seal-spin: 16s; /* @kind other */
-  --float-cycle: 4s; /* @kind other */
-  --wobble-cycle: 5s; /* @kind other */  /* sticker idle wobble */
+  --marquee-duration: 40s;
+  --seal-spin: 12s;
 
-  --press-travel: 2px; /* @kind spacing */ /* button moves into its shadow */
-  --press-scale: 0.98; /* @kind other */
-  --press-scale-icon: 0.92; /* @kind other */
-  --hover-lift: -4px; /* @kind spacing */  /* card lifts away from its shadow */
+  --hover-scale: 1.1;  /* card photo on hover */
+  --press-scale: 0.98; /* pill on :active */
+
+  /* WP2 deletes: read by the v2 components.css until the chrome is replaced */
+  --press-travel: 2px;
+  --press-scale-icon: 0.92;
+  --hover-lift: -4px;
+  --float-cycle: 4s;
+  --wobble-cycle: 5s;
 }

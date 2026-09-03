@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Passion_One, Archivo } from "next/font/google";
+import { Anton, DM_Sans } from "next/font/google";
 import { ToastStack } from "@/components/ToastStack";
 import { ActiveOrderPill } from "@/components/ActiveOrderPill";
 import "./globals.css";
 
-// v2 type: Passion One display caps + Archivo body (design system readme, "Type substitution").
-const passion = Passion_One({ subsets: ["latin"], weight: ["400", "700", "900"], variable: "--font-passion", display: "swap" });
-const archivo = Archivo({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-archivo", display: "swap" });
+// v3 type: Anton display caps (single weight) + DM Sans body, self-hosted through next/font.
+const anton = Anton({ subsets: ["latin"], weight: "400", variable: "--font-anton", display: "swap" });
+const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-dm-sans", display: "swap" });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -42,13 +42,13 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f8f1e3",
+  themeColor: "#9D1D20",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${passion.variable} ${archivo.variable}`}>
-      <body className="grain min-h-[100dvh]">
+    <html lang="en" className={`${anton.variable} ${dmSans.variable}`}>
+      <body className="min-h-[100dvh]">
         <a href="#main" className="skip-link">
           Skip to content
         </a>
