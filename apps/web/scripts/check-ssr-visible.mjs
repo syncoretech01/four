@@ -48,10 +48,19 @@ function findDisplacingTransform(html) {
   return null;
 }
 
+/**
+ * Script contents do not count. `/menu` passed this check for a release while
+ * rendering nothing: its dish names existed only inside the page's JSON-LD blob,
+ * and the visible grid was fetched client-side. Stripping scripts first is what
+ * makes the assertion mean what it says.
+ */
+const withoutScripts = (html) => html.replace(/<script[\s\S]*?<\/script>/gi, "");
+
 /** Content that must be present in the HTML, proving the page rendered its data server-side. */
 const MUST_CONTAIN = {
   "/": ["Smashed to order", "Live, Love, Eat"],
-  "/menu": ["Classic New York"],
+  // One dish from each end of the board, so a partial render is caught too.
+  "/menu": ["Classic New York", "Lotus Cheese Cake"],
   "/deals": ["Prices exclusive of tax"],
   "/about": ["per patty"],
   "/locations": ["Fairways"],
@@ -89,8 +98,9 @@ for (const route of ROUTES) {
     fail(route, "the reveal runtime ships after the first [data-reveal] element");
   }
 
+  const visible = withoutScripts(html);
   for (const needle of MUST_CONTAIN[route] ?? []) {
-    if (!html.includes(needle)) fail(route, `expected copy missing from SSR HTML: ${JSON.stringify(needle)}`);
+    if (!visible.includes(needle)) fail(route, `expected copy missing from VISIBLE SSR HTML: ${JSON.stringify(needle)}`);
   }
 
   if (!failures) console.log(`  ✓ ${route}`);

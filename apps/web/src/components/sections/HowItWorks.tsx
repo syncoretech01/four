@@ -33,7 +33,7 @@ export function HowItWorks() {
       title: "Pick your block",
       copy: `${LAHORE_AREAS.length} areas, block-level. We route you to the nearest of ${BRANCHES.length} kitchens.`,
       tile: (
-        <div className="f-media on-red relative isolate flex aspect-[4/3] items-center justify-center lg:aspect-[4/5]">
+        <div className="f-media on-cream relative isolate flex aspect-[4/3] items-center justify-center text-burgundy lg:aspect-[4/5]">
           <DoodleBackdrop />
           <Hand className="relative z-[1] w-24" />
         </div>
@@ -47,7 +47,7 @@ export function HowItWorks() {
       copy: "Sizes, meal deals, extra patties. Simple things add in one tap.",
       tile: (
         <div className="f-media on-yellow relative isolate flex aspect-[4/3] items-center justify-center lg:aspect-[4/5]">
-          <DoodleBackdrop tone="red" />
+          <DoodleBackdrop />
           <span className="relative z-[1] font-display text-[6rem] leading-none text-red" aria-hidden>
             +
           </span>

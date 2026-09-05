@@ -16,6 +16,7 @@ import { ItemCard } from "./ItemCard";
 import { BestsellerShowcase } from "./BestsellerShowcase";
 import { useQuickAdd } from "./useQuickAdd";
 import type { MenuCategoryView } from "./types";
+import { STATIC_MENU } from "@/lib/staticMenu";
 
 const BESTSELLERS_ID = "bestsellers";
 
@@ -27,10 +28,13 @@ const BESTSELLERS_ID = "bestsellers";
  * straight to the cart; anything with sizes or add-ons opens the full picker.
  * On mobile a sticky basket bar keeps the running total one tap from checkout.
  */
-export function MenuBrowser() {
-  const [categories, setCategories] = useState<MenuCategoryView[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [failed, setFailed] = useState(false);
+export function MenuBrowser({ initialCategories = STATIC_MENU }: { initialCategories?: MenuCategoryView[] }) {
+  // Seeded from @four/shared, so the whole menu is in the server HTML and on
+  // screen at first paint. The fetch below reconciles live availability and
+  // price; it is no longer what makes the page exist.
+  const [categories, setCategories] = useState<MenuCategoryView[]>(initialCategories);
+  const [loading, setLoading] = useState(false);
+  const [stale, setStale] = useState(false);
   const [active, setActive] = useState<string>(BESTSELLERS_ID);
   const [query, setQuery] = useState("");
   const [serverResults, setServerResults] = useState<MenuItemView[] | null>(null);
@@ -46,13 +50,16 @@ export function MenuBrowser() {
 
   const load = useCallback(() => {
     setLoading(true);
-    setFailed(false);
     api<{ categories: MenuCategoryView[] }>("/api/menu")
       .then((d) => {
+        if (d.categories.length === 0) return setStale(true);
         setCategories(d.categories);
-        setFailed(d.categories.length === 0);
+        setStale(false);
       })
-      .catch(() => setFailed(true))
+      // Keep the statically-rendered menu on screen. It is the same data the
+      // database is seeded from, so the only thing an unreachable API costs is
+      // live availability - which is what the notice says.
+      .catch(() => setStale(true))
       .finally(() => setLoading(false));
   }, []);
 
@@ -188,31 +195,18 @@ export function MenuBrowser() {
             Kitchen closed · {HOURS_LABEL}. Fill your cart now — ordering opens at {OPENS_LABEL}.
           </p>
         )}
+        {stale && (
+          <p className="f-notice f-notice--yellow mt-4 w-full" role="status">
+            Showing the printed menu — we could not reach the kitchen board, so today&rsquo;s sold-out items may
+            not be marked.{" "}
+            <button onClick={load} className="f-btn f-btn--quiet">
+              Try again
+            </button>
+          </p>
+        )}
       </div>
 
-      {loading ? (
-        <div className="wrap band pt-10" role="status" aria-busy="true" aria-label="Loading the menu">
-          <div className="flex gap-[var(--grid-gap)] overflow-hidden pt-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-96 w-72 shrink-0 animate-pulse rounded-[10px] bg-cream" />
-            ))}
-          </div>
-          <div className={`mt-12 ${grid}`}>
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-80 animate-pulse rounded-[10px] bg-cream" />
-            ))}
-          </div>
-        </div>
-      ) : failed ? (
-        <div className="wrap band">
-          <div className="f-empty">
-            <p className="f-empty__text">The menu could not load. Check your connection and try again.</p>
-            <button onClick={load} className="f-btn f-btn--red f-btn--md">
-              Reload the menu
-            </button>
-          </div>
-        </div>
-      ) : results ? (
+      {results ? (
         /* ── Search results ── */
         <div className="wrap pb-24 pt-8">
           <p className="text-sm font-medium text-ink-600" aria-live="polite">

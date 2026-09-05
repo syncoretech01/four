@@ -41,10 +41,15 @@ function PinIcon() {
 }
 
 /**
- * The fixed chrome on every route: a yellow promo strip of real facts that
- * collapses on scroll, then the red bar - white wordmark, yellow links, the
- * delivery-area pill, the cart, the hamburger. Every page opens with a red
- * band, so the bar is always on red; there is no overlay or translucent state.
+ * The fixed chrome on every route: a burgundy promo strip of real facts that
+ * collapses on scroll, then the beige bar - burgundy wordmark, ink links, the
+ * delivery-area pill, the cart, the hamburger.
+ *
+ * The bar is opaque beige on every route, over the burgundy hero and over the
+ * white pages alike, so it still needs no overlay or translucent state. It gains
+ * a hairline once scrolled, because pages now open white and the bar would
+ * otherwise float. Beige rather than white is deliberate: the brand book allows
+ * the wordmark only as red on beige or white on red.
  */
 export function Nav() {
   const pathname = usePathname();
@@ -75,13 +80,13 @@ export function Nav() {
           <div className="wrap grid h-full grid-cols-[1fr_auto_1fr] items-center gap-4 md:flex md:justify-between">
             {/* phones: cart left, wordmark centred, hamburger right */}
             <div className="flex items-center md:hidden">
-              <button onClick={() => setCartOpen(true)} aria-label={cartLabel} className="f-iconbtn f-iconbtn--md f-iconbtn--on-red relative">
+              <button onClick={() => setCartOpen(true)} aria-label={cartLabel} className="f-iconbtn f-iconbtn--md f-iconbtn--cream relative">
                 <BagIcon />
                 {count}
               </button>
             </div>
 
-            <Link href="/" aria-label="FOUR home" className="justify-self-center text-white md:justify-self-start">
+            <Link href="/" aria-label="FOUR home" className="justify-self-center text-burgundy md:justify-self-start">
               <BrandLogo className="h-7" />
             </Link>
 
@@ -97,12 +102,12 @@ export function Nav() {
             </div>
 
             <div className="flex items-center justify-end gap-2">
-              <button onClick={() => setLocOpen(true)} data-open-location className="f-btn f-btn--on-red f-btn--sm hidden max-w-52 sm:inline-flex">
+              <button onClick={() => setLocOpen(true)} data-open-location className="f-btn f-btn--outline f-btn--sm hidden max-w-52 sm:inline-flex">
                 <PinIcon />
                 <span className="truncate">{location ? `${location.block}, ${location.areaName}` : "Set delivery area"}</span>
               </button>
 
-              <button onClick={() => setCartOpen(true)} aria-label={cartLabel} className="f-iconbtn f-iconbtn--md f-iconbtn--on-red relative hidden md:inline-flex">
+              <button onClick={() => setCartOpen(true)} aria-label={cartLabel} className="f-iconbtn f-iconbtn--md f-iconbtn--cream relative hidden md:inline-flex">
                 <BagIcon />
                 {count}
               </button>
@@ -113,7 +118,7 @@ export function Nav() {
                 aria-label="Open menu"
                 aria-expanded={mobileOpen}
                 aria-controls="mobile-nav"
-                className="f-iconbtn f-iconbtn--md f-iconbtn--on-red md:hidden"
+                className="f-iconbtn f-iconbtn--md f-iconbtn--cream md:hidden"
               >
                 <svg width="16" height="14" viewBox="0 0 16 14" fill="none" aria-hidden>
                   <path d="M1 1h14M1 7h14M1 13h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />

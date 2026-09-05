@@ -207,16 +207,16 @@ export default function SupportPage() {
 
         {/* ── Closing strip ── */}
         <div className="wrap pb-24">
-          <div className="f-card f-card--inverse f-card--pad-lg relative isolate rounded-[20px]">
+          <div className="f-card f-card--accent f-card--pad-lg relative isolate rounded-[20px]">
             <DoodleBackdrop />
             <div className="relative z-[1] flex flex-wrap items-center justify-between gap-6">
               <div>
                 <p className="f-heading f-heading--md">Still stuck?</p>
-                <p className="mt-2 text-sm font-medium text-white/80">
+                <p className="mt-2 text-sm font-medium text-burgundy-press">
                   {BRAND.phone} — {HOURS_LABEL.toLowerCase()}.
                 </p>
               </div>
-              <PillCta href={BRAND.phoneHref} external arrow={false}>
+              <PillCta href={BRAND.phoneHref} external arrow={false} tone="red">
                 Call us now
               </PillCta>
             </div>

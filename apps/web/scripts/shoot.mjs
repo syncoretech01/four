@@ -103,6 +103,12 @@ for (const vp of VIEWPORTS) {
     });
     await cmd("Page.navigate", { url: BASE + route });
     await sleep(2200);
+    // SCROLL=<px> to capture below the fold. Reveals are observer-driven, so the
+    // settle wait after scrolling is what lets them finish before the shutter.
+    if (process.env.SCROLL) {
+      await cmd("Runtime.evaluate", { expression: `scrollTo({top:${+process.env.SCROLL},behavior:"instant"})` });
+      await sleep(1400);
+    }
     const { result } = await cmd("Runtime.evaluate", {
       expression: `JSON.stringify({
         overflow: document.documentElement.scrollWidth > innerWidth + 1,
@@ -113,11 +119,34 @@ for (const vp of VIEWPORTS) {
       returnByValue: true,
     });
     const stats = JSON.parse(result.value);
+    const slug = route === "/" ? "home" : route.replace(/\W+/g, "-").replace(/^-|-$/g, "");
+
+    // FILM=1 walks the page a viewport at a time. A whole-page capture is not an
+    // option here: captureBeyondViewport paints without scrolling, so the
+    // IntersectionObserver behind [data-reveal] never fires and every below-fold
+    // section photographs at opacity 0. Scrolling for real is the only honest way
+    // to see this site below the fold.
+    if (process.env.FILM === "1") {
+      const { result: h } = await cmd("Runtime.evaluate", {
+        expression: "document.documentElement.scrollHeight", returnByValue: true,
+      });
+      const step = Math.round(vp.height * 0.85);
+      const frames = Math.min(14, Math.ceil(h.value / step));
+      for (let f = 0; f < frames; f++) {
+        await cmd("Runtime.evaluate", { expression: `scrollTo({top:${f * step},behavior:"instant"})` });
+        await sleep(f === 0 ? 900 : 700);
+        const shot = await cmd("Page.captureScreenshot", { format: "png" });
+        writeFileSync(join(OUT, `${slug}.${vp.name}.${String(f).padStart(2, "0")}.png`), Buffer.from(shot.data, "base64"));
+      }
+      console.log(`  ${slug}.${vp.name}  ${frames} frames  (page ${h.value}px)`);
+      continue;
+    }
+
     const shot = await cmd("Page.captureScreenshot", {
       format: "png",
       captureBeyondViewport: process.env.FULL === "1",
     });
-    const name = `${(route === "/" ? "home" : route.replace(/\W+/g, "-").replace(/^-|-$/g, ""))}.${vp.name}.png`;
+    const name = `${slug}.${vp.name}.png`;
     writeFileSync(join(OUT, name), Buffer.from(shot.data, "base64"));
     const flag = stats.overflow ? `  ⚠ H-OVERFLOW ${stats.scrollW}px` : "";
     console.log(`  ${name}  animating=${stats.animating} faded=${stats.faded}${flag}`);

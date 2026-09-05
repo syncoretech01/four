@@ -20,7 +20,7 @@ const DEALS = buildDeals().filter((d) => FEATURED.includes(d.id));
 export function DealsBand() {
   return (
     <section className="on-cream band relative isolate">
-      <DoodleBackdrop tone="red" edges />
+      <DoodleBackdrop edges />
       <div className="wrap relative z-[1]">
         <SectionHeader
           align="center"
@@ -52,7 +52,7 @@ export function DealsBand() {
                   </Link>
                   <span className="flex items-center gap-2">
                     {d.strikePrice && <span className="f-tag f-tag--struck">{formatPKR(d.strikePrice)}</span>}
-                    <PriceTag price={d.dealPrice} />
+                    <PriceTag price={d.dealPrice} variant="chip" />
                   </span>
                 </div>
               </article>

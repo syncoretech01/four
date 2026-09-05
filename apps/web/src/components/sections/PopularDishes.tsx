@@ -6,6 +6,7 @@ import { ItemModal } from "../menu/ItemModal";
 import { ItemCard } from "../menu/ItemCard";
 import { useQuickAdd } from "../menu/useQuickAdd";
 import type { MenuCategoryView } from "../menu/types";
+import { STATIC_MENU } from "@/lib/staticMenu";
 import { SectionHeader } from "../ds/SectionHeader";
 import { PillCta } from "../ds/PillCta";
 import { DoodleBackdrop } from "../ds/DoodleBackdrop";
@@ -17,19 +18,21 @@ import { DoodleBackdrop } from "../ds/DoodleBackdrop";
  * Keeps id="menu" so the location modal's "scroll to #menu" still lands.
  */
 export function PopularDishes() {
-  const [categories, setCategories] = useState<MenuCategoryView[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [offline, setOffline] = useState(false);
+  // Seeded from @four/shared so the homepage's only ordering surface exists in
+  // the server HTML. It used to start empty and collapse to a one-line notice
+  // whenever the API hiccuped, taking ~900px of layout and the add-to-cart
+  // affordance with it. The fetch still corrects live availability.
+  const [categories, setCategories] = useState<MenuCategoryView[]>(STATIC_MENU);
   const { added, quickAdd, selected, setSelected } = useQuickAdd();
 
   useEffect(() => {
     api<{ categories: MenuCategoryView[] }>("/api/menu")
       .then((d) => {
-        setCategories(d.categories);
-        setOffline(d.categories.length === 0);
+        if (d.categories.length > 0) setCategories(d.categories);
       })
-      .catch(() => setOffline(true))
-      .finally(() => setLoading(false));
+      .catch(() => {
+        /* keep the static menu: it is the same data the database is seeded from */
+      });
   }, []);
 
   // the header already says "Best sellers", so that tag is dropped from the cards
@@ -44,7 +47,7 @@ export function PopularDishes() {
 
   return (
     <>
-    <section id="menu" className="on-red band relative isolate">
+    <section id="menu" className="band relative isolate">
       <DoodleBackdrop />
       <div className="wrap relative z-[1]">
         <SectionHeader
@@ -57,23 +60,11 @@ export function PopularDishes() {
         />
 
         <div className="mt-12">
-          {loading ? (
-            <div className="grid gap-[var(--grid-gap)] sm:grid-cols-2 lg:grid-cols-3" role="status" aria-busy="true" aria-label="Loading the best sellers">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="h-[420px] animate-pulse rounded-[10px] bg-white/10" />
-              ))}
-            </div>
-          ) : offline || bestsellers.length === 0 ? (
-            <div className="mx-auto max-w-md text-center">
-              <p className="f-notice f-notice--yellow">The kitchen board is offline — the menu still works.</p>
-            </div>
-          ) : (
-            <div className="grid gap-[var(--grid-gap)] sm:grid-cols-2 lg:grid-cols-3">
-              {bestsellers.map((item, i) => (
-                <ItemCard key={item.id} item={item} index={i} added={added === item.id} onOpen={setSelected} onQuickAdd={quickAdd} />
-              ))}
-            </div>
-          )}
+          <div className="grid gap-[var(--grid-gap)] sm:grid-cols-2 lg:grid-cols-3">
+            {bestsellers.map((item, i) => (
+              <ItemCard key={item.id} item={item} index={i} added={added === item.id} onOpen={setSelected} onQuickAdd={quickAdd} />
+            ))}
+          </div>
         </div>
 
         <div className="mt-12 flex justify-center">

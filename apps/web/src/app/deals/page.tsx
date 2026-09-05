@@ -60,7 +60,7 @@ export default function DealsPage() {
 
         {/* ── Deal grid (the page's cream band) ── */}
         <section className="on-cream relative isolate">
-          <DoodleBackdrop tone="red" edges />
+          <DoodleBackdrop edges />
           <div className="wrap band relative z-[1]">
             <div className="grid items-start grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 xl:[&>*:nth-child(3n+2)]:mt-[120px] xl:[&>*:nth-child(3n)]:my-[140px]">
               {deals.map((d, i) => (
@@ -80,7 +80,7 @@ export default function DealsPage() {
                       <span className="f-btn f-btn--secondary f-btn--sm">Build this meal</span>
                       <span className="flex items-center gap-2">
                         {d.strikePrice && <span className="f-tag f-tag--struck">{formatPKR(d.strikePrice)}</span>}
-                        <PriceTag price={d.dealPrice} />
+                        <PriceTag price={d.dealPrice} variant="chip" />
                       </span>
                     </div>
                   </Link>
