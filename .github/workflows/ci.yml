@@ -52,6 +52,18 @@ jobs:
       - name: Build
         run: pnpm build
 
+      # Guards the rule that scroll reveals are CSS with a visible default.
+      # The app previously shipped `style="opacity:0"` in its server HTML for
+      # every revealed element, which hid the page without JavaScript and cost
+      # the hero its LCP candidacy. This fails the build if that returns.
+      - name: SSR visibility
+        run: |
+          pnpm --filter @four/web start &
+          npx --yes wait-on -t 60000 http://localhost:3400/
+          node apps/web/scripts/check-ssr-visible.mjs
+        env:
+          WEB_PORT: 3400
+
       # Called directly rather than through the root `test` script, which
       # wraps turbo in `dotenv -e .env` for local use; CI has no .env and
       # points the suite at the service container instead.

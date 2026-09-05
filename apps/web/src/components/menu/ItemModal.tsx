@@ -6,6 +6,7 @@ import { useReduceMotion } from "@/lib/useAnim";
 import { useDismissable } from "@/lib/useDismissable";
 import { formatPKR } from "@four/shared";
 import { api, ApiError } from "@/lib/api";
+import { spark } from "@/lib/spark";
 import { useStore } from "@/lib/store";
 import { SmartImage } from "../SmartImage";
 import { TagStack } from "./tags";
@@ -81,6 +82,7 @@ export function ItemModal({
   // focus lands on the close button when the dialog opens and returns to the
   // element that opened it (the card, the nav pill) when it closes
   const closeRef = useRef<HTMLButtonElement>(null);
+  const addRef = useRef<HTMLButtonElement>(null);
   const openerRef = useRef<HTMLElement | null>(null);
   const wasOpen = useRef(false);
   useEffect(() => {
@@ -129,6 +131,9 @@ export function ItemModal({
 
   const add = async () => {
     if (!item) return;
+    // Read the burst position now, not after the await: a successful add closes
+    // the sheet, so by then this button is unmounted and its rect is all zeros.
+    const r = addRef.current?.getBoundingClientRect();
     setBusy(true);
     setError("");
     try {
@@ -148,6 +153,7 @@ export function ItemModal({
         // drop the line being replaced only after the new one is safely in
         await api("/api/cart/lines", { method: "PATCH", body: JSON.stringify({ lineId: edit.lineId, qty: 0 }) });
       }
+      if (r) spark(r.left + r.width / 2, r.top + r.height / 2);
       onClose();
       setCartOpen(true);
     } catch (e) {
@@ -280,6 +286,7 @@ export function ItemModal({
                   </button>
                 </div>
                 <button
+                  ref={addRef}
                   onClick={add}
                   aria-busy={busy}
                   className={`f-btn f-btn--primary f-btn--lg flex-1 ${busy ? "is-loading" : ""}`}

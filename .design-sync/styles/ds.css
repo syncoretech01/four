@@ -1,6 +1,7 @@
 /*
   Design-system stylesheet entry. Compiled by .ds-sync's Tailwind v4 CLI into
-  .design-sync/styles/ds.compiled.css, which cfg.cssEntry points at.
+  .design-sync/ds-pkg/styles.css (see prepare.sh step 3), which cfg.cssEntry
+  points at as ./styles.css.
 
   The app's own globals.css is imported rather than copied so the brand theme
   has exactly one source of truth - edit tokens there, re-run the sync, done.

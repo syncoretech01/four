@@ -31,6 +31,7 @@
     "PageTitleBand": "../../apps/web/src/components/ds/PageTitleBand.tsx",
     "Ticker": "../../apps/web/src/components/ds/Ticker.tsx",
     "Reveal": "../../apps/web/src/components/ds/Reveal.tsx",
+    "Rise": "../../apps/web/src/components/ds/Rise.tsx",
     "PhotoStrip": "../../apps/web/src/components/hero/PhotoStrip.tsx"
   },
   "buildCmd": "sh .design-sync/prepare.sh",

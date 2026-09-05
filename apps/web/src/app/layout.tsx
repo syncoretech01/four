@@ -2,7 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Anton, DM_Sans } from "next/font/google";
 import { ToastStack } from "@/components/ToastStack";
 import { ActiveOrderPill } from "@/components/ActiveOrderPill";
+import { SparkLayer } from "@/components/ds/SparkLayer";
 import { MotionProvider } from "@/components/MotionProvider";
+import { REVEAL_RUNTIME } from "@/lib/revealRuntime";
 import "./globals.css";
 
 // v3 type: Anton display caps (single weight) + DM Sans body, self-hosted through next/font.
@@ -50,6 +52,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${anton.variable} ${dmSans.variable}`}>
       <body className="min-h-[100dvh]">
+        {/* First child of <body> on purpose: the parser reaches it before any
+            page content, so the reveal gate is set before anything could paint
+            un-hidden and then hide. In <head> it would also work (the runtime
+            waits for DOMContentLoaded), but placement there depends on how the
+            framework hoists inline scripts, and this does not. */}
+        <script dangerouslySetInnerHTML={{ __html: REVEAL_RUNTIME }} />
         <a href="#main" className="skip-link">
           Skip to content
         </a>
@@ -57,6 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
           <ToastStack />
           <ActiveOrderPill />
+          <SparkLayer />
         </MotionProvider>
       </body>
     </html>

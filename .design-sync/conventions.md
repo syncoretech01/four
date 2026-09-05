@@ -139,3 +139,36 @@ storefront's real sections in their real order - full-bleed, no props (except
 Build anything new from the primitives and the utilities above, and prefer
 `SmartImage` over a bare `<img>` anywhere a photo might be missing: it degrades
 to a branded tile instead of a hole in the layout.
+
+## Motion rules for synced components
+
+**No component exported from `ds-pkg/index.ts` (or listed in `config.json`'s
+`componentSrcMap`) may import GSAP.** Two reasons, both of which fail silently
+rather than loudly:
+
+- The bundle inlines its runtime — `_ds_bundle.js` is already ~555KB with
+  `motion` inlined — so a GSAP import lands the whole library in a file the
+  design canvas loads.
+- `package-capture` pins the page clock, so a GSAP timeline never advances and
+  the element screenshots at its *start* state. That is the same failure this
+  file's sibling NOTES.md records for `HypeBand`.
+
+GSAP is confined to `apps/web/src/lib/useGsap.ts` and its callers, none of which
+are synced. `about/AboutCraft.tsx` is currently the only one.
+
+**Entrances are CSS, not JavaScript.** `Reveal` (below the fold, observer-driven)
+and `Rise` (above the fold, first paint) are server components that mark an
+element and let `components.css` do the work. The rule they encode:
+
+> The un-enhanced state is the finished state. Nothing may hide itself unless
+> the code that will un-hide it is already running.
+
+Never reintroduce a `motion` `initial={{ opacity: 0 }}` on anything that renders
+on the server — motion writes `initial` into the SSR inline style, which both
+hides the content without JavaScript and disqualifies it as an LCP candidate.
+`apps/web/scripts/check-ssr-visible.mjs` fails the build if this comes back.
+
+Above the fold, prefer transform-only motion (`Rise fade={false}`, `.f-lineup`,
+`.f-wordup`): Chrome does not count an element at `opacity: 0` — or text
+translated outside a clip box — as painted, so a fading hero costs the LCP
+measurement it was trying to decorate.

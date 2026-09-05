@@ -24,6 +24,7 @@ const TrackMap = dynamic(() => import("@/components/map/TrackMap").then((m) => m
 import { Footer } from "@/components/sections/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { ChatDock } from "@/components/chat/ChatDock";
+import { EASE_BRAND } from "@/lib/motionTokens";
 
 export default function TrackPage({ params }: { params: Promise<{ orderNumber: string }> }) {
   const { orderNumber } = use(params);
@@ -112,7 +113,7 @@ export default function TrackPage({ params }: { params: Promise<{ orderNumber: s
             <motion.div
               initial={reduce ? false : { opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.5, ease: EASE_BRAND }}
               className="f-card f-card--inverse relative isolate overflow-hidden p-8"
             >
               <DoodleBackdrop />

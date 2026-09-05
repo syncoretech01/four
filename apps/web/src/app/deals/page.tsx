@@ -12,6 +12,7 @@ import { PageTitleBand } from "@/components/ds/PageTitleBand";
 import { SectionHeader } from "@/components/ds/SectionHeader";
 import { PillCta } from "@/components/ds/PillCta";
 import { PriceTag } from "@/components/ds/PriceTag";
+import { Reveal } from "@/components/ds/Reveal";
 import { DoodleBackdrop } from "@/components/ds/DoodleBackdrop";
 
 export const metadata: Metadata = {
@@ -62,8 +63,9 @@ export default function DealsPage() {
           <DoodleBackdrop tone="red" edges />
           <div className="wrap band relative z-[1]">
             <div className="grid items-start grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 xl:[&>*:nth-child(3n+2)]:mt-[120px] xl:[&>*:nth-child(3n)]:my-[140px]">
-              {deals.map((d) => (
-                <article key={d.id} className="f-item f-item--deal">
+              {deals.map((d, i) => (
+                <Reveal key={d.id} delay={Math.min(i * 0.08, 0.32)}>
+                <article className="f-item f-item--deal">
                   <Link href={d.href} className="flex flex-1 flex-col" aria-label={`${d.name}, ${formatPKR(d.dealPrice)} - build this meal`}>
                     <div className="f-item__media">
                       <SmartImage src={`/menu-items/${d.itemId}.jpg`} alt={d.name} fallbackLabel={d.name} className="h-full w-full" />
@@ -83,6 +85,7 @@ export default function DealsPage() {
                     </div>
                   </Link>
                 </article>
+                </Reveal>
               ))}
             </div>
 

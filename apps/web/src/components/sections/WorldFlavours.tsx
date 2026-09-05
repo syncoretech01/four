@@ -1,5 +1,3 @@
-"use client";
-
 /**
  * The menu's global-city naming system as Dinevo's tile grid: nine cream
  * tiles, one per city, the ninth on red for Lahore. Photo-free on purpose -
@@ -7,7 +5,8 @@
  */
 import Link from "next/link";
 import { MENU_ITEMS, formatPKR, type MenuItemData } from "@four/shared";
-import { SectionHeader } from "../ds/SectionHeader";
+import { Hi, SectionHeader } from "../ds/SectionHeader";
+import { RotatingCity } from "../ds/RotatingCity";
 import { PillCta } from "../ds/PillCta";
 import { Reveal } from "../ds/Reveal";
 
@@ -38,9 +37,27 @@ export function WorldFlavours() {
     <section className="band">
       <div className="wrap grid items-center gap-12 lg:grid-cols-2">
         <div>
+          {/* The rotating word is the *inspiration* city, not the address:
+              "Flavours from New York. One Lahore address." stays true at every
+              step, which rotating the highlighted "Lahore" would not.
+
+              It sits at the END of its line so the width reserved for the
+              longest city is invisible trailing space. Reserving that width is
+              what keeps the rotation off the CLS budget — a word that resized
+              every 2.6s would shift the rest of the line each time — but with
+              the city mid-line the reservation showed as a visible gap. */}
           <SectionHeader
-            title="Big-city flavours. One Lahore address."
-            highlight="Lahore"
+            title={
+              <>
+                <span className="whitespace-nowrap">
+                  Flavours from <RotatingCity cities={cells.map((c) => c.city)} />
+                </span>
+                <br />
+                <span className="whitespace-nowrap">
+                  One <Hi>Lahore</Hi> address.
+                </span>
+              </>
+            }
             tag="The menu, mapped"
             tag2="One address"
             lede="Every burger on the board carries the city that inspired it. All of them are cooked here."

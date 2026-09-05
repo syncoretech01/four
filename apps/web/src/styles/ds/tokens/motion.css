@@ -8,10 +8,20 @@
   --dur-base: 300ms;   /* nav, scrim, promo collapse */
   --dur-slow: 500ms;   /* photo zoom */
   --dur-reveal: 600ms; /* scroll-in */
+  --dur-hero: 700ms;   /* hero line-rise */
 
   --marquee-duration: 40s;
   --seal-spin: 12s;
 
   --hover-scale: 1.1;  /* card photo on hover */
   --press-scale: 0.98; /* pill on :active */
+
+  --reveal-rise: 24px; /* below-the-fold scroll entry (Reveal) */
+  --rise-y: 20px;      /* above-the-fold entrance (Rise) */
+  --stagger-line: 90ms;/* masked line-rise cascade (LineRise) */
+  --spark-duration: 400ms;
+
+  /* The JS mirror of --ease-brand/--dur-* lives in src/lib/motionTokens.ts;
+     motion and gsap cannot read a CSS custom property, so the two files are
+     kept in step by hand. Change one, change the other. */
 }

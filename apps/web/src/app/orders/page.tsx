@@ -17,6 +17,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/sections/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { ChatDock } from "@/components/chat/ChatDock";
+import { Reveal } from "@/components/ds/Reveal";
 import { PageTitleBand } from "@/components/ds/PageTitleBand";
 import { PillCta } from "@/components/ds/PillCta";
 
@@ -210,8 +211,9 @@ export default function OrdersPage() {
                 <PillCta href="/menu">See the menu</PillCta>
               </div>
             )}
-            {orders?.map((o) => (
-              <article key={o.orderNumber} className="f-card f-card--sm overflow-hidden">
+            {orders?.map((o, i) => (
+              <Reveal key={o.orderNumber} delay={Math.min(i * 0.06, 0.24)}>
+              <article className="f-card f-card--sm overflow-hidden">
                 <Link href={`/track/${o.orderNumber}`} className="block p-6 pb-4">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
@@ -239,6 +241,7 @@ export default function OrdersPage() {
                   </Link>
                 </div>
               </article>
+              </Reveal>
             ))}
 
             {!customer && orders !== null && <SignIn onSignedIn={refresh} />}

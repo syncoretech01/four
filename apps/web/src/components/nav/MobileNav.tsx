@@ -12,6 +12,7 @@ import { useStore } from "@/lib/store";
 import { CLOSES_LABEL, OPENS_LABEL } from "@/lib/hours";
 import { BrandLogo } from "../BrandLogo";
 import { DoodleBackdrop } from "../ds/DoodleBackdrop";
+import { EASE_BRAND } from "@/lib/motionTokens";
 
 /**
  * Mobile navigation: a full-screen red takeover, not a drawer - the
@@ -97,7 +98,7 @@ export function MobileNav({
                   key={l.href}
                   initial={reduce ? false : { y: 14, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.05 + i * 0.045, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{ delay: 0.05 + i * 0.045, duration: 0.45, ease: EASE_BRAND }}
                 >
                   <Link href={l.href} onClick={onClose} aria-current={active ? "page" : undefined} className="f-mobilenav__link">
                     {l.label}
@@ -110,7 +111,7 @@ export function MobileNav({
           <motion.div
             initial={reduce ? false : { y: 16, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ delay: 0.2, duration: 0.45, ease: EASE_BRAND }}
             className="relative z-[1] grid shrink-0 gap-3 border-t border-rule-white bg-red-press px-5 py-5"
           >
             <button

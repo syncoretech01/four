@@ -1,5 +1,3 @@
-"use client";
-
 /**
  * The craft story as Dinevo's "about" beat: a red thumb card with the crown
  * photo, the rotating seal and a stat strip on the left; the thesis, a
@@ -10,6 +8,7 @@ import { BRANCHES, HOURS_LABEL } from "@four/shared";
 import { SmartImage } from "../SmartImage";
 import { RotatingSeal } from "../hero/RotatingSeal";
 import { SectionHeader } from "../ds/SectionHeader";
+import { StatNumber } from "../ds/StatNumber";
 import { PillCta } from "../ds/PillCta";
 import { Reveal } from "../ds/Reveal";
 
@@ -43,7 +42,7 @@ export function CraftStory() {
               </div>
               <div className="grid grid-cols-[auto_1fr] items-center gap-6 p-8 pt-[100px]">
                 <span className="font-display text-[5rem] leading-none text-yellow" aria-hidden>
-                  {BRANCHES.length}
+                  <StatNumber value={BRANCHES.length} />
                 </span>
                 <div>
                   <span className="block text-sm font-medium uppercase tracking-[0.08em] text-white/80">

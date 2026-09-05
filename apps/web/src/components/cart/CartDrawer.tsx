@@ -17,6 +17,7 @@ import { CheckoutForm } from "./CheckoutForm";
 import { ItemModal, type ItemModalEdit, type MenuItemView } from "../menu/ItemModal";
 import { HAND_MARK } from "../hero/logoPaths";
 import type { CartLineView } from "@four/shared";
+import { EASE_BRAND } from "@/lib/motionTokens";
 
 export function CartDrawer() {
   const open = useStore((s) => s.cartOpen);
@@ -163,7 +164,7 @@ export function CartDrawer() {
                             initial={reduce ? false : { opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: "auto" }}
                             exit={reduce ? { opacity: 0 } : { opacity: 0, height: 0 }}
-                            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                            transition={{ duration: 0.25, ease: EASE_BRAND }}
                             className="f-line overflow-hidden"
                           >
                             <div className="f-line__thumb">
@@ -236,7 +237,7 @@ export function CartDrawer() {
                           className="f-progress__fill"
                           initial={false}
                           animate={{ width: `${freePct}%` }}
-                          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                          transition={{ duration: 0.4, ease: EASE_BRAND }}
                         />
                       </div>
                     </div>

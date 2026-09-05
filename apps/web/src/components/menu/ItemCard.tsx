@@ -5,6 +5,7 @@ import { useReduceMotion } from "@/lib/useAnim";
 import { formatPKR } from "@four/shared";
 import { SmartImage } from "../SmartImage";
 import { PriceTag } from "../ds/PriceTag";
+import { Reveal } from "../ds/Reveal";
 import { TagStack } from "./tags";
 import type { MenuItemView } from "./ItemModal";
 
@@ -12,8 +13,8 @@ import type { MenuItemView } from "./ItemModal";
  * One dish in an ordering grid: the cream `.f-item` card (white inside cream
  * sections) with a 4:3 photo, straight sticker tags, name + description, and
  * a foot row holding the quick-add pill and the red price square. The reveal
- * animation lives on an outer wrapper on purpose: motion writes `transform`
- * inline, which would otherwise beat the CSS `:hover` photo zoom.
+ * stays on an outer wrapper so its transform cannot flatten the CSS `:hover`
+ * photo zoom on the media inside.
  */
 export function ItemCard({
   item,
@@ -28,19 +29,13 @@ export function ItemCard({
   /** True while the "added to cart" flash is showing on this card. */
   added: boolean;
   onOpen: (item: MenuItemView) => void;
-  onQuickAdd: (item: MenuItemView) => void;
+  onQuickAdd: (item: MenuItemView, origin?: Element | null) => void;
 }) {
   const reduce = useReduceMotion();
   const hasChoices = item.variants.length > 0 || item.modifierGroups.length > 0;
 
   return (
-    <motion.div
-      className="h-full"
-      initial={reduce ? false : { opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.5, delay: Math.min(index * 0.05, 0.3), ease: [0.16, 1, 0.3, 1] }}
-    >
+    <Reveal className="h-full" delay={Math.min(index * 0.05, 0.3)}>
       <article className={`f-item h-full ${item.available ? "" : "is-unavailable"}`}>
         <button
           onClick={() => item.available && onOpen(item)}
@@ -61,7 +56,7 @@ export function ItemCard({
         <div className="f-item__foot">
           {item.available && (
             <button
-              onClick={() => onQuickAdd(item)}
+              onClick={(e) => onQuickAdd(item, e.currentTarget)}
               aria-label={hasChoices ? `Choose options for ${item.name}` : `Add ${item.name} to cart`}
               className="f-btn f-btn--secondary f-btn--sm f-item__add"
             >
@@ -81,6 +76,6 @@ export function ItemCard({
           <PriceTag price={item.basePrice} from={item.variants.length > 0} className={item.available ? "" : "ml-auto"} />
         </div>
       </article>
-    </motion.div>
+    </Reveal>
   );
 }

@@ -160,3 +160,33 @@ an honest one.
   designs render as static CSS with no Tailwind at render time — a class absent
   from `styles.css` does nothing. Narrowing the `@source` set would silently
   shrink what the design agent can express.
+
+## The opacity-0 trap is fixed at the source (2026-09-04)
+
+The three workarounds in `ds-pkg/preview-root.tsx` exist because synced
+components animated in from `opacity: 0` and stayed invisible in a still
+capture. The app no longer does that: `Reveal` and `Rise` are CSS-driven server
+components whose default state is the finished one, and the `[data-reveal-js]`
+gate that hides anything is set by the same head script that arms the observer
+clearing it (`apps/web/src/lib/revealRuntime.ts`). There is no head script in a
+design canvas, so synced components now render permanently visible there.
+
+Consequently patches 2 and 3 — `MotionGlobalConfig.skipAnimations = true` and
+the always-intersecting `IntersectionObserver` shim — are believed unnecessary.
+**They have deliberately not been removed here**, because `preview-root.tsx` is
+a committed sync input and getting it wrong costs a full capture cycle. Remove
+them on the next sync and verify against the review sheet. Patch 1 (the
+`matchMedia` reduced-motion emulation) must stay: `RotatingSeal` and `Ticker`
+still move under CSS keyframes and a still capture needs them frozen.
+
+The acceptance test for the whole reduced-motion contract is that **emulating
+`(prefers-reduced-motion: reduce)` alone is enough** to settle every page. That
+was verified across `/`, `/menu`, `/about` and `/deals`: with the media query
+emulated and no scrolling at all, no element inside `<main>` computes below full
+opacity and `document.getAnimations()` reports nothing running. `/about` also
+downloads three fewer JS chunks, because `useGsap` checks the query before it
+imports anything.
+
+`Ticker` is now a client component: the CSS marquee remains the server-rendered
+and reduced-motion state, and a scroll-velocity driver is mounted on top only
+while the strip is on screen and the tab is visible.

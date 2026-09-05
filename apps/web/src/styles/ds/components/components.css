@@ -219,6 +219,9 @@
 .f-marquee { overflow: hidden; padding: 1.5rem 0; color: var(--yellow); background: none; border: 0; }
 .f-marquee__row { display: flex; width: max-content; animation: f-marquee var(--marquee-duration) linear infinite; }
 .f-marquee:hover .f-marquee__row { animation-play-state: paused; }
+/* While the scroll-velocity driver is mounted it writes `x` inline; the CSS
+   keyframes would fight it for the same transform. See ds/Ticker. */
+.f-marquee__row.is-driven { animation: none; }
 .f-marquee__strip { display: flex; flex-shrink: 0; align-items: center; }
 .f-marquee__word { white-space: nowrap; font-family: var(--font-display); font-size: var(--text-ticker); font-weight: 400; line-height: 1; text-transform: uppercase; letter-spacing: -.02em; }
 .f-marquee__word--outline { color: transparent; -webkit-text-stroke: 1px var(--yellow); }
@@ -334,3 +337,90 @@ a:hover .f-circ img, button:hover .f-circ img { transform: scale(1.06); }
 .f-drawer__title { margin: 0; font-family: var(--font-display); font-size: var(--text-h3); font-weight: 400; text-transform: uppercase; letter-spacing: var(--tracking-tag); color: var(--red); }
 .f-drawer__body { flex: 1; overflow-y: auto; padding: 1.5rem; }
 .f-drawer__foot { border-top: 1px solid var(--rule); padding: 1.5rem; background: var(--cream); }
+
+/* ── Reveal / Rise ──
+   The un-enhanced state is the FINISHED state. Nothing may hide itself unless
+   the code that will un-hide it is already running: the [data-reveal-js] gate
+   is set by the same head script that arms the IntersectionObserver
+   (src/lib/revealRuntime.ts), so JS-off, an old browser and a thrown exception
+   all leave content visible. This replaces a motion `initial={{opacity:0}}`
+   that shipped in the SSR HTML and made the hero ineligible for LCP. */
+[data-reveal-js] [data-reveal]:not([data-reveal-shown]) {
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-rise), 0);
+}
+[data-reveal-js] [data-reveal] {
+  transition:
+    opacity var(--dur-reveal) var(--ease-brand) var(--reveal-delay, 0s),
+    transform var(--dur-reveal) var(--ease-brand) var(--reveal-delay, 0s);
+}
+/* `none`, not translateY(0): a lingering transform would make every revealed
+   card a containing block for fixed descendants. No will-change either —
+   /menu renders 60+ cards and 60 permanent compositor layers is a memory
+   disaster on the low-end Android that dominates this market. */
+[data-reveal-shown] { opacity: 1; transform: none; }
+
+.f-rise { animation: f-rise var(--dur-reveal) var(--ease-brand) var(--rise-delay, 0s) both; }
+.f-rise--solid { animation-name: f-rise-solid; }
+@keyframes f-rise       { from { opacity: 0; transform: translate3d(0, var(--rise-y), 0); } }
+@keyframes f-rise-solid { from {             transform: translate3d(0, var(--rise-y), 0); } }
+
+/* Per-line heading rise. Lines are authored (<br/>), never measured, so this is
+   immune to the Anton font-swap reflow that a measuring split-text would
+   introduce on the LCP element.
+
+   Two variants, and the difference is an LCP decision, not a taste one. The
+   masked variant slides each line out of an overflow-hidden box, which is the
+   more dramatic read — but text translated outside its clip box is not painted,
+   and an unpainted element is not an LCP candidate. So the mask is only for
+   headings that are definitely NOT the LCP element. The plain variant keeps the
+   text painted at full opacity the whole way and just staggers the lines, which
+   is what the hero headline gets. */
+.f-lineup { display: block; }
+.f-lineup > * { display: block; animation: f-lineup var(--dur-hero) var(--ease-brand) var(--rise-delay, 0s) both; }
+@keyframes f-lineup { from { transform: translate3d(0, .38em, 0); } }
+
+/* .f-heading is uppercase so no descender is clipped by the mask; the
+   padding/margin pair still covers Anton's rounded-glyph overshoot. */
+.f-linerise { display: block; overflow: hidden; padding-bottom: .08em; margin-bottom: -.08em; }
+.f-linerise > * { display: block; animation: f-linerise var(--dur-hero) var(--ease-brand) var(--rise-delay, 0s) both; }
+@keyframes f-linerise { from { transform: translate3d(0, 110%, 0); } }
+
+
+/* Heading words ride the same observer as Reveal; only the distance changes,
+   since a word travelling a card's full 24px reads as sloppy. Below the fold
+   only — it fades from opacity 0. */
+.f-wordrise { display: inline-block; --reveal-rise: .45em; }
+
+/* The above-the-fold counterpart: runs at first paint, transform only, so a
+   page title stays an LCP candidate the whole way. Shares f-lineup's keyframes. */
+.f-wordup { display: inline-block; animation: f-lineup var(--dur-hero) var(--ease-brand) var(--rise-delay, 0s) both; }
+
+/* ── Sticker peel-lift ──
+   The stickers are the loudest bit of brand furniture on the page and were the
+   only static thing on a hovered heading. Pure CSS on purpose: StickerTag has
+   no hooks and is rendered by server components, and a hover lift is not worth
+   making it a client boundary. The heading carries the hover so the target is
+   the whole title, not a 90px rotated label. base.css already flattens the
+   transition under reduced motion. */
+.f-tag { transition: transform var(--dur-base) var(--ease-brand); }
+.f-tag--tilt-l:hover { transform: rotate(-8deg) translateY(-3px) scale(1.06); }
+.f-tag--tilt-r:hover { transform: rotate(15deg) translateY(-3px) scale(1.06); }
+.f-header__title:hover .f-header__tag--top { transform: rotate(-8deg) translateY(-4px) scale(1.06); }
+.f-header__title:hover .f-header__tag--bottom { transform: rotate(15deg) translateY(-4px) scale(1.06); }
+
+/* ── Reduced motion ──
+   Last in the file on purpose. base.css only zeroes transition/animation
+   DURATION, which makes a reveal *snap* rather than removing its hidden start
+   state, so the start states are neutralised explicitly here — and these rules
+   have to come after every rule they override, since they win on order rather
+   than specificity. Anything animated added below this block is a bug. */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal-js] [data-reveal],
+  [data-reveal-js] [data-reveal]:not([data-reveal-shown]) {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .f-rise, .f-rise--solid, .f-linerise > *, .f-lineup > *, .f-wordup { animation: none; }
+}

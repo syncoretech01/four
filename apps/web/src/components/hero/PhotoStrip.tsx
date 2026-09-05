@@ -1,5 +1,5 @@
 import { SmartImage } from "../SmartImage";
-import { Reveal } from "../ds/Reveal";
+import { Rise } from "../ds/Rise";
 
 export interface StripPhoto {
   /** File stem under /public/hero: strip-<name>.jpg and strip-<name>@640.jpg */
@@ -24,6 +24,11 @@ export const STRIP: StripPhoto[] = [
  * (Dinevo's overlapping video slot, done with stills). The negative margin
  * lives on the `.wrap`; each tile is rounded on its own so no seam crosses the
  * red/white edge. 2x2 below 768px so all four pillars stay above the fold.
+ *
+ * The first two tiles are `priority` (eager, fetchpriority=high) and are the
+ * likely LCP element, so they rise without fading: Chrome does not count an
+ * element at opacity 0 as an LCP candidate, and fading them threw away the
+ * head start their preload buys.
  */
 export function PhotoStrip({ photos = STRIP }: { photos?: StripPhoto[] }) {
   return (
@@ -31,7 +36,7 @@ export function PhotoStrip({ photos = STRIP }: { photos?: StripPhoto[] }) {
       <div className="wrap f-hero-media__inner">
         <div className="f-strip">
           {photos.map((p, i) => (
-            <Reveal key={p.name} delay={i * 0.08}>
+            <Rise key={p.name} delay={i * 0.08} fade={i >= 2}>
               <SmartImage
                 src={`/hero/strip-${p.name}.jpg`}
                 srcSet={`/hero/strip-${p.name}.jpg 1040w, /hero/strip-${p.name}@640.jpg 640w`}
@@ -42,7 +47,7 @@ export function PhotoStrip({ photos = STRIP }: { photos?: StripPhoto[] }) {
                 priority={i < 2}
                 className="h-full w-full"
               />
-            </Reveal>
+            </Rise>
           ))}
         </div>
       </div>

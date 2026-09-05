@@ -12,6 +12,8 @@ import { RotatingSeal } from "../hero/RotatingSeal";
 import { PageTitleBand } from "../ds/PageTitleBand";
 import { SectionHeader, Hi } from "../ds/SectionHeader";
 import { PillCta } from "../ds/PillCta";
+import { StatNumber } from "../ds/StatNumber";
+import { FloatHeading } from "../ds/FloatHeading";
 import { DoodleBackdrop } from "../ds/DoodleBackdrop";
 import { Reveal } from "../ds/Reveal";
 
@@ -26,11 +28,11 @@ const SCRATCH: { sauce: string; itemId: string; itemName: string }[] = [
 ];
 
 /** Real numbers only: the patty weight is printed on the menu, the rest are shared constants. */
-const STATS: { value: string; unit?: string; label: string }[] = [
-  { value: "110", unit: "g", label: "per patty" },
-  { value: String(BRANCHES.length), label: "Lahore kitchens" },
-  { value: String(LAHORE_AREAS.length), label: "delivery areas" },
-  { value: String(BASE_DELIVERY_MINUTES), unit: "min", label: "base delivery time" },
+const STATS: { value: number; unit?: string; label: string }[] = [
+  { value: 110, unit: "g", label: "per patty" },
+  { value: BRANCHES.length, label: "Lahore kitchens" },
+  { value: LAHORE_AREAS.length, label: "delivery areas" },
+  { value: BASE_DELIVERY_MINUTES, unit: "min", label: "base delivery time" },
 ];
 
 /** The three process beats, in the order the kitchen does them. */
@@ -118,7 +120,7 @@ export function AboutCraft() {
           {STATS.map((s) => (
             <li key={s.label}>
               <span className="block font-display text-6xl uppercase leading-none text-red">
-                {s.value}
+                <StatNumber value={s.value} />
                 {s.unit && <Hi>{s.unit}</Hi>}
               </span>
               <span className="mt-2 block text-sm font-medium text-ink-600">{s.label}</span>
@@ -184,7 +186,15 @@ export function AboutCraft() {
       {/* ── 6 · House sauces ── */}
       <section className="on-cream">
         <div className="wrap band">
-          <SectionHeader title="If it's on the menu, we make it" highlight="make" tag="House sauces" lede="No jars, no shortcuts. Every sauce and dip is mixed in our own kitchens — here is where each one lives." />
+          {/* The one scroll-scrubbed heading in the app. /about is a story page
+              rather than part of the ordering funnel, and it is outside the
+              design-sync export surface, which is what makes it the only place
+              GSAP is allowed to land. */}
+          <SectionHeader
+            title={<FloatHeading text="If it's on the menu, we make it" />}
+            tag="House sauces"
+            lede="No jars, no shortcuts. Every sauce and dip is mixed in our own kitchens — here is where each one lives."
+          />
           <ul role="list" className="mt-10 grid list-none gap-5 p-0 sm:grid-cols-2 lg:grid-cols-3" aria-label="House sauces">
             {SCRATCH.map((s) => (
               <li key={s.sauce}>

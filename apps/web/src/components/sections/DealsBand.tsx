@@ -1,5 +1,3 @@
-"use client";
-
 /**
  * Dinevo's "meal deals" band on cream: three of the six real deals from
  * lib/deals.ts as yellow cards in the staggered grid. Every price is derived;
@@ -11,6 +9,7 @@ import { buildDeals, MEAL_DEAL_FROM } from "@/lib/deals";
 import { SmartImage } from "../SmartImage";
 import { SectionHeader } from "../ds/SectionHeader";
 import { PillCta } from "../ds/PillCta";
+import { MagneticCta } from "../ds/MagneticCta";
 import { PriceTag } from "../ds/PriceTag";
 import { DoodleBackdrop } from "../ds/DoodleBackdrop";
 import { Reveal } from "../ds/Reveal";
@@ -62,9 +61,11 @@ export function DealsBand() {
         </div>
 
         <div className="mt-12 flex justify-center">
-          <PillCta href="/deals" tone="outline">
-            All deals
-          </PillCta>
+          <MagneticCta>
+            <PillCta href="/deals" tone="outline">
+              All deals
+            </PillCta>
+          </MagneticCta>
         </div>
       </div>
     </section>

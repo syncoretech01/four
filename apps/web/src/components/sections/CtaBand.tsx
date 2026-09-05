@@ -5,6 +5,7 @@ import { useKitchenOpen } from "@/lib/useKitchenOpen";
 import { CLOSES_LABEL, OPENS_LABEL } from "@/lib/hours";
 import { SectionHeader } from "../ds/SectionHeader";
 import { PillCta } from "../ds/PillCta";
+import { MagneticCta } from "../ds/MagneticCta";
 
 /**
  * Dinevo's closing CTA: a photo card under a red overlay with the pill and a
@@ -24,7 +25,9 @@ export function CtaBand() {
               {open ? `Open now — till ${CLOSES_LABEL}.` : `Opens ${OPENS_LABEL}. Build your order now and place it then.`}
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-5">
-              <PillCta href="/menu">Order now</PillCta>
+              <MagneticCta>
+                <PillCta href="/menu">Order now</PillCta>
+              </MagneticCta>
               <a href={BRAND.phoneHref} className="inline-flex items-center gap-4 text-white hover:text-yellow">
                 <span className="grid h-[50px] w-[50px] place-items-center rounded-full border border-white/20">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>

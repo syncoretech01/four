@@ -23,6 +23,7 @@ export { DoodleBackdrop } from "../../apps/web/src/components/ds/DoodleBackdrop"
 export { PageTitleBand } from "../../apps/web/src/components/ds/PageTitleBand";
 export { Ticker } from "../../apps/web/src/components/ds/Ticker";
 export { Reveal } from "../../apps/web/src/components/ds/Reveal";
+export { Rise } from "../../apps/web/src/components/ds/Rise";
 export { PhotoStrip } from "../../apps/web/src/components/hero/PhotoStrip";
 export { LogoHero } from "../../apps/web/src/components/hero/LogoHero";
 export { Marquee } from "../../apps/web/src/components/sections/Marquee";
