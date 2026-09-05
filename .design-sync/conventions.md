@@ -2,8 +2,8 @@
 
 FOUR is a Lahore smash-burger and crown-crust-pizza storefront. Its v3 design
 language is the cloud-kitchen look with FOUR's brand: flat solid colour blocks
-(brand red, white, cream, beige) with two playful accents (yellow, pink), 1px
-rules at 14% red, 10px cards and 20px panels, yellow pill CTAs with a separate
+(white ground, burgundy slabs, cream, beige) with two playful accents (yellow,
+pink), 1px neutral rules at 12% ink, 10px cards and 20px panels, yellow pill CTAs with a separate
 arrow circle, rotated sticker tags, Anton display caps over DM Sans body copy.
 Eighteen components ship: the composable primitives `StickerTag`,
 `SectionHeader` (with `Hi` for the highlighted word), `PillCta`, `PriceTag`,
@@ -18,8 +18,11 @@ There is no provider, no theme object and no context to wire — components are
 plain exports that style themselves from `styles.css`. Import it and render.
 
 The page ground is white in DM Sans. Sections alternate white, cream
-(`on-cream`) and red (`on-red`) bands; every inner page opens with a red
-`PageTitleBand`. Never stack two red blocks - put a white or cream section
+(`on-cream`) and burgundy (`on-red`) bands. **White is the dominant ground and
+burgundy is rationed to at most three full-bleed moments per page** - typically
+the hero or one editorial band, a closer, and the footer. Inner pages open with a
+WHITE `PageTitleBand` masthead, not a coloured slab; pass `ground="burgundy"`
+only where a page's ration allows. Never stack two burgundy blocks - put a white or cream section
 between them.
 
 ### Ground contexts
@@ -32,7 +35,7 @@ recolour themselves:
 |---|---|---|
 | (none) | white | red / pink |
 | `on-cream` | cream `#F7F2E6` | red / pink |
-| `on-red` | brand red `#9D1D20` | white / yellow |
+| `on-red` | burgundy `#6B1122` | white / yellow |
 | `on-yellow` | yellow `#FFD23F` | red / red |
 | `on-beige` | brand beige `#E9DCC5` | red / pink |
 | `on-photo` | a photo under a red overlay (`<img>` first child) | white / yellow |
@@ -47,11 +50,11 @@ in `styles.css`. No CSS modules, no style props. Families you can use:
 
 | Family | Names |
 |---|---|
-| Colour | `white` `cream` `beige` `beige-deep` `red` `red-hover` `red-press` `yellow` `yellow-deep` `pink` `ink-900` `ink-600` `ink-400` `rule` `rule-white` |
+| Colour | `white` `cream` `beige` `beige-deep` `burgundy` `burgundy-hover` `burgundy-press` `yellow` `yellow-deep` `pink` `ink-900` `ink-600` `ink-400` `rule` `rule-ink` `rule-white` (the `red*` names remain as aliases of `burgundy*`) |
 | Applied as | `bg-*` `text-*` `border-*`, each with alpha steps: `border-rule`, `bg-white/10`, `text-white/80` |
 | Type | `font-display` (Anton, one weight - never add `font-bold` to it) for headings, tags, prices, pills; body text inherits DM Sans. `text-xs`…`text-7xl`, `font-normal`…`font-bold` on body copy only |
 | Radius | `rounded-card` (10px) for cards, inputs and thumbs; `rounded-panel` / `rounded-[20px]` for panels, photo blocks and modals; `rounded-full` for pills and circles |
-| Rules | `border border-rule` on light grounds, `border border-rule-white` on red; nothing thicker than 1px, no outlines, no offset shadows |
+| Rules | `border border-rule` on light grounds, `border border-rule-white` on burgundy; nothing thicker than 1px, no outlines, no offset shadows |
 | Motion | `animate-marquee`, `animate-marquee-reverse`, `animate-spin-slow` - pair with `motion-safe:` |
 | Layout | `wrap` (1320px column), `band` (65-130px section padding), the usual spacing, `grid-cols-*`, flex and `max-w-*` utilities with `sm:` `md:` `lg:` variants |
 

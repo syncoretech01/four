@@ -37,7 +37,7 @@
   on alpha (border-ink/10, bg-beige/85, text-cream/70), so those steps have to
   exist for the whole palette, not just the handful already written down.
 */
-@source inline("{bg,text,border}-{white,cream,beige,beige-deep,red,red-hover,red-press,yellow,yellow-deep,pink,ink-900,ink-600,ink-400,rule,rule-white}{,/5,/10,/15,/20,/25,/30,/40,/50,/60,/70,/75,/80,/85,/90,/95}");
+@source inline("{bg,text,border}-{white,cream,beige,beige-deep,burgundy,burgundy-hover,burgundy-press,red,red-hover,red-press,yellow,yellow-deep,pink,ink-900,ink-600,ink-400,rule,rule-ink,rule-white}{,/5,/10,/15,/20,/25,/30,/40,/50,/60,/70,/75,/80,/85,/90,/95}");
 @source inline("{on-red,on-cream,on-beige,on-yellow,on-photo,wrap,wrap-narrow,band,band--tight,relative,isolate,z-[1]}");
 
 /*
