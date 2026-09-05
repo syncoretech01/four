@@ -46,6 +46,9 @@
   --ink-a25: rgba(31, 23, 21, 0.25);
   --ink-a45: rgba(31, 23, 21, 0.45);
   --ink-a60: rgba(31, 23, 21, 0.60);
+  --red-a75: rgba(157, 29, 32, 0.75);
+  --white-a70: rgba(255, 255, 255, 0.70);
+  --white-a75: rgba(255, 255, 255, 0.75);
   --white-a80: rgba(255, 255, 255, 0.80);
 
   /* ── contextual defaults (white page ground) — .on-red / .on-yellow in

@@ -90,13 +90,32 @@
   .band--tight { padding-block: clamp(2.5rem, 6vw, 5rem); }
 
   /* ── ground contexts: recolour headings, highlight word, body, rules, focus ring ── */
-  .on-red { background: var(--red); color: #fff; --heading: #fff; --hi: var(--yellow); --body: rgba(255, 255, 255, .8); --rule: var(--rule-white); --focus-ring: var(--yellow); --link: #fff; --link-hover: var(--yellow); }
+  /* The inverse pack, defined ONCE. It used to be written out five times - here,
+     on .on-photo, .f-card--inverse, .f-mobilenav and .f-dock__head - which meant
+     five places to miss when the palette moves. The last two carried only part
+     of it; granting the full pack is additive, since neither has a highlight or
+     lede child today and both will be right if one is added. */
+  .on-red, .f-card--inverse, .f-mobilenav, .f-dock__head {
+    background: var(--red); color: var(--text-on-inverse);
+    --heading: var(--text-on-inverse); --hi: var(--yellow); --body: var(--white-a80); --rule: var(--rule-white);
+    --focus-ring: var(--yellow); --link: var(--text-on-inverse); --link-hover: var(--yellow);
+  }
   .on-cream { background: var(--cream); }
   .on-beige { background: var(--beige); }
-  .on-yellow { background: var(--yellow); color: var(--red); --heading: var(--red); --hi: var(--red); --body: var(--red-press); --rule: rgba(157, 29, 32, .25); --focus-ring: var(--red); --link: var(--red); --link-hover: var(--red-press); }
-  .on-photo { position: relative; isolation: isolate; color: #fff; --heading: #fff; --hi: var(--yellow); --body: #fff; --rule: var(--rule-white); --focus-ring: var(--yellow); --link: #fff; --link-hover: var(--yellow); }
+  .on-yellow, .f-card--accent {
+    background: var(--yellow); color: var(--red);
+    --heading: var(--red); --hi: var(--red); --body: var(--red-press); --rule: var(--red-a25);
+    --focus-ring: var(--red); --link: var(--red); --link-hover: var(--red-press);
+  }
+  /* Same pack as .on-red, but the lede sits on photography rather than a flat
+     ground, so it needs full opacity to stay legible over the scrim. */
+  .on-photo {
+    position: relative; isolation: isolate;
+    color: var(--text-on-inverse); --heading: var(--text-on-inverse); --hi: var(--yellow); --body: var(--text-on-inverse); --rule: var(--rule-white);
+    --focus-ring: var(--yellow); --link: var(--text-on-inverse); --link-hover: var(--yellow);
+  }
   .on-photo > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
-  .on-photo::before { content: ""; position: absolute; inset: 0; background: rgba(157, 29, 32, .75); z-index: -1; }
+  .on-photo::before { content: ""; position: absolute; inset: 0; background: var(--red-a75); z-index: -1; }
 
   /* ── keyboard escape hatch past the fixed bar ── */
   .skip-link { position: fixed; top: .75rem; left: .75rem; z-index: 60; display: inline-flex; align-items: center; height: 2.5rem; padding: 0 1.125rem; border: 0; border-radius: var(--radius-pill); background: var(--yellow); color: var(--red); font-family: var(--font-display); font-size: .875rem; text-transform: uppercase; letter-spacing: var(--tracking-tag); text-decoration: none; transform: translateY(-200%); }
@@ -105,13 +124,12 @@
   /* ── promo strip + nav bar ── */
   .f-promo { height: var(--promo-h); display: flex; align-items: center; justify-content: center; padding-inline: 1rem; background: var(--yellow); color: var(--red); font-family: var(--font-display); font-size: .75rem; line-height: 1; text-transform: uppercase; letter-spacing: .02em; text-align: center; white-space: nowrap; overflow: hidden; transition: height var(--dur-base) var(--ease-in-out); }
   .f-promo.is-collapsed { height: 0; }
-  .f-nav { background: var(--red); color: #fff; height: var(--nav-h); transition: height var(--dur-base) var(--ease-in-out); }
+  .f-nav { background: var(--red); color: var(--text-on-inverse); height: var(--nav-h); transition: height var(--dur-base) var(--ease-in-out); }
   .f-nav.is-scrolled { height: var(--nav-h-scrolled); }
   .f-nav__link { font-family: var(--font-body); font-size: 1rem; font-weight: 500; color: var(--yellow); transition: color var(--dur-fast) var(--ease-in-out); }
-  .f-nav__link:hover, .f-nav__link[aria-current="page"] { color: #fff; }
+  .f-nav__link:hover, .f-nav__link[aria-current="page"] { color: var(--text-on-inverse); }
   .f-nav__count { position: absolute; top: -.375rem; right: -.5rem; }
-  .f-mobilenav { background: var(--red); color: #fff; --heading: #fff; --rule: var(--rule-white); --focus-ring: var(--yellow); --link: #fff; --link-hover: var(--yellow); }
-  .f-mobilenav__link { display: block; padding: 1rem 0; border-bottom: 1px solid var(--rule-white); font-family: var(--font-display); font-size: 2.75rem; line-height: .95; text-transform: uppercase; color: #fff; }
+  .f-mobilenav__link { display: block; padding: 1rem 0; border-bottom: 1px solid var(--rule-white); font-family: var(--font-display); font-size: 2.75rem; line-height: .95; text-transform: uppercase; color: var(--text-on-inverse); }
   .f-mobilenav__link[aria-current="page"], .f-mobilenav__link:hover { color: var(--yellow); }
 
   /* ── hero (type block) + the photo strip that hangs into the next section ── */
@@ -119,9 +137,9 @@
   .f-hero__title { margin-inline: auto; }
   .f-hero__info { max-width: var(--measure-hero); margin: 1.5rem auto 0; color: var(--body); font-size: 1rem; line-height: 1.6; text-wrap: pretty; }
   .f-hero__actions { margin-top: 2rem; display: flex; justify-content: center; align-items: center; gap: 1rem; flex-wrap: wrap; }
-  .f-hero__proof { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: .75rem 1.5rem; margin: 0 0 1.75rem; padding: 0; list-style: none; font-family: var(--font-body); font-size: 1rem; font-weight: 500; color: #fff; }
+  .f-hero__proof { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: .75rem 1.5rem; margin: 0 0 1.75rem; padding: 0; list-style: none; font-family: var(--font-body); font-size: 1rem; font-weight: 500; color: var(--text-on-inverse); }
   .f-hero__proof li { display: inline-flex; align-items: center; gap: .5rem; }
-  .f-hero-media { background: #fff; }
+  .f-hero-media { background: var(--white); }
   .f-hero-media__inner { margin-top: calc(-1 * var(--strip-overlap)); }
   .f-strip { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; }
   @media (min-width: 768px) { .f-strip { grid-template-columns: repeat(4, 1fr); } }
@@ -133,7 +151,7 @@
   .f-titleband { position: relative; isolation: isolate; overflow: hidden; text-align: center; padding: calc(var(--bar-h) + 4rem) 0 5rem; }
 
   /* ── doodle backdrop (masked from /doodles/sheet.png) ── */
-  .f-doodle { position: absolute; inset: 0; pointer-events: none; z-index: 0; border-radius: inherit; overflow: hidden; color: #fff; opacity: .1; }
+  .f-doodle { position: absolute; inset: 0; pointer-events: none; z-index: 0; border-radius: inherit; overflow: hidden; color: var(--text-on-inverse); opacity: .1; }
   .f-doodle::before { content: ""; position: absolute; inset: 0; background: currentColor; -webkit-mask-image: url(/doodles/sheet.png); mask-image: url(/doodles/sheet.png); -webkit-mask-size: 60rem auto; mask-size: 60rem auto; -webkit-mask-repeat: repeat; mask-repeat: repeat; -webkit-mask-position: center; mask-position: center; }
   .f-doodle--red { color: var(--red); opacity: .08; }
   .f-doodle--edges::before { -webkit-mask-image: url(/doodles/sheet.png), url(/doodles/sheet.png); mask-image: url(/doodles/sheet.png), url(/doodles/sheet.png); -webkit-mask-repeat: repeat-x, repeat-x; mask-repeat: repeat-x, repeat-x; -webkit-mask-position: top, bottom; mask-position: top, bottom; -webkit-mask-size: 60rem auto, 60rem auto; mask-size: 60rem auto, 60rem auto; }
@@ -146,12 +164,12 @@
   .f-footer__strip > * + * { border-left: 1px solid var(--rule-white); }
   .f-footer__strip svg { width: 1rem; height: 1rem; flex-shrink: 0; }
   .f-footer__widgets { display: grid; gap: 2.5rem; grid-template-columns: repeat(4, 1fr); padding-block: 4rem; }
-  .f-footer__title { margin: 0 0 1.25rem; font-family: var(--font-display); font-size: var(--text-tag); text-transform: uppercase; letter-spacing: var(--tracking-tag); color: #fff; }
+  .f-footer__title { margin: 0 0 1.25rem; font-family: var(--font-display); font-size: var(--text-tag); text-transform: uppercase; letter-spacing: var(--tracking-tag); color: var(--text-on-inverse); }
   .f-footer__list { display: grid; gap: 1rem; margin: 0; padding: 0; list-style: none; }
-  .f-footer__link { font-family: var(--font-body); font-size: 1rem; color: #fff; transition: color var(--dur-fast) var(--ease-in-out); }
+  .f-footer__link { font-family: var(--font-body); font-size: 1rem; color: var(--text-on-inverse); transition: color var(--dur-fast) var(--ease-in-out); }
   .f-footer__link:hover { color: var(--yellow); }
   .f-footer__hours { border-left: 1px solid var(--rule-white); padding-left: 3.75rem; }
-  .f-footer__bottom { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .75rem 1.5rem; border-top: 1px solid var(--rule-white); padding: 1.25rem 0; font-size: .875rem; color: rgba(255, 255, 255, .7); }
+  .f-footer__bottom { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .75rem 1.5rem; border-top: 1px solid var(--rule-white); padding: 1.25rem 0; font-size: .875rem; color: var(--white-a70); }
   @media (max-width: 767px) {
     .f-footer__strip, .f-footer__widgets { grid-template-columns: 1fr 1fr; }
     .f-footer__strip > :nth-child(odd) { border-left: 0; }
@@ -161,8 +179,8 @@
   @media (max-width: 479px) { .f-footer__strip, .f-footer__widgets { grid-template-columns: 1fr; } .f-footer__strip > * + * { border-left: 0; border-top: 1px solid var(--rule-white); } }
 
   /* ── branch card (delivery areas rail) ── */
-  .f-loc { display: flex; flex-direction: column; flex: 0 0 min(80vw, 20rem); scroll-snap-align: start; overflow: hidden; border-radius: var(--radius-card); background: #fff; border: 1px solid var(--rule); }
-  .f-loc__thumb { height: 200px; display: grid; place-items: center; background: var(--red); color: #fff; }
+  .f-loc { display: flex; flex-direction: column; flex: 0 0 min(80vw, 20rem); scroll-snap-align: start; overflow: hidden; border-radius: var(--radius-card); background: var(--white); border: 1px solid var(--rule); }
+  .f-loc__thumb { height: 200px; display: grid; place-items: center; background: var(--red); color: var(--text-on-inverse); }
   .f-loc__thumb--beige { background: var(--beige); color: var(--red); }
   .f-loc__thumb svg { width: 6rem; height: auto; }
   .f-loc__body { padding: 1.4375rem 1.25rem 1.25rem; }
@@ -177,6 +195,6 @@
   .f-catnav { display: grid; gap: .25rem; }
   .f-catnav__item { display: flex; align-items: center; justify-content: space-between; gap: .75rem; border: 0; border-radius: var(--radius-pill); background: none; padding: .5625rem 1rem; font-family: var(--font-body); font-size: .9375rem; font-weight: 500; text-align: left; color: var(--ink-600); cursor: pointer; transition: background-color var(--dur-fast) var(--ease-in-out), color var(--dur-fast) var(--ease-in-out); }
   .f-catnav__item:hover { color: var(--red); background: var(--cream); }
-  .f-catnav__item.is-active { background: var(--red); color: #fff; }
+  .f-catnav__item.is-active { background: var(--red); color: var(--text-on-inverse); }
   .f-catnav__count { font-size: var(--text-2xs); font-weight: 600; }
 }
