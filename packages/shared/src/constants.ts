@@ -69,6 +69,29 @@ export function deliveryEtaLabel(distanceKm: number): string {
 export const DEFAULT_TAX_RATE_COD = 0.16;
 export const DEFAULT_TAX_RATE_CARD = 0.08;
 
+export type PaymentMethodName = "COD" | "CARD";
+
+/** The published rate for a payment method. The server may override both from
+ *  env, which is why anything the CLIENT derives from this is an estimate. */
+export function defaultTaxRate(payment: PaymentMethodName): number {
+  return payment === "CARD" ? DEFAULT_TAX_RATE_CARD : DEFAULT_TAX_RATE_COD;
+}
+
+/**
+ * The order arithmetic, in one place so the cart's estimate and the server's
+ * quote cannot drift apart. The server passes its env-configured rate; the
+ * cart passes `defaultTaxRate`, and must label the result "estimated" because
+ * only the server's quote is authoritative.
+ */
+export function orderTotals(
+  subtotal: number,
+  taxRate: number,
+): { deliveryFee: number; tax: number; total: number } {
+  const deliveryFee = subtotal >= FREE_DELIVERY_ABOVE ? 0 : DELIVERY_FEE;
+  const tax = Math.round(subtotal * taxRate);
+  return { deliveryFee, tax, total: subtotal + deliveryFee + tax };
+}
+
 export const ORDER_STATUS_FLOW = [
   "CONFIRMED",
   "PREPARING",

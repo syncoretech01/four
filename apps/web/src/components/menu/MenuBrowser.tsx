@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
 import { useReduceMotion } from "@/lib/useAnim";
 import { useKitchenOpen } from "@/lib/useKitchenOpen";
 import { OPENS_LABEL } from "@/lib/hours";
@@ -307,40 +306,6 @@ export function MenuBrowser() {
       )}
 
       <ItemModal item={selected} onClose={() => setSelected(null)} />
-      <BasketBar />
     </div>
-  );
-}
-
-/**
- * Mobile-only sticky footer bar with the running basket total - the KFC
- * "View basket" pattern. Desktop already has the cart button in the nav.
- * Right padding leaves the corner clear for the chat dock's bubble.
- */
-function BasketBar() {
-  const cart = useStore((s) => s.cart);
-  const setCartOpen = useStore((s) => s.setCartOpen);
-  const reduce = useReduceMotion();
-
-  return (
-    <AnimatePresence>
-      {cart.itemCount > 0 && (
-        <motion.div
-          initial={reduce ? false : { y: 96 }}
-          animate={{ y: 0 }}
-          exit={{ y: 96 }}
-          transition={{ type: "spring", stiffness: 320, damping: 30 }}
-          className="fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-white/95 px-4 py-3 backdrop-blur-[10px] [padding-bottom:max(0.75rem,env(safe-area-inset-bottom))] lg:hidden"
-        >
-          <button onClick={() => setCartOpen(true)} className="f-btn f-btn--primary f-btn--lg f-btn--block justify-between px-5">
-            <span className="inline-flex items-center gap-2 whitespace-nowrap">
-              View basket
-              <span className="f-tag f-tag--count">{cart.itemCount}</span>
-            </span>
-            <span className="whitespace-nowrap">{formatPKR(cart.subtotal)}</span>
-          </button>
-        </motion.div>
-      )}
-    </AnimatePresence>
   );
 }

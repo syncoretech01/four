@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Anton, DM_Sans } from "next/font/google";
 import { ToastStack } from "@/components/ToastStack";
 import { ActiveOrderPill } from "@/components/ActiveOrderPill";
+import { BasketBar } from "@/components/cart/BasketBar";
 import { SparkLayer } from "@/components/ds/SparkLayer";
 import { MotionProvider } from "@/components/MotionProvider";
 import { REVEAL_RUNTIME } from "@/lib/revealRuntime";
@@ -65,6 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
           <ToastStack />
           <ActiveOrderPill />
+          <BasketBar />
           <SparkLayer />
         </MotionProvider>
       </body>

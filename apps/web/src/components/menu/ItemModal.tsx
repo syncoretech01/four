@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useReduceMotion } from "@/lib/useAnim";
 import { useDismissable } from "@/lib/useDismissable";
-import { formatPKR } from "@four/shared";
+import { formatPKR, type CartView } from "@four/shared";
 import { api, ApiError } from "@/lib/api";
 import { spark } from "@/lib/spark";
 import { useStore } from "@/lib/store";
@@ -61,6 +61,7 @@ export function ItemModal({
   onClose: () => void;
 }) {
   const setCartOpen = useStore((s) => s.setCartOpen);
+  const setCart = useStore((s) => s.setCart);
   const [variantSlug, setVariantSlug] = useState<string | undefined>();
   const [qty, setQty] = useState(1);
   const [picked, setPicked] = useState<Record<string, number>>({}); // "groupId:optionSlug" -> qty
@@ -137,7 +138,7 @@ export function ItemModal({
     setBusy(true);
     setError("");
     try {
-      await api("/api/cart/lines", {
+      let cart = await api<CartView>("/api/cart/lines", {
         method: "POST",
         body: JSON.stringify({
           itemId: item.id,
@@ -151,8 +152,11 @@ export function ItemModal({
       });
       if (edit) {
         // drop the line being replaced only after the new one is safely in
-        await api("/api/cart/lines", { method: "PATCH", body: JSON.stringify({ lineId: edit.lineId, qty: 0 }) });
+        cart = await api<CartView>("/api/cart/lines", { method: "PATCH", body: JSON.stringify({ lineId: edit.lineId, qty: 0 }) });
       }
+      // Apply the response rather than waiting for `cart:updated`: the drawer
+      // opens on the next line, and it must be right even with no socket.
+      setCart(cart);
       if (r) spark(r.left + r.width / 2, r.top + r.height / 2);
       onClose();
       setCartOpen(true);
@@ -265,7 +269,7 @@ export function ItemModal({
                 </p>
               )}
 
-              <div className="mt-7 flex items-center gap-4">
+              <div className="f-modal__foot">
                 <div className="f-qty">
                   <button
                     onClick={() => setQty((q) => Math.max(1, q - 1))}

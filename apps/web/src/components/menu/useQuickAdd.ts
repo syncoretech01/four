@@ -4,6 +4,8 @@ import { useState } from "react";
 import { api } from "@/lib/api";
 import { toast } from "@/lib/toast";
 import { sparkFrom } from "@/lib/spark";
+import { useStore } from "@/lib/store";
+import type { CartView } from "@four/shared";
 import type { MenuItemView } from "./ItemModal";
 
 /**
@@ -29,10 +31,16 @@ export function useQuickAdd() {
     // Fires on the add path only — an item with choices opens the picker
     // instead, and sparking there would promise something that has not happened.
     sparkFrom(origin);
-    await api("/api/cart/lines", { method: "POST", body: JSON.stringify({ itemId: item.id, qty: 1 }) }).catch(() => {
-      setAdded((cur) => (cur === item.id ? null : cur));
-      toast.error("Couldn't add that — try again.");
-    });
+    // The POST already returns the new cart, so apply it directly. Waiting for
+    // the `cart:updated` socket event instead means the badge never moves when
+    // the socket is blocked or dropped — the customer sees the flash, taps
+    // again, and leaves. The socket is now redundancy, not the mechanism.
+    await api<CartView>("/api/cart/lines", { method: "POST", body: JSON.stringify({ itemId: item.id, qty: 1 }) })
+      .then((cart) => useStore.getState().setCart(cart))
+      .catch(() => {
+        setAdded((cur) => (cur === item.id ? null : cur));
+        toast.error("Couldn't add that — try again.");
+      });
     setTimeout(() => setAdded((cur) => (cur === item.id ? null : cur)), 1300);
   };
 

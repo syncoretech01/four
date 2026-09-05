@@ -9,14 +9,13 @@ import { createHash } from "node:crypto";
 import { prisma, OrderStatus, type PaymentMethod } from "@four/db";
 import {
   BRAND,
-  DELIVERY_FEE,
-  FREE_DELIVERY_ABOVE,
   LAHORE_AREAS,
   areaCoords,
   branchForArea,
   OPENS_AT_MINUTES,
   deliveryEtaLabel,
   isOpenAt,
+  orderTotals,
   type CheckoutInput,
   type OrderQuote,
   type OrderView,
@@ -55,14 +54,15 @@ export async function quote(sessionId: string, payment: PaymentMethod): Promise<
   const cart = await cartService.viewCart(sessionId);
   if (cart.lines.length === 0) throw new OrderError("Cart is empty", "EMPTY_CART");
   const rate = taxRate(payment);
-  const deliveryFee = cart.subtotal >= FREE_DELIVERY_ABOVE ? 0 : DELIVERY_FEE;
-  const tax = Math.round(cart.subtotal * rate);
+  // Shared with the cart drawer's estimate, so the number the customer sees
+  // before checkout and the number they are charged cannot drift apart.
+  const { deliveryFee, tax, total } = orderTotals(cart.subtotal, rate);
   return {
     subtotal: cart.subtotal,
     deliveryFee,
     taxRate: rate,
     tax,
-    total: cart.subtotal + deliveryFee + tax,
+    total,
     payment,
     confirmToken: cartSignature(sessionId, cart.subtotal, cart.itemCount, payment),
   };
@@ -123,9 +123,7 @@ export async function placeOrder(sessionId: string, input: CheckoutInput): Promi
   }
 
   const rate = taxRate(input.payment);
-  const deliveryFee = cart.subtotal >= FREE_DELIVERY_ABOVE ? 0 : DELIVERY_FEE;
-  const tax = Math.round(cart.subtotal * rate);
-  const total = cart.subtotal + deliveryFee + tax;
+  const { deliveryFee, tax, total } = orderTotals(cart.subtotal, rate);
 
   // route to the branch covering the area; pin the destination for the rider map
   const branch = branchForArea(area.id);

@@ -16,7 +16,7 @@
 .f-btn:active { transform: scale(var(--press-scale)); }
 .f-btn[disabled], .f-btn[aria-disabled="true"] { background: var(--beige-deep); color: var(--ink-400); border-color: transparent; cursor: not-allowed; transform: none; }
 /* sizes before variants; --quiet last (it resets the box) */
-.f-btn--sm { height: 2.5rem; padding: 0 1.25rem; font-size: .8125rem; }
+.f-btn--sm { height: var(--control-h-sm); padding: 0 1.25rem; font-size: .8125rem; }
 .f-btn--md { height: 3.125rem; padding: 0 1.875rem; }
 .f-btn--lg { height: 3.5rem; padding: 0 2.25rem; font-size: 1rem; }
 .f-btn--block { width: 100%; }
@@ -37,6 +37,11 @@
 .f-btn--quiet { height: auto; padding: 0; background: none; border-color: transparent; color: var(--link); font-family: var(--font-body); font-size: .875rem; font-weight: 500; text-transform: none; letter-spacing: 0; }
 .f-btn--quiet:hover { color: var(--link-hover); text-decoration: underline; text-underline-offset: 4px; }
 .f-btn--quiet:active { transform: none; }
+/* WCAG 2.5.8: these render at text height ("Edit", "Back to cart"). Grow the
+   touch target with a transparent overlay rather than padding, so nothing
+   around them moves. */
+.f-btn--quiet { position: relative; }
+.f-btn--quiet::after { content: ""; position: absolute; inset-inline: 0; top: 50%; height: var(--control-h-sm); transform: translateY(-50%); }
 .f-btn.is-loading { color: transparent; pointer-events: none; }
 .f-btn.is-loading::after { content: ""; position: absolute; width: 1.125rem; height: 1.125rem; border-radius: 50%; border: 2.5px solid currentColor; border-top-color: transparent; color: var(--red); animation: f-spinner .7s linear infinite; }
 .f-btn--red.is-loading::after, .f-btn--on-red.is-loading::after { color: #fff; }
@@ -117,7 +122,7 @@
 /* ── Chip ── */
 .f-chip { display: inline-flex; align-items: center; gap: .375rem; border-radius: var(--radius-pill); border: 1px solid var(--rule); background: #fff; color: var(--red); padding: .625rem 1.125rem; font-family: var(--font-body); font-size: var(--text-sm); font-weight: 500; line-height: 1.2; cursor: pointer; box-shadow: none; transition: background-color var(--dur-fast) var(--ease-in-out), color var(--dur-fast) var(--ease-in-out), border-color var(--dur-fast) var(--ease-in-out); }
 .f-chip:hover { background: var(--yellow); border-color: transparent; }
-.f-chip--sm { padding: .5rem .875rem; font-size: .8125rem; }
+.f-chip--sm { min-height: var(--control-h-sm); padding: .5rem .875rem; font-size: .8125rem; }
 .f-chip--xs { padding: .375rem .625rem; font-size: .75rem; }
 .f-chip--square { border-radius: var(--radius-md); padding: .875rem 1rem; }
 .f-chip.is-on { background: var(--red); border-color: var(--red); color: #fff; }
@@ -129,7 +134,7 @@
 /* ── QtyStepper ── */
 .f-qty { display: inline-flex; align-items: center; border: 1px solid var(--rule); border-radius: var(--radius-pill); background: #fff; }
 .f-qty__btn { display: flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem; border: 0; background: transparent; color: var(--red); font-family: var(--font-body); font-size: var(--text-xl); font-weight: 600; line-height: 1; cursor: pointer; border-radius: var(--radius-pill); transition: background-color var(--dur-fast) var(--ease-in-out), transform var(--dur-fast) var(--ease-in-out); }
-.f-qty--sm .f-qty__btn { width: 2rem; height: 2rem; font-size: var(--text-base); }
+.f-qty--sm .f-qty__btn { width: var(--control-h-sm); height: var(--control-h-sm); font-size: var(--text-base); }
 .f-qty__btn:hover { background: var(--yellow); }
 .f-qty__btn:active { transform: scale(var(--press-scale)); }
 .f-qty__val { min-width: 2rem; text-align: center; font-weight: 600; color: var(--ink-900); }
@@ -163,7 +168,7 @@
 /* ── CategoryRail ── */
 .f-rail { display: flex; gap: .5rem; overflow-x: auto; padding: 4px 4px 10px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
 .f-rail::-webkit-scrollbar { display: none; }
-.f-rail__item { position: relative; flex-shrink: 0; border: 1px solid var(--rule); background: #fff; border-radius: var(--radius-pill); padding: .5rem .875rem; font-family: var(--font-body); font-size: .8125rem; font-weight: 500; color: var(--red); cursor: pointer; transition: background-color var(--dur-fast) var(--ease-in-out), color var(--dur-fast) var(--ease-in-out), border-color var(--dur-fast) var(--ease-in-out); }
+.f-rail__item { position: relative; display: inline-flex; align-items: center; min-height: var(--control-h-sm); flex-shrink: 0; border: 1px solid var(--rule); background: #fff; border-radius: var(--radius-pill); padding: .5rem .875rem; font-family: var(--font-body); font-size: .8125rem; font-weight: 500; color: var(--red); cursor: pointer; transition: background-color var(--dur-fast) var(--ease-in-out), color var(--dur-fast) var(--ease-in-out), border-color var(--dur-fast) var(--ease-in-out); }
 .f-rail__item:hover { background: var(--yellow); border-color: transparent; }
 .f-rail__item.is-active { background: var(--red); border-color: var(--red); color: #fff; }
 
@@ -331,6 +336,17 @@ a:hover .f-circ img, button:hover .f-circ img { transform: scale(1.06); }
 }
 .f-sheet__grab { display: block; width: 3rem; height: .3125rem; margin: .625rem auto 0; border-radius: 99px; background: var(--beige-deep); }
 .f-modal__close { position: absolute; right: 1rem; top: 1rem; z-index: 2; }
+/* The sheet itself is the scroll container (max-height 92dvh, overflow-y auto)
+   and the Add button carries the running total, so on a phone the price scrolled
+   out of sight exactly while the customer was changing it. Pin the row instead.
+   Negative margins cancel the .p-7 content padding so it spans the full width. */
+.f-modal__foot {
+  position: sticky; bottom: 0; z-index: 1;
+  display: flex; align-items: center; gap: 1rem;
+  margin: 1.75rem -1.75rem -1.75rem;
+  padding: 1rem 1.75rem calc(1rem + env(safe-area-inset-bottom));
+  background: var(--white); border-top: 1px solid var(--rule);
+}
 .f-drawer__wrap { position: fixed; inset: 0; z-index: 50; }
 .f-drawer { position: absolute; right: 0; top: 0; z-index: 51; display: flex; height: 100%; width: 100%; max-width: 28rem; flex-direction: column; background: #fff; border-left: 1px solid var(--rule); box-shadow: var(--shadow-float); }
 .f-drawer__head { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--rule); padding: 1.5rem; }

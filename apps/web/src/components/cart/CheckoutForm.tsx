@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { HOURS_LABEL, LAHORE_AREAS, formatPKR, type OrderQuote, type OrderView } from "@four/shared";
+import { HOURS_LABEL, LAHORE_AREAS, formatPKR, defaultTaxRate, orderTotals, type OrderQuote, type OrderView } from "@four/shared";
 import { api, ApiError } from "@/lib/api";
 import { useKitchenOpen } from "@/lib/useKitchenOpen";
 import { useStore } from "@/lib/store";
@@ -37,11 +37,22 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
 
   const area = LAHORE_AREAS.find((a) => a.id === areaId);
 
+  const [quoting, setQuoting] = useState(false);
+
   useEffect(() => {
+    setQuoting(true);
     api<OrderQuote>("/api/orders/quote", { method: "POST", body: JSON.stringify({ payment }) })
       .then(setQuote)
-      .catch(() => setQuote(null));
+      .catch(() => setQuote(null))
+      .finally(() => setQuoting(false));
   }, [payment]);
+
+  // Punjab charges a lower restaurant sales tax on card than on cash, and the
+  // difference is real money the customer could not previously see at the
+  // moment they choose. Derived with the same helper the server quotes with.
+  const cardSaving = quote
+    ? orderTotals(quote.subtotal, defaultTaxRate("COD")).total - orderTotals(quote.subtotal, defaultTaxRate("CARD")).total
+    : 0;
 
   const validate = () => {
     const errs: Record<string, string> = {};
@@ -234,6 +245,12 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
               Card on delivery
             </button>
           </div>
+          {cardSaving > 0 && (
+            <p className="mt-2 text-xs text-ink-600">
+              Card is taxed at {Math.round(defaultTaxRate("CARD") * 100)}%, cash at {Math.round(defaultTaxRate("COD") * 100)}% — paying by
+              card saves {formatPKR(cardSaving)} on this order.
+            </p>
+          )}
         </div>
 
         {errorMsg && (
@@ -243,7 +260,7 @@ export function CheckoutForm({ onBack, onDone }: { onBack: () => void; onDone: (
         )}
 
         {quote && (
-          <dl className="f-summary f-summary--ruled mt-1">
+          <dl className="f-summary f-summary--ruled mt-1" aria-busy={quoting || undefined}>
             <div className="f-summary__row">
               <dt>Subtotal</dt>
               <dd>{formatPKR(quote.subtotal)}</dd>

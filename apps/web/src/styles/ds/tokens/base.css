@@ -1,6 +1,9 @@
 /* v3 ground: white page, DM Sans body, yellow selection, one global focus ring. */
 html {
   color-scheme: light;
+  /* Reserve the scrollbar track always, so opening a dialog (which locks body
+     scroll) does not shift the whole page ~15px on desktop. The CLS budget is 0. */
+  scrollbar-gutter: stable;
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--nav-h-scrolled) + 1rem);
 }

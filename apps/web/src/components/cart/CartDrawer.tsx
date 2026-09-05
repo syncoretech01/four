@@ -7,7 +7,7 @@ import { useReduceMotion } from "@/lib/useAnim";
 import { useDismissable } from "@/lib/useDismissable";
 import { useKitchenOpen } from "@/lib/useKitchenOpen";
 import { OPENS_LABEL } from "@/lib/hours";
-import { formatPKR, DELIVERY_FEE, FREE_DELIVERY_ABOVE } from "@four/shared";
+import { formatPKR, FREE_DELIVERY_ABOVE, defaultTaxRate, orderTotals } from "@four/shared";
 import { api, ApiError } from "@/lib/api";
 import { toast } from "@/lib/toast";
 import { useStore } from "@/lib/store";
@@ -16,13 +16,14 @@ import { PillCta } from "../ds/PillCta";
 import { CheckoutForm } from "./CheckoutForm";
 import { ItemModal, type ItemModalEdit, type MenuItemView } from "../menu/ItemModal";
 import { HAND_MARK } from "../hero/logoPaths";
-import type { CartLineView } from "@four/shared";
+import type { CartLineView, CartView } from "@four/shared";
 import { EASE_BRAND } from "@/lib/motionTokens";
 
 export function CartDrawer() {
   const open = useStore((s) => s.cartOpen);
   const setOpen = useStore((s) => s.setCartOpen);
   const cart = useStore((s) => s.cart);
+  const setCart = useStore((s) => s.setCart);
   const checkoutOpen = useStore((s) => s.checkoutOpen);
   const openCheckout = useStore((s) => s.openCheckout);
   const closeCheckout = useStore((s) => s.closeCheckout);
@@ -73,9 +74,13 @@ export function CartDrawer() {
   };
 
   const setQty = (lineId: string, qty: number) => {
-    api("/api/cart/lines", { method: "PATCH", body: JSON.stringify({ lineId, qty }) }).catch(() => {
-      toast.error("Couldn't update your order — check your connection.");
-    });
+    // The PATCH returns the new cart; applying it keeps the drawer correct when
+    // the socket is down, which is otherwise a silent failure (see useQuickAdd).
+    api<CartView>("/api/cart/lines", { method: "PATCH", body: JSON.stringify({ lineId, qty }) })
+      .then(setCart)
+      .catch(() => {
+        toast.error("Couldn't update your order — check your connection.");
+      });
   };
 
   const startCheckout = async () => {
@@ -93,6 +98,12 @@ export function CartDrawer() {
   };
 
   const freeIn = Math.max(0, FREE_DELIVERY_ABOVE - cart.subtotal);
+  // Show the whole ledger here rather than a bare subtotal: the drawer used to
+  // read "Rs. 2,400" and checkout then revealed Rs. 2,933, a 22% jump at the
+  // last step. `orderTotals` is the same function the server quotes with, so the
+  // only reason this is an estimate is that the server's rates are env-tunable.
+  const estCod = orderTotals(cart.subtotal, defaultTaxRate("COD"));
+  const cardSaving = estCod.total - orderTotals(cart.subtotal, defaultTaxRate("CARD")).total;
   const freePct = Math.min(100, (cart.subtotal / FREE_DELIVERY_ABOVE) * 100);
 
   return (
@@ -241,17 +252,29 @@ export function CartDrawer() {
                         />
                       </div>
                     </div>
-                    <p className="f-summary__title mt-4">Cart total</p>
-                    <dl className="f-summary">
-                      <div className="f-summary__row is-total">
+                    <p className="f-summary__title mt-4">Estimated total</p>
+                    <dl className="f-summary f-summary--ruled">
+                      <div className="f-summary__row">
                         <dt>Subtotal</dt>
                         <dd>{formatPKR(cart.subtotal)}</dd>
                       </div>
+                      <div className="f-summary__row">
+                        <dt>Delivery</dt>
+                        <dd>{estCod.deliveryFee === 0 ? "Free" : formatPKR(estCod.deliveryFee)}</dd>
+                      </div>
+                      <div className="f-summary__row">
+                        <dt>Tax ({Math.round(defaultTaxRate("COD") * 100)}%)</dt>
+                        <dd>{formatPKR(estCod.tax)}</dd>
+                      </div>
+                      <div className="f-summary__row is-total">
+                        <dt>Estimated total</dt>
+                        <dd>{formatPKR(estCod.total)}</dd>
+                      </div>
                     </dl>
                     <p className="mt-1 text-xs text-ink-600">
-                      {freeIn === 0
-                        ? "Free delivery on this order · tax added at checkout."
-                        : `Delivery ${formatPKR(DELIVERY_FEE)} (free over ${formatPKR(FREE_DELIVERY_ABOVE)}) · tax added at checkout.`}
+                      Estimated at the cash rate; checkout quotes the exact figure.{" "}
+                      {cardSaving > 0 && `Paying by card is taxed at ${Math.round(defaultTaxRate("CARD") * 100)}% — you would save ${formatPKR(cardSaving)}.`}
+                      {freeIn > 0 && ` Delivery is free over ${formatPKR(FREE_DELIVERY_ABOVE)}.`}
                     </p>
                     <PillCta onClick={startCheckout} size="lg" block className="mt-4">
                       Checkout · {cart.itemCount} item{cart.itemCount === 1 ? "" : "s"}
