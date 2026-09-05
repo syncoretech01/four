@@ -22,10 +22,6 @@
    rounded-card ...). Legacy v1/v2 names are kept and re-pointed so the admin
    and rider consoles, which only inherit tokens, keep compiling. */
 @theme inline {
-  --color-burgundy: var(--burgundy);
-  --color-burgundy-hover: var(--burgundy-hover);
-  --color-burgundy-press: var(--burgundy-press);
-  --color-rule-ink: var(--rule-ink);
   --color-red: var(--red);
   --color-red-hover: var(--red-hover);
   --color-red-press: var(--red-press);
@@ -103,15 +99,13 @@
     background: var(--red); color: var(--text-on-inverse);
     --heading: var(--text-on-inverse); --hi: var(--yellow); --body: var(--white-a80); --rule: var(--rule-white);
     --focus-ring: var(--yellow); --link: var(--text-on-inverse); --link-hover: var(--yellow);
-    --doodle: var(--text-on-inverse); --doodle-opacity: .10;
   }
-  .on-cream { background: var(--cream); --doodle-opacity: .06; }
+  .on-cream { background: var(--cream); }
   .on-beige { background: var(--beige); }
   .on-yellow, .f-card--accent {
     background: var(--yellow); color: var(--red);
     --heading: var(--red); --hi: var(--red); --body: var(--red-press); --rule: var(--red-a25);
     --focus-ring: var(--red); --link: var(--red); --link-hover: var(--red-press);
-    --doodle: var(--burgundy); --doodle-opacity: .10;
   }
   /* Same pack as .on-red, but the lede sits on photography rather than a flat
      ground, so it needs full opacity to stay legible over the scrim. */
@@ -119,7 +113,6 @@
     position: relative; isolation: isolate;
     color: var(--text-on-inverse); --heading: var(--text-on-inverse); --hi: var(--yellow); --body: var(--text-on-inverse); --rule: var(--rule-white);
     --focus-ring: var(--yellow); --link: var(--text-on-inverse); --link-hover: var(--yellow);
-    --doodle: var(--text-on-inverse); --doodle-opacity: .10;
   }
   .on-photo > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
   .on-photo::before { content: ""; position: absolute; inset: 0; background: var(--red-a75); z-index: -1; }
@@ -129,20 +122,12 @@
   .skip-link:focus-visible { transform: none; outline: 3px solid var(--red); outline-offset: 2px; }
 
   /* ── promo strip + nav bar ── */
-  /* The bar is BEIGE with a burgundy wordmark, which is the brand book's approved
-     "red on beige" lockup — the other approved lockup is white on red, and
-     "wordmark on white" is explicitly forbidden, so a white bar would need an
-     owner amendment. Beige also keeps 112px of fixed chrome from spending one of
-     every page's three burgundy moments. The strip above it goes burgundy with
-     cream type: yellow on beige is a luminance mush (0.68 against 0.72). */
-  .f-promo { height: var(--promo-h); display: flex; align-items: center; justify-content: center; padding-inline: 1rem; background: var(--burgundy); color: var(--cream); font-family: var(--font-display); font-size: .75rem; line-height: 1; text-transform: uppercase; letter-spacing: var(--tracking-eyebrow); text-align: center; white-space: nowrap; overflow: hidden; transition: height var(--dur-base) var(--ease-in-out); }
+  .f-promo { height: var(--promo-h); display: flex; align-items: center; justify-content: center; padding-inline: 1rem; background: var(--yellow); color: var(--red); font-family: var(--font-display); font-size: .75rem; line-height: 1; text-transform: uppercase; letter-spacing: .02em; text-align: center; white-space: nowrap; overflow: hidden; transition: height var(--dur-base) var(--ease-in-out); }
   .f-promo.is-collapsed { height: 0; }
-  .f-nav { background: var(--beige); color: var(--burgundy); height: var(--nav-h); transition: height var(--dur-base) var(--ease-in-out), box-shadow var(--dur-base) var(--ease-in-out); }
-  /* Pages now open on white, so once the strip collapses the bar needs its own
-     edge or it floats. One hairline, in the rule vocabulary. */
-  .f-nav.is-scrolled { height: var(--nav-h-scrolled); box-shadow: 0 1px 0 var(--rule-red); }
-  .f-nav__link { font-family: var(--font-body); font-size: 1rem; font-weight: 500; color: var(--ink-900); transition: color var(--dur-fast) var(--ease-in-out); }
-  .f-nav__link:hover, .f-nav__link[aria-current="page"] { color: var(--burgundy); }
+  .f-nav { background: var(--red); color: var(--text-on-inverse); height: var(--nav-h); transition: height var(--dur-base) var(--ease-in-out); }
+  .f-nav.is-scrolled { height: var(--nav-h-scrolled); }
+  .f-nav__link { font-family: var(--font-body); font-size: 1rem; font-weight: 500; color: var(--yellow); transition: color var(--dur-fast) var(--ease-in-out); }
+  .f-nav__link:hover, .f-nav__link[aria-current="page"] { color: var(--text-on-inverse); }
   .f-nav__count { position: absolute; top: -.375rem; right: -.5rem; }
   .f-mobilenav__link { display: block; padding: 1rem 0; border-bottom: 1px solid var(--rule-white); font-family: var(--font-display); font-size: 2.75rem; line-height: .95; text-transform: uppercase; color: var(--text-on-inverse); }
   .f-mobilenav__link[aria-current="page"], .f-mobilenav__link:hover { color: var(--yellow); }
@@ -164,12 +149,11 @@
 
   /* ── page-title band ── */
   .f-titleband { position: relative; isolation: isolate; overflow: hidden; text-align: center; padding: calc(var(--bar-h) + 4rem) 0 5rem; }
-  /* A white masthead has no ground to end it, so it terminates on a hairline. */
-  .f-titleband:not(.on-red):not(.on-cream) { border-bottom: 1px solid var(--rule); }
 
   /* ── doodle backdrop (masked from /doodles/sheet.png) ── */
-  .f-doodle { position: absolute; inset: 0; pointer-events: none; z-index: 0; border-radius: inherit; overflow: hidden; color: var(--doodle); opacity: var(--doodle-opacity); }
+  .f-doodle { position: absolute; inset: 0; pointer-events: none; z-index: 0; border-radius: inherit; overflow: hidden; color: var(--text-on-inverse); opacity: .1; }
   .f-doodle::before { content: ""; position: absolute; inset: 0; background: currentColor; -webkit-mask-image: url(/doodles/sheet.png); mask-image: url(/doodles/sheet.png); -webkit-mask-size: 60rem auto; mask-size: 60rem auto; -webkit-mask-repeat: repeat; mask-repeat: repeat; -webkit-mask-position: center; mask-position: center; }
+  .f-doodle--red { color: var(--red); opacity: .08; }
   .f-doodle--edges::before { -webkit-mask-image: url(/doodles/sheet.png), url(/doodles/sheet.png); mask-image: url(/doodles/sheet.png), url(/doodles/sheet.png); -webkit-mask-repeat: repeat-x, repeat-x; mask-repeat: repeat-x, repeat-x; -webkit-mask-position: top, bottom; mask-position: top, bottom; -webkit-mask-size: 60rem auto, 60rem auto; mask-size: 60rem auto, 60rem auto; }
   @supports not (mask-image: url("")) { .f-doodle { display: none; } }
 

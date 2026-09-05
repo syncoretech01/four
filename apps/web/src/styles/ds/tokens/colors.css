@@ -1,33 +1,13 @@
-/* FOUR v4 palette — white is the dominant ground; burgundy is the brand colour
-   and a RATIONED slab (at most three full-bleed moments per page); yellow, pink
-   and beige are tertiary accents. Hand-owned: edit here. Tailwind utilities alias
-   these through the `@theme inline` map in app/globals.css.
-
-   v3's #9D1D20 was retired in favour of #6B1122. It was marked LOCKED, but the
-   wordmark and hand mark both render `fill="currentColor"` and never read the
-   token, so nothing in the app was actually pinned to it — and #9D1D20 on
-   #6B1122 is a 1.34:1 pair, which reads as a printing error rather than a
-   palette. One red, not two. */
+/* FOUR v3 palette — locked brand red #9D1D20 on white / cream / beige grounds,
+   plus two playful accents (yellow, pink) in the role Dinevo's tag colours play.
+   Hand-owned since v3: edit here. Tailwind utilities alias these through the
+   `@theme inline` map in app/globals.css (e.g. bg-yellow -> var(--yellow)). */
 :root {
-  /* ── brand ──
-     #6B1122: 12.15:1 on white (v3's red managed 7.98), 8.41:1 against yellow,
-     8.97:1 on beige. Deep-on-light is now the dominant direction, so the deeper
-     colour is both the more premium and the more accessible choice. */
-  --burgundy: #6b1122;
-  /* Hover LIGHTENS and press DARKENS. That inverts v3's convention on purpose:
-     at 24% lightness a darker hover on a white page is invisible, so a filled
-     pill has to lift. Press stays darker because --burgundy-press also serves as
-     a surface *below* the ground (the chat tab track, the mobile-nav foot). */
-  --burgundy-hover: #7e1529;
-  --burgundy-press: #4a0b18;
-  --burgundy-tint: #f3eced;
-
-  /* v3 names, kept as aliases so the ~92 existing var(--red) call sites keep
-     working. They are retired selector by selector, not in one sweep. */
-  --red: var(--burgundy);
-  --red-hover: var(--burgundy-hover);
-  --red-press: var(--burgundy-press);
-  --red-tint: var(--burgundy-tint);
+  /* ── brand ── */
+  --red: #9d1d20;        /* LOCKED brand colour */
+  --red-hover: #8a1619;
+  --red-press: #7a1113;
+  --red-tint: #f6e2da;   /* SmartImage fallback wash, soft error wash */
 
   /* ── accents ── */
   --yellow: #ffd23f;     /* promo strip, primary pill, tags, highlight word on red */
@@ -46,13 +26,8 @@
   --ink-400: #a39a90;    /* placeholders, disabled text — never body */
 
   /* ── rules (the only borders) ── */
-  /* Neutral hairline on light grounds. A burgundy-tinted rule cast pink across a
-     now-white-dominant page; this matches its perceptual weight (1.28 on white)
-     without the tint. --rule-red stays for warm grounds (the yellow deal card). */
-  --rule-ink: rgba(31, 23, 21, 0.12);
-  --rule-red: rgba(107, 17, 34, 0.14);
-  /* On a deeper ground a 14% white line loses weight, so this steps up to 16%. */
-  --rule-white: rgba(255, 255, 255, 0.16);
+  --rule-red: rgba(157, 29, 32, 0.14);
+  --rule-white: rgba(255, 255, 255, 0.14);
 
   /* ── semantic ── */
   --success: #2e7d3f;
@@ -63,15 +38,15 @@
   --error-tint: #f9e0da;
 
   /* ── alpha rails ── */
-  --red-a08: rgba(107, 17, 34, 0.08);
-  --red-a25: rgba(107, 17, 34, 0.25);
-  --red-a35: rgba(107, 17, 34, 0.35);
-  --red-a60: rgba(107, 17, 34, 0.60);
+  --red-a08: rgba(157, 29, 32, 0.08);
+  --red-a25: rgba(157, 29, 32, 0.25);
+  --red-a35: rgba(157, 29, 32, 0.35);
+  --red-a60: rgba(157, 29, 32, 0.60);
   --ink-a08: rgba(31, 23, 21, 0.08);
   --ink-a25: rgba(31, 23, 21, 0.25);
   --ink-a45: rgba(31, 23, 21, 0.45);
   --ink-a60: rgba(31, 23, 21, 0.60);
-  --red-a75: rgba(107, 17, 34, 0.75);
+  --red-a75: rgba(157, 29, 32, 0.75);
   --white-a70: rgba(255, 255, 255, 0.70);
   --white-a75: rgba(255, 255, 255, 0.75);
   --white-a80: rgba(255, 255, 255, 0.80);
@@ -81,9 +56,7 @@
   --heading: var(--red);
   --hi: var(--pink);
   --body: var(--ink-600);
-  --rule: var(--rule-ink);
-  --doodle: var(--burgundy);
-  --doodle-opacity: .07;
+  --rule: var(--rule-red);
   --focus-ring: var(--red);
   --link: var(--red);
   --link-hover: var(--red-press);

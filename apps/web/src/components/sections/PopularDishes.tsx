@@ -47,7 +47,7 @@ export function PopularDishes() {
 
   return (
     <>
-    <section id="menu" className="band relative isolate">
+    <section id="menu" className="on-red band relative isolate">
       <DoodleBackdrop />
       <div className="wrap relative z-[1]">
         <SectionHeader

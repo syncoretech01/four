@@ -33,7 +33,7 @@ export function CraftStory() {
       <div className="wrap">
         <div className="grid items-start gap-12 border-t border-rule pt-12 lg:grid-cols-[600px_1fr] lg:gap-[120px] lg:pt-16">
           <Reveal>
-            <div className="on-cream overflow-hidden rounded-[20px]">
+            <div className="on-red overflow-hidden rounded-[20px]">
               <div className="relative">
                 <div className="f-media aspect-[4/3] rounded-none">
                   <SmartImage src="/home/craft-crown.jpg" alt="A hand-stuffed crown crust pizza" fallbackLabel="U" className="h-full w-full" />
@@ -41,14 +41,14 @@ export function CraftStory() {
                 <RotatingSeal className="absolute bottom-[-80px] left-1/2 w-40 -translate-x-1/2" />
               </div>
               <div className="grid grid-cols-[auto_1fr] items-center gap-6 p-8 pt-[100px]">
-                <span className="font-display text-[5rem] leading-none text-burgundy" aria-hidden>
+                <span className="font-display text-[5rem] leading-none text-yellow" aria-hidden>
                   <StatNumber value={BRANCHES.length} />
                 </span>
                 <div>
-                  <span className="block text-sm font-medium uppercase tracking-[0.08em] text-ink-600">
+                  <span className="block text-sm font-medium uppercase tracking-[0.08em] text-white/80">
                     <span className="sr-only">{BRANCHES.length} </span>kitchens across Lahore
                   </span>
-                  <span className="mt-2 block font-display text-[1.375rem] uppercase leading-tight text-burgundy">
+                  <span className="mt-2 block font-display text-[1.375rem] uppercase leading-tight text-yellow">
                     110g patties, crown crusts and every sauce — made from scratch, every day.
                   </span>
                 </div>

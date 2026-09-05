@@ -287,26 +287,9 @@ a:hover .f-circ img, button:hover .f-circ img { transform: scale(1.06); }
 .f-item__name { margin: 0; font-family: var(--font-display); font-size: var(--text-card); font-weight: 400; text-transform: uppercase; letter-spacing: var(--tracking-tag); line-height: 1.1; color: var(--red); }
 .f-item__desc { margin: .25rem 0 0; font-family: var(--font-body); font-size: 1rem; font-weight: 400; line-height: 1.5; color: var(--ink-600); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .f-item__foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; margin-top: 1.875rem; padding: 0 .625rem; min-width: 0; }
-/* Prices are set as TYPE by default. The filled burgundy square with yellow
-   digits is a strong mark once, but /menu renders it 56 times and the page then
-   reads burgundy by accumulation, which defeats the whole point of rationing the
-   slabs. Premium restaurants set prices as type; the chip is reserved for deal
-   cards, where a struck-through price sits alongside and the block genuinely
-   means "this one is discounted". */
-/* Burgundy, NOT var(--heading): .f-item is always a light card, but it can sit
-   inside a burgundy section (the Best Sellers band), where --heading is white —
-   which rendered every price white-on-cream. The card's ink is its own. */
-.f-item__price { display: inline-grid; place-items: end; min-width: 3.125rem; font-family: var(--font-display); font-size: var(--text-card); font-weight: 400; line-height: 1; color: var(--burgundy); text-align: right; flex-shrink: 0; }
-.f-item__price--chip { place-items: center; height: 3.125rem; padding: 0 .75rem; border-radius: var(--radius-md); background: var(--burgundy); color: var(--yellow); font-size: var(--text-tag); text-align: center; }
-/* The qualifier that stops a "from" price being a lie — it was 9px at 80% white. */
-.f-item__from { display: block; font-family: var(--font-body); font-size: .625rem; font-weight: 600; line-height: 1; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-600); margin-bottom: 3px; }
-.f-item__price--chip .f-item__from { color: var(--white-a80); }
-/* The quick-add control. .f-btn--secondary is a cream fill, which disappears on
-   a cream card and again on the white card .on-cream produces - so on a dish
-   card it becomes an outline instead. Yellow on hover keeps the brand's one
-   loud accent exactly where the tap happens. */
-.f-item__add { position: static; background: transparent; border-color: var(--red-a25); color: var(--burgundy); }
-.f-item__add:hover { background: var(--yellow); border-color: transparent; color: var(--burgundy); }
+.f-item__price { display: inline-grid; place-items: center; min-width: 3.125rem; height: 3.125rem; padding: 0 .625rem; border-radius: var(--radius-md); background: var(--red); color: var(--yellow); font-family: var(--font-display); font-size: var(--text-tag); font-weight: 400; line-height: 1; text-align: center; flex-shrink: 0; }
+.f-item__from { display: block; font-family: var(--font-body); font-size: .5625rem; font-weight: 500; line-height: 1; text-transform: uppercase; letter-spacing: .04em; color: var(--white-a80); margin-bottom: 2px; }
+.f-item__add { position: static; }
 .f-item.f-item--deal { background: var(--yellow); height: max-content; }
 
 /* ── CartLine ── */

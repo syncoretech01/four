@@ -190,31 +190,3 @@ imports anything.
 `Ticker` is now a client component: the CSS marquee remains the server-rendered
 and reduced-motion state, and a scroll-velocity driver is mounted on top only
 while the strip is on screen and the tab is visible.
-
-## The palette inverted (2026-09-04)
-
-White is now the dominant ground and burgundy `#6B1122` is a rationed slab, at
-most three full-bleed moments per page. `#9D1D20` is gone from the running app;
-`--red*` survives only as an alias of `--burgundy*` so the ~92 existing call
-sites keep working while they are retired selector by selector.
-
-Three things a future sync has to know:
-
-- **The safelist in `styles/ds.css` is by literal name.** `burgundy`,
-  `burgundy-hover`, `burgundy-press` and `rule-ink` were added there. A colour
-  the safelist does not name produces a class that does nothing in every
-  rendered design, with no error anywhere.
-- **`DoodleBackdrop` no longer takes `tone`.** It reads `--doodle` and
-  `--doodle-opacity` from the ground pack, so a bare `<DoodleBackdrop />` is
-  correct on white, cream, yellow and burgundy alike. Ten of its fourteen call
-  sites omitted the prop and would have rendered an invisible white wash once
-  their section went white.
-- **`PageTitleBand` is a white masthead by default** and takes `ground` for the
-  exceptions. The old convention — "every inner page opens with a red
-  PageTitleBand" — is now false, and it is the sentence a design agent follows
-  most literally, so `conventions.md` was corrected in the same commit.
-
-The raster brand assets (`icon-192.png`, `icon-512.png`, `apple-touch-icon.png`,
-`og.jpg`) still carry `#9D1D20` baked in. This repo has no image tooling, so the
-browser tab, the home-screen icon and every social share keep the old red until
-they are regenerated elsewhere. Open follow-up, not an oversight.

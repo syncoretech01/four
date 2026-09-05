@@ -1470,285 +1470,6 @@
       border-color: color-mix(in oklab, var(--beige) 95%, transparent);
     }
   }
-  .border-burgundy {
-    border-color: var(--burgundy);
-  }
-  .border-burgundy-hover {
-    border-color: var(--burgundy-hover);
-  }
-  .border-burgundy-hover\/5 {
-    border-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-hover) 5%, transparent);
-    }
-  }
-  .border-burgundy-hover\/10 {
-    border-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-hover) 10%, transparent);
-    }
-  }
-  .border-burgundy-hover\/15 {
-    border-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-hover) 15%, transparent);
-    }
-  }
-  .border-burgundy-hover\/20 {
-    border-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-hover) 20%, transparent);
-    }
-  }
-  .border-burgundy-hover\/25 {
-    border-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-hover) 25%, transparent);
-    }
-  }
-  .border-burgundy-hover\/30 {
-    border-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-hover) 30%, transparent);
-    }
-  }
-  .border-burgundy-hover\/40 {
-    border-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-hover) 40%, transparent);
-    }
-  }
-  .border-burgundy-hover\/50 {
-    border-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-hover) 50%, transparent);
-    }
-  }
-  .border-burgundy-hover\/60 {
-    border-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-hover) 60%, transparent);
-    }
-  }
-  .border-burgundy-hover\/70 {
-    border-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-hover) 70%, transparent);
-    }
-  }
-  .border-burgundy-hover\/75 {
-    border-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-hover) 75%, transparent);
-    }
-  }
-  .border-burgundy-hover\/80 {
-    border-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-hover) 80%, transparent);
-    }
-  }
-  .border-burgundy-hover\/85 {
-    border-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-hover) 85%, transparent);
-    }
-  }
-  .border-burgundy-hover\/90 {
-    border-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-hover) 90%, transparent);
-    }
-  }
-  .border-burgundy-hover\/95 {
-    border-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-hover) 95%, transparent);
-    }
-  }
-  .border-burgundy-press {
-    border-color: var(--burgundy-press);
-  }
-  .border-burgundy-press\/5 {
-    border-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-press) 5%, transparent);
-    }
-  }
-  .border-burgundy-press\/10 {
-    border-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-press) 10%, transparent);
-    }
-  }
-  .border-burgundy-press\/15 {
-    border-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-press) 15%, transparent);
-    }
-  }
-  .border-burgundy-press\/20 {
-    border-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-press) 20%, transparent);
-    }
-  }
-  .border-burgundy-press\/25 {
-    border-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-press) 25%, transparent);
-    }
-  }
-  .border-burgundy-press\/30 {
-    border-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-press) 30%, transparent);
-    }
-  }
-  .border-burgundy-press\/40 {
-    border-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-press) 40%, transparent);
-    }
-  }
-  .border-burgundy-press\/50 {
-    border-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-press) 50%, transparent);
-    }
-  }
-  .border-burgundy-press\/60 {
-    border-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-press) 60%, transparent);
-    }
-  }
-  .border-burgundy-press\/70 {
-    border-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-press) 70%, transparent);
-    }
-  }
-  .border-burgundy-press\/75 {
-    border-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-press) 75%, transparent);
-    }
-  }
-  .border-burgundy-press\/80 {
-    border-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-press) 80%, transparent);
-    }
-  }
-  .border-burgundy-press\/85 {
-    border-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-press) 85%, transparent);
-    }
-  }
-  .border-burgundy-press\/90 {
-    border-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-press) 90%, transparent);
-    }
-  }
-  .border-burgundy-press\/95 {
-    border-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy-press) 95%, transparent);
-    }
-  }
-  .border-burgundy\/5 {
-    border-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy) 5%, transparent);
-    }
-  }
-  .border-burgundy\/10 {
-    border-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy) 10%, transparent);
-    }
-  }
-  .border-burgundy\/15 {
-    border-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy) 15%, transparent);
-    }
-  }
-  .border-burgundy\/20 {
-    border-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy) 20%, transparent);
-    }
-  }
-  .border-burgundy\/25 {
-    border-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy) 25%, transparent);
-    }
-  }
-  .border-burgundy\/30 {
-    border-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy) 30%, transparent);
-    }
-  }
-  .border-burgundy\/40 {
-    border-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy) 40%, transparent);
-    }
-  }
-  .border-burgundy\/50 {
-    border-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy) 50%, transparent);
-    }
-  }
-  .border-burgundy\/60 {
-    border-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy) 60%, transparent);
-    }
-  }
-  .border-burgundy\/70 {
-    border-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy) 70%, transparent);
-    }
-  }
-  .border-burgundy\/75 {
-    border-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy) 75%, transparent);
-    }
-  }
-  .border-burgundy\/80 {
-    border-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy) 80%, transparent);
-    }
-  }
-  .border-burgundy\/85 {
-    border-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy) 85%, transparent);
-    }
-  }
-  .border-burgundy\/90 {
-    border-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy) 90%, transparent);
-    }
-  }
-  .border-burgundy\/95 {
-    border-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--burgundy) 95%, transparent);
-    }
-  }
   .border-cream {
     border-color: var(--cream);
   }
@@ -2508,99 +2229,6 @@
   .border-rule {
     border-color: var(--rule-red);
   }
-  .border-rule-ink {
-    border-color: var(--rule-ink);
-  }
-  .border-rule-ink\/5 {
-    border-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--rule-ink) 5%, transparent);
-    }
-  }
-  .border-rule-ink\/10 {
-    border-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--rule-ink) 10%, transparent);
-    }
-  }
-  .border-rule-ink\/15 {
-    border-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--rule-ink) 15%, transparent);
-    }
-  }
-  .border-rule-ink\/20 {
-    border-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--rule-ink) 20%, transparent);
-    }
-  }
-  .border-rule-ink\/25 {
-    border-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--rule-ink) 25%, transparent);
-    }
-  }
-  .border-rule-ink\/30 {
-    border-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--rule-ink) 30%, transparent);
-    }
-  }
-  .border-rule-ink\/40 {
-    border-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--rule-ink) 40%, transparent);
-    }
-  }
-  .border-rule-ink\/50 {
-    border-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--rule-ink) 50%, transparent);
-    }
-  }
-  .border-rule-ink\/60 {
-    border-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--rule-ink) 60%, transparent);
-    }
-  }
-  .border-rule-ink\/70 {
-    border-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--rule-ink) 70%, transparent);
-    }
-  }
-  .border-rule-ink\/75 {
-    border-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--rule-ink) 75%, transparent);
-    }
-  }
-  .border-rule-ink\/80 {
-    border-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--rule-ink) 80%, transparent);
-    }
-  }
-  .border-rule-ink\/85 {
-    border-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--rule-ink) 85%, transparent);
-    }
-  }
-  .border-rule-ink\/90 {
-    border-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--rule-ink) 90%, transparent);
-    }
-  }
-  .border-rule-ink\/95 {
-    border-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--rule-ink) 95%, transparent);
-    }
-  }
   .border-rule-white {
     border-color: var(--rule-white);
   }
@@ -3247,285 +2875,6 @@
     background-color: var(--beige);
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(in oklab, var(--beige) 95%, transparent);
-    }
-  }
-  .bg-burgundy {
-    background-color: var(--burgundy);
-  }
-  .bg-burgundy-hover {
-    background-color: var(--burgundy-hover);
-  }
-  .bg-burgundy-hover\/5 {
-    background-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-hover) 5%, transparent);
-    }
-  }
-  .bg-burgundy-hover\/10 {
-    background-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-hover) 10%, transparent);
-    }
-  }
-  .bg-burgundy-hover\/15 {
-    background-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-hover) 15%, transparent);
-    }
-  }
-  .bg-burgundy-hover\/20 {
-    background-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-hover) 20%, transparent);
-    }
-  }
-  .bg-burgundy-hover\/25 {
-    background-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-hover) 25%, transparent);
-    }
-  }
-  .bg-burgundy-hover\/30 {
-    background-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-hover) 30%, transparent);
-    }
-  }
-  .bg-burgundy-hover\/40 {
-    background-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-hover) 40%, transparent);
-    }
-  }
-  .bg-burgundy-hover\/50 {
-    background-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-hover) 50%, transparent);
-    }
-  }
-  .bg-burgundy-hover\/60 {
-    background-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-hover) 60%, transparent);
-    }
-  }
-  .bg-burgundy-hover\/70 {
-    background-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-hover) 70%, transparent);
-    }
-  }
-  .bg-burgundy-hover\/75 {
-    background-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-hover) 75%, transparent);
-    }
-  }
-  .bg-burgundy-hover\/80 {
-    background-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-hover) 80%, transparent);
-    }
-  }
-  .bg-burgundy-hover\/85 {
-    background-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-hover) 85%, transparent);
-    }
-  }
-  .bg-burgundy-hover\/90 {
-    background-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-hover) 90%, transparent);
-    }
-  }
-  .bg-burgundy-hover\/95 {
-    background-color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-hover) 95%, transparent);
-    }
-  }
-  .bg-burgundy-press {
-    background-color: var(--burgundy-press);
-  }
-  .bg-burgundy-press\/5 {
-    background-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-press) 5%, transparent);
-    }
-  }
-  .bg-burgundy-press\/10 {
-    background-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-press) 10%, transparent);
-    }
-  }
-  .bg-burgundy-press\/15 {
-    background-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-press) 15%, transparent);
-    }
-  }
-  .bg-burgundy-press\/20 {
-    background-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-press) 20%, transparent);
-    }
-  }
-  .bg-burgundy-press\/25 {
-    background-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-press) 25%, transparent);
-    }
-  }
-  .bg-burgundy-press\/30 {
-    background-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-press) 30%, transparent);
-    }
-  }
-  .bg-burgundy-press\/40 {
-    background-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-press) 40%, transparent);
-    }
-  }
-  .bg-burgundy-press\/50 {
-    background-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-press) 50%, transparent);
-    }
-  }
-  .bg-burgundy-press\/60 {
-    background-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-press) 60%, transparent);
-    }
-  }
-  .bg-burgundy-press\/70 {
-    background-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-press) 70%, transparent);
-    }
-  }
-  .bg-burgundy-press\/75 {
-    background-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-press) 75%, transparent);
-    }
-  }
-  .bg-burgundy-press\/80 {
-    background-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-press) 80%, transparent);
-    }
-  }
-  .bg-burgundy-press\/85 {
-    background-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-press) 85%, transparent);
-    }
-  }
-  .bg-burgundy-press\/90 {
-    background-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-press) 90%, transparent);
-    }
-  }
-  .bg-burgundy-press\/95 {
-    background-color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy-press) 95%, transparent);
-    }
-  }
-  .bg-burgundy\/5 {
-    background-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy) 5%, transparent);
-    }
-  }
-  .bg-burgundy\/10 {
-    background-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy) 10%, transparent);
-    }
-  }
-  .bg-burgundy\/15 {
-    background-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy) 15%, transparent);
-    }
-  }
-  .bg-burgundy\/20 {
-    background-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy) 20%, transparent);
-    }
-  }
-  .bg-burgundy\/25 {
-    background-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy) 25%, transparent);
-    }
-  }
-  .bg-burgundy\/30 {
-    background-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy) 30%, transparent);
-    }
-  }
-  .bg-burgundy\/40 {
-    background-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy) 40%, transparent);
-    }
-  }
-  .bg-burgundy\/50 {
-    background-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy) 50%, transparent);
-    }
-  }
-  .bg-burgundy\/60 {
-    background-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy) 60%, transparent);
-    }
-  }
-  .bg-burgundy\/70 {
-    background-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy) 70%, transparent);
-    }
-  }
-  .bg-burgundy\/75 {
-    background-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy) 75%, transparent);
-    }
-  }
-  .bg-burgundy\/80 {
-    background-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy) 80%, transparent);
-    }
-  }
-  .bg-burgundy\/85 {
-    background-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy) 85%, transparent);
-    }
-  }
-  .bg-burgundy\/90 {
-    background-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy) 90%, transparent);
-    }
-  }
-  .bg-burgundy\/95 {
-    background-color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--burgundy) 95%, transparent);
     }
   }
   .bg-cream {
@@ -4301,99 +3650,6 @@
   }
   .bg-rule {
     background-color: var(--rule-red);
-  }
-  .bg-rule-ink {
-    background-color: var(--rule-ink);
-  }
-  .bg-rule-ink\/5 {
-    background-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--rule-ink) 5%, transparent);
-    }
-  }
-  .bg-rule-ink\/10 {
-    background-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--rule-ink) 10%, transparent);
-    }
-  }
-  .bg-rule-ink\/15 {
-    background-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--rule-ink) 15%, transparent);
-    }
-  }
-  .bg-rule-ink\/20 {
-    background-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--rule-ink) 20%, transparent);
-    }
-  }
-  .bg-rule-ink\/25 {
-    background-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--rule-ink) 25%, transparent);
-    }
-  }
-  .bg-rule-ink\/30 {
-    background-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--rule-ink) 30%, transparent);
-    }
-  }
-  .bg-rule-ink\/40 {
-    background-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--rule-ink) 40%, transparent);
-    }
-  }
-  .bg-rule-ink\/50 {
-    background-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--rule-ink) 50%, transparent);
-    }
-  }
-  .bg-rule-ink\/60 {
-    background-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--rule-ink) 60%, transparent);
-    }
-  }
-  .bg-rule-ink\/70 {
-    background-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--rule-ink) 70%, transparent);
-    }
-  }
-  .bg-rule-ink\/75 {
-    background-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--rule-ink) 75%, transparent);
-    }
-  }
-  .bg-rule-ink\/80 {
-    background-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--rule-ink) 80%, transparent);
-    }
-  }
-  .bg-rule-ink\/85 {
-    background-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--rule-ink) 85%, transparent);
-    }
-  }
-  .bg-rule-ink\/90 {
-    background-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--rule-ink) 90%, transparent);
-    }
-  }
-  .bg-rule-ink\/95 {
-    background-color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--rule-ink) 95%, transparent);
-    }
   }
   .bg-rule-white {
     background-color: var(--rule-white);
@@ -5519,285 +4775,6 @@
       color: color-mix(in oklab, var(--beige) 95%, transparent);
     }
   }
-  .text-burgundy {
-    color: var(--burgundy);
-  }
-  .text-burgundy-hover {
-    color: var(--burgundy-hover);
-  }
-  .text-burgundy-hover\/5 {
-    color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-hover) 5%, transparent);
-    }
-  }
-  .text-burgundy-hover\/10 {
-    color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-hover) 10%, transparent);
-    }
-  }
-  .text-burgundy-hover\/15 {
-    color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-hover) 15%, transparent);
-    }
-  }
-  .text-burgundy-hover\/20 {
-    color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-hover) 20%, transparent);
-    }
-  }
-  .text-burgundy-hover\/25 {
-    color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-hover) 25%, transparent);
-    }
-  }
-  .text-burgundy-hover\/30 {
-    color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-hover) 30%, transparent);
-    }
-  }
-  .text-burgundy-hover\/40 {
-    color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-hover) 40%, transparent);
-    }
-  }
-  .text-burgundy-hover\/50 {
-    color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-hover) 50%, transparent);
-    }
-  }
-  .text-burgundy-hover\/60 {
-    color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-hover) 60%, transparent);
-    }
-  }
-  .text-burgundy-hover\/70 {
-    color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-hover) 70%, transparent);
-    }
-  }
-  .text-burgundy-hover\/75 {
-    color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-hover) 75%, transparent);
-    }
-  }
-  .text-burgundy-hover\/80 {
-    color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-hover) 80%, transparent);
-    }
-  }
-  .text-burgundy-hover\/85 {
-    color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-hover) 85%, transparent);
-    }
-  }
-  .text-burgundy-hover\/90 {
-    color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-hover) 90%, transparent);
-    }
-  }
-  .text-burgundy-hover\/95 {
-    color: var(--burgundy-hover);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-hover) 95%, transparent);
-    }
-  }
-  .text-burgundy-press {
-    color: var(--burgundy-press);
-  }
-  .text-burgundy-press\/5 {
-    color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-press) 5%, transparent);
-    }
-  }
-  .text-burgundy-press\/10 {
-    color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-press) 10%, transparent);
-    }
-  }
-  .text-burgundy-press\/15 {
-    color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-press) 15%, transparent);
-    }
-  }
-  .text-burgundy-press\/20 {
-    color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-press) 20%, transparent);
-    }
-  }
-  .text-burgundy-press\/25 {
-    color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-press) 25%, transparent);
-    }
-  }
-  .text-burgundy-press\/30 {
-    color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-press) 30%, transparent);
-    }
-  }
-  .text-burgundy-press\/40 {
-    color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-press) 40%, transparent);
-    }
-  }
-  .text-burgundy-press\/50 {
-    color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-press) 50%, transparent);
-    }
-  }
-  .text-burgundy-press\/60 {
-    color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-press) 60%, transparent);
-    }
-  }
-  .text-burgundy-press\/70 {
-    color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-press) 70%, transparent);
-    }
-  }
-  .text-burgundy-press\/75 {
-    color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-press) 75%, transparent);
-    }
-  }
-  .text-burgundy-press\/80 {
-    color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-press) 80%, transparent);
-    }
-  }
-  .text-burgundy-press\/85 {
-    color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-press) 85%, transparent);
-    }
-  }
-  .text-burgundy-press\/90 {
-    color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-press) 90%, transparent);
-    }
-  }
-  .text-burgundy-press\/95 {
-    color: var(--burgundy-press);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy-press) 95%, transparent);
-    }
-  }
-  .text-burgundy\/5 {
-    color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy) 5%, transparent);
-    }
-  }
-  .text-burgundy\/10 {
-    color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy) 10%, transparent);
-    }
-  }
-  .text-burgundy\/15 {
-    color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy) 15%, transparent);
-    }
-  }
-  .text-burgundy\/20 {
-    color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy) 20%, transparent);
-    }
-  }
-  .text-burgundy\/25 {
-    color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy) 25%, transparent);
-    }
-  }
-  .text-burgundy\/30 {
-    color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy) 30%, transparent);
-    }
-  }
-  .text-burgundy\/40 {
-    color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy) 40%, transparent);
-    }
-  }
-  .text-burgundy\/50 {
-    color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy) 50%, transparent);
-    }
-  }
-  .text-burgundy\/60 {
-    color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy) 60%, transparent);
-    }
-  }
-  .text-burgundy\/70 {
-    color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy) 70%, transparent);
-    }
-  }
-  .text-burgundy\/75 {
-    color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy) 75%, transparent);
-    }
-  }
-  .text-burgundy\/80 {
-    color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy) 80%, transparent);
-    }
-  }
-  .text-burgundy\/85 {
-    color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy) 85%, transparent);
-    }
-  }
-  .text-burgundy\/90 {
-    color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy) 90%, transparent);
-    }
-  }
-  .text-burgundy\/95 {
-    color: var(--burgundy);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--burgundy) 95%, transparent);
-    }
-  }
   .text-cream {
     color: var(--cream);
   }
@@ -6553,99 +5530,6 @@
   }
   .text-rule {
     color: var(--rule-red);
-  }
-  .text-rule-ink {
-    color: var(--rule-ink);
-  }
-  .text-rule-ink\/5 {
-    color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--rule-ink) 5%, transparent);
-    }
-  }
-  .text-rule-ink\/10 {
-    color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--rule-ink) 10%, transparent);
-    }
-  }
-  .text-rule-ink\/15 {
-    color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--rule-ink) 15%, transparent);
-    }
-  }
-  .text-rule-ink\/20 {
-    color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--rule-ink) 20%, transparent);
-    }
-  }
-  .text-rule-ink\/25 {
-    color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--rule-ink) 25%, transparent);
-    }
-  }
-  .text-rule-ink\/30 {
-    color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--rule-ink) 30%, transparent);
-    }
-  }
-  .text-rule-ink\/40 {
-    color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--rule-ink) 40%, transparent);
-    }
-  }
-  .text-rule-ink\/50 {
-    color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--rule-ink) 50%, transparent);
-    }
-  }
-  .text-rule-ink\/60 {
-    color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--rule-ink) 60%, transparent);
-    }
-  }
-  .text-rule-ink\/70 {
-    color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--rule-ink) 70%, transparent);
-    }
-  }
-  .text-rule-ink\/75 {
-    color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--rule-ink) 75%, transparent);
-    }
-  }
-  .text-rule-ink\/80 {
-    color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--rule-ink) 80%, transparent);
-    }
-  }
-  .text-rule-ink\/85 {
-    color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--rule-ink) 85%, transparent);
-    }
-  }
-  .text-rule-ink\/90 {
-    color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--rule-ink) 90%, transparent);
-    }
-  }
-  .text-rule-ink\/95 {
-    color: var(--rule-ink);
-    @supports (color: color-mix(in lab, red, red)) {
-      color: color-mix(in oklab, var(--rule-ink) 95%, transparent);
-    }
   }
   .text-rule-white {
     color: var(--rule-white);
@@ -7689,14 +6573,10 @@
   }
 }
 :root {
-  --burgundy: #6b1122;
-  --burgundy-hover: #7e1529;
-  --burgundy-press: #4a0b18;
-  --burgundy-tint: #f3eced;
-  --red: var(--burgundy);
-  --red-hover: var(--burgundy-hover);
-  --red-press: var(--burgundy-press);
-  --red-tint: var(--burgundy-tint);
+  --red: #9d1d20;
+  --red-hover: #8a1619;
+  --red-press: #7a1113;
+  --red-tint: #f6e2da;
   --yellow: #ffd23f;
   --yellow-deep: #f0c227;
   --pink: #e8578f;
@@ -7707,33 +6587,30 @@
   --ink-900: #1f1715;
   --ink-600: #625b54;
   --ink-400: #a39a90;
-  --rule-ink: rgba(31, 23, 21, 0.12);
-  --rule-red: rgba(107, 17, 34, 0.14);
-  --rule-white: rgba(255, 255, 255, 0.16);
+  --rule-red: rgba(157, 29, 32, 0.14);
+  --rule-white: rgba(255, 255, 255, 0.14);
   --success: #2e7d3f;
   --success-tint: #e2efdd;
   --warning: #8f5b0e;
   --warning-tint: #f7e9cd;
   --error: #b03026;
   --error-tint: #f9e0da;
-  --red-a08: rgba(107, 17, 34, 0.08);
-  --red-a25: rgba(107, 17, 34, 0.25);
-  --red-a35: rgba(107, 17, 34, 0.35);
-  --red-a60: rgba(107, 17, 34, 0.60);
+  --red-a08: rgba(157, 29, 32, 0.08);
+  --red-a25: rgba(157, 29, 32, 0.25);
+  --red-a35: rgba(157, 29, 32, 0.35);
+  --red-a60: rgba(157, 29, 32, 0.60);
   --ink-a08: rgba(31, 23, 21, 0.08);
   --ink-a25: rgba(31, 23, 21, 0.25);
   --ink-a45: rgba(31, 23, 21, 0.45);
   --ink-a60: rgba(31, 23, 21, 0.60);
-  --red-a75: rgba(107, 17, 34, 0.75);
+  --red-a75: rgba(157, 29, 32, 0.75);
   --white-a70: rgba(255, 255, 255, 0.70);
   --white-a75: rgba(255, 255, 255, 0.75);
   --white-a80: rgba(255, 255, 255, 0.80);
   --heading: var(--red);
   --hi: var(--pink);
   --body: var(--ink-600);
-  --rule: var(--rule-ink);
-  --doodle: var(--burgundy);
-  --doodle-opacity: .07;
+  --rule: var(--rule-red);
   --focus-ring: var(--red);
   --link: var(--red);
   --link-hover: var(--red-press);
@@ -9196,50 +8073,33 @@
   }
   .f-item__price {
     display: inline-grid;
-    place-items: end;
+    place-items: center;
     min-width: 3.125rem;
+    height: 3.125rem;
+    padding: 0 .625rem;
+    border-radius: var(--radius-md);
+    background: var(--red);
+    color: var(--yellow);
     font-family: var(--font-display);
-    font-size: var(--text-card);
+    font-size: var(--text-tag);
     font-weight: 400;
     line-height: 1;
-    color: var(--burgundy);
-    text-align: right;
-    flex-shrink: 0;
-  }
-  .f-item__price--chip {
-    place-items: center;
-    height: 3.125rem;
-    padding: 0 .75rem;
-    border-radius: var(--radius-md);
-    background: var(--burgundy);
-    color: var(--yellow);
-    font-size: var(--text-tag);
     text-align: center;
+    flex-shrink: 0;
   }
   .f-item__from {
     display: block;
     font-family: var(--font-body);
-    font-size: .625rem;
-    font-weight: 600;
+    font-size: .5625rem;
+    font-weight: 500;
     line-height: 1;
     text-transform: uppercase;
     letter-spacing: .04em;
-    color: var(--ink-600);
-    margin-bottom: 3px;
-  }
-  .f-item__price--chip .f-item__from {
     color: var(--white-a80);
+    margin-bottom: 2px;
   }
   .f-item__add {
     position: static;
-    background: transparent;
-    border-color: var(--red-a25);
-    color: var(--burgundy);
-  }
-  .f-item__add:hover {
-    background: var(--yellow);
-    border-color: transparent;
-    color: var(--burgundy);
   }
   .f-item.f-item--deal {
     background: var(--yellow);
@@ -9613,12 +8473,9 @@
     --focus-ring: var(--yellow);
     --link: var(--text-on-inverse);
     --link-hover: var(--yellow);
-    --doodle: var(--text-on-inverse);
-    --doodle-opacity: .10;
   }
   .on-cream {
     background: var(--cream);
-    --doodle-opacity: .06;
   }
   .on-beige {
     background: var(--beige);
@@ -9633,8 +8490,6 @@
     --focus-ring: var(--red);
     --link: var(--red);
     --link-hover: var(--red-press);
-    --doodle: var(--burgundy);
-    --doodle-opacity: .10;
   }
   .on-photo {
     position: relative;
@@ -9647,8 +8502,6 @@
     --focus-ring: var(--yellow);
     --link: var(--text-on-inverse);
     --link-hover: var(--yellow);
-    --doodle: var(--text-on-inverse);
-    --doodle-opacity: .10;
   }
   .on-photo > img {
     position: absolute;
@@ -9696,13 +8549,13 @@
     align-items: center;
     justify-content: center;
     padding-inline: 1rem;
-    background: var(--burgundy);
-    color: var(--cream);
+    background: var(--yellow);
+    color: var(--red);
     font-family: var(--font-display);
     font-size: .75rem;
     line-height: 1;
     text-transform: uppercase;
-    letter-spacing: var(--tracking-eyebrow);
+    letter-spacing: .02em;
     text-align: center;
     white-space: nowrap;
     overflow: hidden;
@@ -9712,24 +8565,23 @@
     height: 0;
   }
   .f-nav {
-    background: var(--beige);
-    color: var(--burgundy);
+    background: var(--red);
+    color: var(--text-on-inverse);
     height: var(--nav-h);
-    transition: height var(--dur-base) var(--ease-in-out), box-shadow var(--dur-base) var(--ease-in-out);
+    transition: height var(--dur-base) var(--ease-in-out);
   }
   .f-nav.is-scrolled {
     height: var(--nav-h-scrolled);
-    box-shadow: 0 1px 0 var(--rule-red);
   }
   .f-nav__link {
     font-family: var(--font-body);
     font-size: 1rem;
     font-weight: 500;
-    color: var(--ink-900);
+    color: var(--yellow);
     transition: color var(--dur-fast) var(--ease-in-out);
   }
   .f-nav__link:hover, .f-nav__link[aria-current="page"] {
-    color: var(--burgundy);
+    color: var(--text-on-inverse);
   }
   .f-nav__count {
     position: absolute;
@@ -9833,9 +8685,6 @@
     text-align: center;
     padding: calc(var(--bar-h) + 4rem) 0 5rem;
   }
-  .f-titleband:not(.on-red):not(.on-cream) {
-    border-bottom: 1px solid var(--rule);
-  }
   .f-doodle {
     position: absolute;
     inset: 0;
@@ -9843,8 +8692,8 @@
     z-index: 0;
     border-radius: inherit;
     overflow: hidden;
-    color: var(--doodle);
-    opacity: var(--doodle-opacity);
+    color: var(--text-on-inverse);
+    opacity: .1;
   }
   .f-doodle::before {
     content: "";
@@ -9859,6 +8708,10 @@
     mask-repeat: repeat;
     -webkit-mask-position: center;
     mask-position: center;
+  }
+  .f-doodle--red {
+    color: var(--red);
+    opacity: .08;
   }
   .f-doodle--edges::before {
     -webkit-mask-image: url(/doodles/sheet.png), url(/doodles/sheet.png);
